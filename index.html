@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="sv">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Kakservice-inspirerad sida</title>
+    <meta name="description" content="En mobilanpassad sida inspirerad av Kakservice med produkter och försäljning." />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/styles.css" />
+  </head>
+  <body>
+    <header class="site-header" data-header>
+      <div class="container header-inner">
+        <a href="#" class="logo" aria-label="Hem">Kakservice</a>
+
+        <button class="nav-toggle" aria-expanded="false" aria-controls="site-nav" aria-label="Öppna meny">
+          <span class="nav-toggle__bar" aria-hidden="true"></span>
+          <span class="nav-toggle__bar" aria-hidden="true"></span>
+          <span class="nav-toggle__bar" aria-hidden="true"></span>
+        </button>
+
+        <nav id="site-nav" class="site-nav" aria-label="Huvudmeny">
+          <ul class="nav-list">
+            <li class="nav-item has-dropdown">
+              <button class="dropdown-toggle" aria-expanded="false" aria-haspopup="true" aria-controls="dropdown-produkter">
+                Produkter
+                <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10l5 5 5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+              <ul id="dropdown-produkter" class="dropdown-menu" role="menu">
+                <li role="none"><a role="menuitem" href="#produkter" class="dropdown-link">Kakor</a></li>
+                <li role="none"><a role="menuitem" href="#produkter" class="dropdown-link">Knäck & kola</a></li>
+                <li role="none"><a role="menuitem" href="#produkter" class="dropdown-link">Choklad</a></li>
+              </ul>
+            </li>
+            <li class="nav-item"><a href="#sa-funkar-det">Så funkar det</a></li>
+            <li class="nav-item"><a href="#om-oss">Om oss</a></li>
+            <li class="nav-item"><a href="börja-sälja.html" class="btn btn--sm btn--primary">Börja sälja</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="container hero-inner">
+          <div class="hero-copy">
+            <h1>Enkelt att sälja godsaker för laget och klassen</h1>
+            <p>Starta en försäljning på några minuter. Vi hanterar betalningar och logistik – ni fokuserar på att nå erat mål.</p>
+            <div class="hero-actions">
+              <a href="#kontakt" class="btn btn--primary btn--lg">Starta försäljning</a>
+              <a href="#sa-funkar-det" class="btn btn--ghost btn--lg">Läs mer</a>
+            </div>
+          </div>
+          <div class="hero-media" aria-hidden="true">
+            <div class="hero-card">Kakburkar · Choklad · Kola</div>
+          </div>
+        </div>
+      </section>
+
+      <section id="produkter" class="section section--alt">
+        <div class="container">
+          <header class="section-header">
+            <h2>Våra produkter</h2>
+            <p>Smakrik variation av godsaker för alla tillfällen</p>
+          </header>
+          <div class="products-showcase">
+            <div class="products-image">
+              <div class="products-visual" aria-hidden="true">
+                <div class="product-item product-item--1">Kakburkar</div>
+                <div class="product-item product-item--2">Choklad</div>
+                <div class="product-item product-item--3">Knäck & kola</div>
+                <div class="product-item product-item--4">Småkakor</div>
+                <div class="product-item product-item--5">Kex</div>
+              </div>
+            </div>
+            <div class="products-cta">
+              <h3>Utforska hela sortimentet</h3>
+              <p>Över 50 olika produkter att välja mellan. Perfekt för lag, klasser och föreningar.</p>
+              <a href="#produkter" class="btn btn--primary btn--lg">Visa alla produkter</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="sa-funkar-det" class="section">
+        <div class="container">
+          <header class="section-header">
+            <h2>Så funkar det</h2>
+            <p>Enkelt och smidigt från start till mål</p>
+          </header>
+          <div class="how-it-works">
+            <div class="work-step">
+              <div class="work-image">
+                <div class="product-visual product-visual--1" aria-hidden="true"></div>
+              </div>
+              <div class="work-content">
+                <h3>1. Välj produkter</h3>
+                <p>Bläddra genom vårt stora sortiment och välj de produkter som passar er grupp bäst.</p>
+              </div>
+            </div>
+            <div class="work-step">
+              <div class="work-image">
+                <div class="product-visual product-visual--2" aria-hidden="true"></div>
+              </div>
+              <div class="work-content">
+                <h3>2. Dela och sälj</h3>
+                <p>Få en unik länk att dela med vänner, familj och kollegor. Samla beställningar online.</p>
+              </div>
+            </div>
+            <div class="work-step">
+              <div class="work-image">
+                <div class="product-visual product-visual--3" aria-hidden="true"></div>
+              </div>
+              <div class="work-content">
+                <h3>3. Leverera och fira</h3>
+                <p>Vi skickar produkterna till er. Ni levererar lokalt och firar er framgång!</p>
+              </div>
+            </div>
+          </div>
+          <div class="work-cta">
+            <a href="#kontakt" class="btn btn--primary btn--lg">Läs mer om hur det funkar</a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer id="om-oss" class="site-footer">
+      <div class="container footer-inner">
+        <div class="footer-brand">
+          <a href="#" class="logo">Kakservice</a>
+          <p>Vi hjälper lag och klasser att nå sina mål genom god försäljning. Enkelt, säkert och framgångsrikt.</p>
+          <div class="footer-cta">
+            <a href="#kontakt" class="btn btn--primary">Börja sälja</a>
+            <a href="#sa-funkar-det" class="btn btn--ghost">Läs mer</a>
+          </div>
+        </div>
+        <nav class="footer-nav" aria-label="Footer">
+          <div class="footer-section">
+            <h4>Produkter</h4>
+            <a href="#produkter">Kakburkar</a>
+            <a href="#produkter">Choklad</a>
+            <a href="#produkter">Knäck & kola</a>
+            <a href="#produkter">Småkakor</a>
+          </div>
+          <div class="footer-section">
+            <h4>Support</h4>
+            <a href="#sa-funkar-det">Så funkar det</a>
+            <a href="#kontakt">Kontakt</a>
+            <a href="#faq">Vanliga frågor</a>
+            <a href="#privacy">Integritet</a>
+          </div>
+          <div class="footer-section">
+            <h4>Företag</h4>
+            <a href="#om-oss">Om oss</a>
+            <a href="#careers">Karriär</a>
+            <a href="#press">Press</a>
+            <a href="#partners">Partners</a>
+          </div>
+        </nav>
+      </div>
+      <div class="container footer-bottom">
+        <small>© <span id="year"></span> Klass Kraft UF - Hemsida designad & producerad av <a style="text-decoration: underline; color: #a1a1aa;" href="https://www.linkedin.com/in/martin-pranjic-99a278310/">Martin Pranjic</a></small>
+      </div>
+    </footer>
+
+    <script src="assets/js/main.js" defer></script>
+  </body>
+  </html>
+
+

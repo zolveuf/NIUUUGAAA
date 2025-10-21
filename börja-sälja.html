@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="sv">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Börja sälja - Kakservice</title>
+    <meta name="description" content="Starta din försäljning med Kakservice. Enkelt och säkert för lag och klasser." />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/styles.css" />
+  </head>
+  <body>
+    <header class="site-header" data-header>
+      <div class="container header-inner">
+        <a href="index.html" class="logo" aria-label="Hem">Kakservice</a>
+
+        <button class="nav-toggle" aria-expanded="false" aria-controls="site-nav" aria-label="Öppna meny">
+          <span class="nav-toggle__bar" aria-hidden="true"></span>
+          <span class="nav-toggle__bar" aria-hidden="true"></span>
+          <span class="nav-toggle__bar" aria-hidden="true"></span>
+        </button>
+
+        <nav id="site-nav" class="site-nav" aria-label="Huvudmeny">
+          <ul class="nav-list">
+            <li class="nav-item has-dropdown">
+              <button class="dropdown-toggle" aria-expanded="false" aria-haspopup="true" aria-controls="dropdown-produkter">
+                Produkter
+                <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10l5 5 5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+              <ul id="dropdown-produkter" class="dropdown-menu" role="menu">
+                <li role="none"><a role="menuitem" href="index.html#produkter" class="dropdown-link">Kakburkar</a></li>
+                <li role="none"><a role="menuitem" href="index.html#produkter" class="dropdown-link">Knäck & kola</a></li>
+                <li role="none"><a role="menuitem" href="index.html#produkter" class="dropdown-link">Choklad</a></li>
+              </ul>
+            </li>
+            <li class="nav-item"><a href="index.html#sa-funkar-det">Så funkar det</a></li>
+            <li class="nav-item"><a href="#om-oss">Om oss</a></li>
+            <li class="nav-item"><a href="börja-sälja.html" class="btn btn--sm btn--primary">Börja sälja</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="page-hero">
+        <div class="container">
+          <div class="page-hero-content">
+            <h1>Börja din försäljning</h1>
+            <p>Fyll i formuläret nedan så hjälper vi dig att komma igång med din försäljning på några minuter.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="page-content">
+        <div class="container">
+          <div class="content-grid">
+            <div class="content-info">
+              <div class="info-card">
+                <h2>Vad händer härnäst?</h2>
+                <div class="steps-list">
+                  <div class="step-item">
+                    <span class="step-number">1</span>
+                    <p>Vi kontaktar dig inom 24 timmar för att diskutera dina behov.</p>
+                  </div>
+                  <div class="step-item">
+                    <span class="step-number">2</span>
+                    <p>Du får en personlig länk och kan börja dela med vänner och familj.</p>
+                  </div>
+                  <div class="step-item">
+                    <span class="step-number">3</span>
+                    <p>Vi skickar produkterna till er när försäljningen är klar.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="content-form">
+              <div class="form-card">
+                <h2>Starta din försäljning</h2>
+                <form class="contact-form" id="contact-form">
+                  <div class="form-group">
+                    <label for="name">Namn *</label>
+                    <input type="text" id="name" name="name" required>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="email">E-post *</label>
+                    <input type="email" id="email" name="email" required>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="phone">Telefonnummer</label>
+                    <input type="tel" id="phone" name="phone">
+                  </div>
+
+                  <div class="form-group">
+                    <label for="organization">Organisation/Grupp *</label>
+                    <input type="text" id="organization" name="organization" placeholder="t.ex. Fotbollslaget IFK" required>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="group-type">Typ av grupp *</label>
+                    <select id="group-type" name="group-type" required>
+                      <option value="">Välj typ av grupp</option>
+                      <option value="sports">Idrottslag</option>
+                      <option value="school">Skolklass</option>
+                      <option value="association">Förening</option>
+                      <option value="other">Annat</option>
+                    </select>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="participants">Antal deltagare (ungefär)</label>
+                    <select id="participants" name="participants">
+                      <option value="">Välj antal</option>
+                      <option value="1-10">1-10 personer</option>
+                      <option value="11-25">11-25 personer</option>
+                      <option value="26-50">26-50 personer</option>
+                      <option value="50+">50+ personer</option>
+                    </select>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="goal">Vad vill ni uppnå?</label>
+                    <textarea id="goal" name="goal" rows="4" placeholder="Berätta om erat mål, t.ex. resa, utrustning, eller annat..."></textarea>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="timeline">När vill ni börja?</label>
+                    <select id="timeline" name="timeline">
+                      <option value="">Välj tidsram</option>
+                      <option value="asap">Så snart som möjligt</option>
+                      <option value="1-month">Inom en månad</option>
+                      <option value="2-3-months">Om 2-3 månader</option>
+                      <option value="flexible">Flexibelt</option>
+                    </select>
+                  </div>
+
+                  <div class="form-group checkbox-group">
+                    <label class="checkbox-label">
+                      <input type="checkbox" id="newsletter" name="newsletter">
+                      <span class="checkmark"></span>
+                      <span class="checkbox-text">Jag vill få tips och uppdateringar via e-post</span>
+                    </label>
+                  </div>
+
+                  <div class="form-group checkbox-group">
+                    <label class="checkbox-label">
+                      <input type="checkbox" id="terms" name="terms" required>
+                      <span class="checkmark"></span>
+                      <span class="checkbox-text">Jag accepterar <a href="#terms" target="_blank">användarvillkor</a> och <a href="#privacy" target="_blank">integritetspolicy</a> *</span>
+                    </label>
+                  </div>
+
+                  <button type="submit" class="btn btn--primary btn--lg form-submit">
+                    Skicka ansökan
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer id="om-oss" class="site-footer">
+      <div class="container footer-inner">
+        <div class="footer-brand">
+          <a href="index.html" class="logo">Kakservice</a>
+          <p>Vi hjälper lag och klasser att nå sina mål genom god försäljning. Enkelt, säkert och framgångsrikt.</p>
+          <div class="footer-cta">
+            <a href="börja-sälja.html" class="btn btn--primary">Börja sälja</a>
+            <a href="index.html#sa-funkar-det" class="btn btn--ghost">Läs mer</a>
+          </div>
+        </div>
+        <nav class="footer-nav" aria-label="Footer">
+          <div class="footer-section">
+            <h4>Produkter</h4>
+            <a href="index.html#produkter">Kakburkar</a>
+            <a href="index.html#produkter">Choklad</a>
+            <a href="index.html#produkter">Knäck & kola</a>
+            <a href="index.html#produkter">Småkakor</a>
+          </div>
+          <div class="footer-section">
+            <h4>Support</h4>
+            <a href="index.html#sa-funkar-det">Så funkar det</a>
+            <a href="#kontakt">Kontakt</a>
+            <a href="#faq">Vanliga frågor</a>
+            <a href="#privacy">Integritet</a>
+          </div>
+          <div class="footer-section">
+            <h4>Företag</h4>
+            <a href="#om-oss">Om oss</a>
+            <a href="#careers">Karriär</a>
+            <a href="#press">Press</a>
+            <a href="#partners">Partners</a>
+          </div>
+        </nav>
+      </div>
+      <div class="container footer-bottom">
+        <small>© <span id="year"></span> Klass Kraft UF - Hemsida designad & producerad av <a style="text-decoration: underline; color: #a1a1aa;" href="https://www.linkedin.com/in/martin-pranjic-99a278310/">Martin Pranjic</a></small>
+      </div>
+    </footer>
+
+    <script src="assets/js/main.js" defer></script>
+  </body>
+</html>
