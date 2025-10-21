@@ -118,10 +118,10 @@
     yearEl.textContent = String(new Date().getFullYear());
   }
 
-  // Form handling
+  // Form handling with Supabase and SendGrid integration
   const contactForm = document.getElementById('contact-form');
   if (contactForm) {
-    contactForm.addEventListener('submit', function(e) {
+    contactForm.addEventListener('submit', async function(e) {
       e.preventDefault();
       
       // Get form data
@@ -133,24 +133,93 @@
       const missingFields = requiredFields.filter(field => !data[field]);
       
       if (missingFields.length > 0) {
-        alert('Vänligen fyll i alla obligatoriska fält.');
+        showMessage('Vänligen fyll i alla obligatoriska fält.', 'error');
         return;
       }
       
-      // Simulate form submission
+      // Validate email format
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(data.email)) {
+        showMessage('Vänligen ange en giltig e-postadress.', 'error');
+        return;
+      }
+      
+      // Prepare data for API
+      const submitData = {
+        name: data.name,
+        email: data.email,
+        phone: data.phone || null,
+        organization: data.organization,
+        groupType: data['group-type'],
+        participants: data.participants || null,
+        goal: data.goal || null,
+        timeline: data.timeline || null,
+        newsletter: data.newsletter === 'on',
+        termsAccepted: data.terms === 'on'
+      };
+      
+      // Show loading state
       const submitBtn = this.querySelector('.form-submit');
       const originalText = submitBtn.textContent;
       
       submitBtn.textContent = 'Skickar...';
       submitBtn.disabled = true;
       
-      setTimeout(() => {
-        alert('Tack för din ansökan! Vi kontaktar dig inom 24 timmar.');
-        this.reset();
+      try {
+        // Submit to API
+        const response = await fetch('/api/submit-application', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(submitData)
+        });
+        
+        const result = await response.json();
+        
+        if (response.ok) {
+          showMessage('Tack för din ansökan! Vi kontaktar dig inom 24 timmar.', 'success');
+          this.reset();
+        } else {
+          throw new Error(result.error || 'Ett fel uppstod');
+        }
+        
+      } catch (error) {
+        console.error('Form submission error:', error);
+        showMessage('Ett fel uppstod. Vänligen försök igen eller kontakta oss direkt.', 'error');
+      } finally {
+        // Reset button state
         submitBtn.textContent = originalText;
         submitBtn.disabled = false;
-      }, 2000);
+      }
     });
+  }
+
+  // Helper function to show messages
+  function showMessage(message, type = 'info') {
+    // Remove existing messages
+    const existingMessage = document.querySelector('.form-message');
+    if (existingMessage) {
+      existingMessage.remove();
+    }
+    
+    // Create new message element
+    const messageEl = document.createElement('div');
+    messageEl.className = `form-message form-message--${type}`;
+    messageEl.textContent = message;
+    
+    // Insert after form
+    const form = document.getElementById('contact-form');
+    if (form) {
+      form.parentNode.insertBefore(messageEl, form.nextSibling);
+      
+      // Auto-remove after 5 seconds
+      setTimeout(() => {
+        if (messageEl.parentNode) {
+          messageEl.remove();
+        }
+      }, 5000);
+    }
   }
 })();
 
