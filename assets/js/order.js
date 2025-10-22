@@ -235,8 +235,8 @@ class OrderManager {
       submitBtn.textContent = 'Skickar beställning...';
       submitBtn.disabled = true;
 
-      // Submit order to Netlify Function (using submit-application with order data)
-      const response = await fetch('/.netlify/functions/submit-application', {
+      // Submit order to Netlify Function
+      const response = await fetch('/.netlify/functions/submit-order', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
