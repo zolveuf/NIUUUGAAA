@@ -1555,4 +1555,96 @@ body.no-scroll { overflow: hidden; }
   }
 }
 
+/* Dashboard Small Mobile Responsive */
+@media (max-width: 450px) {
+  .dashboard-hero {
+    padding: var(--space-8) 0;
+  }
+  
+  .dashboard-hero-content {
+    gap: var(--space-4);
+  }
+  
+  .hero-info h1 {
+    font-size: var(--text-2xl);
+    margin-bottom: var(--space-1);
+  }
+  
+  .hero-info p {
+    font-size: var(--text-base);
+  }
+  
+  .hero-stats {
+    flex-direction: column;
+    gap: var(--space-3);
+    width: 100%;
+  }
+  
+  .stat-item {
+    padding: var(--space-3);
+    width: 100%;
+    max-width: 200px;
+    margin: 0 auto;
+  }
+  
+  .stat-number {
+    font-size: var(--text-xl);
+  }
+  
+  .stat-label {
+    font-size: var(--text-xs);
+  }
+  
+  .dashboard-layout {
+    margin-top: var(--space-6);
+  }
+  
+  .action-card {
+    padding: var(--space-4);
+  }
+  
+  .action-card h3 {
+    font-size: var(--text-base);
+  }
+  
+  .action-card p {
+    font-size: var(--text-xs);
+  }
+  
+  .stats-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-2);
+  }
+  
+  .stat-card {
+    padding: var(--space-2);
+  }
+  
+  .stat-card .number {
+    font-size: var(--text-lg);
+  }
+  
+  .stat-card .label {
+    font-size: var(--text-xs);
+  }
+  
+  .orders-section {
+    padding: var(--space-4);
+  }
+  
+  .section-header h2 {
+    font-size: var(--text-lg);
+  }
+  
+  .status-card,
+  .info-card {
+    padding: var(--space-4);
+  }
+  
+  .status-card h3,
+  .info-card h3 {
+    font-size: var(--text-base);
+  }
+}
+
 
