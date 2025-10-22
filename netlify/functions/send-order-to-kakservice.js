@@ -4,8 +4,12 @@ const sgMail = require('@sendgrid/mail');
 console.log('send-order-to-kakservice function loaded');
 
 exports.handler = async (event, context) => {
+  console.log('Function called with method:', event.httpMethod);
+  console.log('Function called with body:', event.body);
+  
   // Only allow POST requests
   if (event.httpMethod !== 'POST') {
+    console.log('Method not allowed:', event.httpMethod);
     return {
       statusCode: 405,
       body: JSON.stringify({ error: 'Method not allowed' })

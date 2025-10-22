@@ -506,7 +506,7 @@ class AuthManager {
           </div>
           
           <div class="order-actions">
-            <button class="btn btn--sm btn--primary" onclick="authManager.sendOrderToKakservice('${order.id}')">
+            <button class="btn btn--sm btn--primary" onclick="authManager.sendOrderToKakservice('${order.id}', this)">
               📧 Skicka till Kakservice
             </button>
           </div>
@@ -607,15 +607,17 @@ class AuthManager {
   }
 
   // Send order to Kakservice
-  async sendOrderToKakservice(orderId) {
+  async sendOrderToKakservice(orderId, buttonElement = null) {
     try {
       console.log('Sending order to Kakservice:', orderId);
       
       // Show loading state
-      const button = event.target;
-      const originalText = button.textContent;
-      button.textContent = 'Skickar...';
-      button.disabled = true;
+      const button = buttonElement || document.querySelector(`[onclick*="${orderId}"]`);
+      if (button) {
+        const originalText = button.textContent;
+        button.textContent = 'Skickar...';
+        button.disabled = true;
+      }
       
       const response = await fetch('/.netlify/functions/send-order-to-kakservice', {
         method: 'POST',
@@ -631,8 +633,10 @@ class AuthManager {
 
       if (response.ok && result.success) {
         this.showMessage('Beställningen har skickats till Kakservice!', 'success');
-        button.textContent = '✅ Skickad';
-        button.style.background = '#10b981';
+        if (button) {
+          button.textContent = '✅ Skickad';
+          button.style.background = '#10b981';
+        }
       } else {
         throw new Error(result.error || 'Kunde inte skicka beställningen');
       }
@@ -642,9 +646,10 @@ class AuthManager {
       this.showMessage('Ett fel uppstod vid skickandet: ' + error.message, 'error');
       
       // Reset button
-      const button = event.target;
-      button.textContent = '📧 Skicka till Kakservice';
-      button.disabled = false;
+      if (button) {
+        button.textContent = '📧 Skicka till Kakservice';
+        button.disabled = false;
+      }
     }
   }
 
