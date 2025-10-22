@@ -1,0 +1,23 @@
+[build]
+  # No build command needed for static site
+  publish = "."
+  functions = "netlify/functions"
+
+[functions]
+  # Function configuration
+  node_bundler = "esbuild"
+
+[[redirects]]
+  # Redirect old API path to new function path
+  from = "/api/*"
+  to = "/.netlify/functions/:splat"
+  status = 200
+
+# Environment variables that should be set in Netlify UI:
+# SUPABASE_URL
+# SUPABASE_ANON_KEY
+# SENDGRID_API_KEY
+# FROM_EMAIL
+# ADMIN_EMAIL
+# APP_NAME
+# COMPANY_NAME

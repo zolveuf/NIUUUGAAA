@@ -202,8 +202,20 @@
       </div>
     </footer>
 
-    <!-- Use config.local.js for local development (gitignored), config.js for production -->
-    <script src="config.local.js" onerror="this.onerror=null; this.src='config.js'"></script>
+    <!-- Config only needed for local development, not in production -->
+    <script>
+      // Only load config in local development (not on Netlify)
+      if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        const script = document.createElement('script');
+        script.src = 'config.local.js';
+        script.onerror = () => {
+          const fallback = document.createElement('script');
+          fallback.src = 'config.js';
+          document.head.appendChild(fallback);
+        };
+        document.head.appendChild(script);
+      }
+    </script>
     <script src="assets/js/main.js" defer></script>
   </body>
 </html>

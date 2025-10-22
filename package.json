@@ -4,23 +4,24 @@
   "description": "Responsive Kakservice-inspired website with Supabase and SendGrid integration",
   "main": "index.html",
   "scripts": {
-    "dev": "npx serve .",
+    "dev": "netlify dev",
     "build": "echo 'Static site - no build needed'",
-    "deploy": "echo 'Deploy to Netlify/Vercel'"
+    "deploy": "netlify deploy --prod"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.38.0",
     "@sendgrid/mail": "^8.1.0"
   },
   "devDependencies": {
-    "serve": "^14.2.1"
+    "netlify-cli": "^17.0.0"
   },
   "keywords": [
     "kakservice",
     "responsive",
     "website",
     "supabase",
-    "sendgrid"
+    "sendgrid",
+    "netlify"
   ],
   "author": "Martin Pranjic",
   "license": "MIT"
