@@ -1647,4 +1647,28 @@ body.no-scroll { overflow: hidden; }
   }
 }
 
+/* Order Actions */
+.order-actions {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-color);
+}
+
+.order-actions .btn {
+  width: 100%;
+  justify-content: center;
+}
+
+.order-actions .btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+  .order-actions .btn {
+    font-size: 0.875rem;
+    padding: 0.5rem 1rem;
+  }
+}
+
 

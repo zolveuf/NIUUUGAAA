@@ -504,6 +504,12 @@ class AuthManager {
               <strong>Totalt: ${order.total_amount} kr</strong>
             </div>
           </div>
+          
+          <div class="order-actions">
+            <button class="btn btn--sm btn--primary" onclick="authManager.sendOrderToKakservice('${order.id}')">
+              📧 Skicka till Kakservice
+            </button>
+          </div>
         </div>
       </div>
     `;
@@ -598,6 +604,48 @@ class AuthManager {
       'other': 'Annat'
     };
     return typeMap[groupType] || groupType;
+  }
+
+  // Send order to Kakservice
+  async sendOrderToKakservice(orderId) {
+    try {
+      console.log('Sending order to Kakservice:', orderId);
+      
+      // Show loading state
+      const button = event.target;
+      const originalText = button.textContent;
+      button.textContent = 'Skickar...';
+      button.disabled = true;
+      
+      const response = await fetch('/.netlify/functions/send-order-to-kakservice', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          orderId: orderId
+        })
+      });
+
+      const result = await response.json();
+
+      if (response.ok && result.success) {
+        this.showMessage('Beställningen har skickats till Kakservice!', 'success');
+        button.textContent = '✅ Skickad';
+        button.style.background = '#10b981';
+      } else {
+        throw new Error(result.error || 'Kunde inte skicka beställningen');
+      }
+
+    } catch (error) {
+      console.error('Error sending order to Kakservice:', error);
+      this.showMessage('Ett fel uppstod vid skickandet: ' + error.message, 'error');
+      
+      // Reset button
+      const button = event.target;
+      button.textContent = '📧 Skicka till Kakservice';
+      button.disabled = false;
+    }
   }
 
   showMessage(message, type = 'info') {

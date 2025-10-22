@@ -146,6 +146,26 @@ Systemet skickar automatiskt:
 
 - **Bekräftelse till användare** - Bekräftar att ansökan mottagits
 - **Notifiering till admin** - Med all ansökningsdata
+- **Beställningsbekräftelse** - Till kund när beställning görs
+- **Beställning till Kakservice** - Komplett beställningssammanfattning när förening skickar beställning
+
+## 🍪 Kakservice Integration
+
+### Beställningsfunktion
+- **Skicka till Kakservice** - Knapp på varje beställning i dashboard
+- **Komplett sammanfattning** - All beställningsdata skickas via e-post
+- **Professionell mall** - HTML-formaterad e-post med all information
+- **Automatisk notifiering** - Kakservice får omedelbar notifiering om nya beställningar
+
+### E-postinnehåll till Kakservice
+Varje e-post innehåller:
+- Föreningsinformation (namn, organisation, kontakt)
+- Beställningsdetaljer (ID, datum, produkter)
+- Kundinformation (namn, e-post, telefon)
+- Produktlista med kvantiteter och priser
+- Total summa
+- Speciella önskemål
+- Beställningslänk för referens
 
 ## 🗄️ Databas
 
