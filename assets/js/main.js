@@ -144,9 +144,10 @@
         return;
       }
       
-      // Validate password
-      if (data.password.length < 8) {
-        showMessage('Lösenordet måste vara minst 8 tecken långt.', 'error');
+      // Enhanced password validation
+      const passwordErrors = validatePassword(data.password);
+      if (passwordErrors.length > 0) {
+        showMessage(passwordErrors.join(' '), 'error');
         return;
       }
       
@@ -200,6 +201,33 @@
         submitBtn.disabled = false;
       }
     });
+  }
+
+  // Enhanced password validation
+  function validatePassword(password) {
+    const errors = [];
+    
+    if (password.length < 8) {
+      errors.push('Lösenordet måste vara minst 8 tecken långt.');
+    }
+    
+    if (!/[A-Z]/.test(password)) {
+      errors.push('Lösenordet måste innehålla minst en stor bokstav.');
+    }
+    
+    if (!/[a-z]/.test(password)) {
+      errors.push('Lösenordet måste innehålla minst en liten bokstav.');
+    }
+    
+    if (!/[0-9]/.test(password)) {
+      errors.push('Lösenordet måste innehålla minst en siffra.');
+    }
+    
+    if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) {
+      errors.push('Lösenordet måste innehålla minst ett specialtecken.');
+    }
+    
+    return errors;
   }
 
   // Helper function to show messages
