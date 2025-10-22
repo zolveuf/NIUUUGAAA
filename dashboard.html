@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="sv">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Min sida - Kakservice</title>
+    <meta name="description" content="Se din ansökan och följ processen." />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/styles.css" />
+  </head>
+  <body>
+    <header class="site-header" data-header>
+      <div class="container header-inner">
+        <a href="index.html" class="logo" aria-label="Hem">Kakservice</a>
+
+        <button class="nav-toggle" aria-expanded="false" aria-controls="site-nav" aria-label="Öppna meny">
+          <span class="nav-toggle__bar" aria-hidden="true"></span>
+          <span class="nav-toggle__bar" aria-hidden="true"></span>
+          <span class="nav-toggle__bar" aria-hidden="true"></span>
+        </button>
+
+        <nav id="site-nav" class="site-nav" aria-label="Huvudmeny">
+          <ul class="nav-list">
+            <li class="nav-item has-dropdown">
+              <button class="dropdown-toggle" aria-expanded="false" aria-haspopup="true" aria-controls="dropdown-produkter">
+                Produkter
+                <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10l5 5 5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+              <ul id="dropdown-produkter" class="dropdown-menu" role="menu">
+                <li role="none"><a role="menuitem" href="index.html#produkter" class="dropdown-link">Kakburkar</a></li>
+                <li role="none"><a role="menuitem" href="index.html#produkter" class="dropdown-link">Knäck & kola</a></li>
+                <li role="none"><a role="menuitem" href="index.html#produkter" class="dropdown-link">Choklad</a></li>
+              </ul>
+            </li>
+            <li class="nav-item"><a href="index.html#sa-funkar-det">Så funkar det</a></li>
+            <li class="nav-item"><a href="#om-oss">Om oss</a></li>
+            <li class="nav-item">
+              <div class="user-menu">
+                <span class="user-name" id="user-name">Användare</span>
+                <button class="btn btn--sm btn--ghost" id="logout-btn">Logga ut</button>
+              </div>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="page-hero">
+        <div class="container">
+          <div class="page-hero-content">
+            <h1>Min sida</h1>
+            <p>Här kan du se din ansökan och följa processen.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="page-content">
+        <div class="container">
+          <div class="dashboard-container">
+            <!-- Loading state -->
+            <div class="loading-state" id="loading-state">
+              <div class="loading-spinner"></div>
+              <p>Laddar din information...</p>
+            </div>
+
+            <!-- Dashboard content -->
+            <div class="dashboard-content" id="dashboard-content" style="display: none;">
+              <div class="dashboard-grid">
+                <!-- Application Status -->
+                <div class="dashboard-card status-card">
+                  <h3>Status på din ansökan</h3>
+                  <div class="status-indicator" id="status-indicator">
+                    <span class="status-badge" id="status-badge">Mottagen</span>
+                    <p class="status-message" id="status-message">Vi har mottagit din ansökan och kommer att kontakta dig inom 24 timmar.</p>
+                  </div>
+                </div>
+
+                <!-- Application Details -->
+                <div class="dashboard-card">
+                  <h3>Din ansökan</h3>
+                  <div class="application-details" id="application-details">
+                    <!-- Will be populated by JavaScript -->
+                  </div>
+                </div>
+
+                <!-- Next Steps -->
+                <div class="dashboard-card">
+                  <h3>Nästa steg</h3>
+                  <div class="next-steps" id="next-steps">
+                    <div class="step">
+                      <div class="step-icon">📞</div>
+                      <div class="step-content">
+                        <h4>Telefonkontakt</h4>
+                        <p>Vi ringer dig inom 24 timmar för att diskutera din ansökan.</p>
+                      </div>
+                    </div>
+                    <div class="step">
+                      <div class="step-icon">📋</div>
+                      <div class="step-content">
+                        <h4>Godkännande</h4>
+                        <p>Efter vårt samtal godkänner vi din ansökan.</p>
+                      </div>
+                    </div>
+                    <div class="step">
+                      <div class="step-icon">📦</div>
+                      <div class="step-content">
+                        <h4>Produkter</h4>
+                        <p>Vi skickar produkter och material till er grupp.</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Contact Info -->
+                <div class="dashboard-card">
+                  <h3>Kontaktinformation</h3>
+                  <div class="contact-info">
+                    <p><strong>E-post:</strong> <span id="contact-email">-</span></p>
+                    <p><strong>Telefon:</strong> <span id="contact-phone">-</span></p>
+                    <p><strong>Organisation:</strong> <span id="contact-organization">-</span></p>
+                  </div>
+                  <button class="btn btn--primary btn--sm" id="update-contact-btn">Uppdatera kontaktinfo</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Error state -->
+            <div class="error-state" id="error-state" style="display: none;">
+              <div class="error-message">
+                <h3>Något gick fel</h3>
+                <p id="error-message">Kunde inte ladda din information. Försök igen senare.</p>
+                <button class="btn btn--primary" id="retry-btn">Försök igen</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer id="om-oss" class="site-footer">
+      <div class="container footer-inner">
+        <div class="footer-brand">
+          <a href="index.html" class="logo">Kakservice</a>
+          <p>Vi hjälper lag och klasser att nå sina mål genom god försäljning. Enkelt, säkert och framgångsrikt.</p>
+          <div class="footer-cta">
+            <a href="börja-sälja.html" class="btn btn--primary">Börja sälja</a>
+            <a href="index.html#sa-funkar-det" class="btn btn--ghost">Läs mer</a>
+          </div>
+        </div>
+        <nav class="footer-nav" aria-label="Footer">
+          <div class="footer-section">
+            <h4>Produkter</h4>
+            <a href="index.html#produkter">Kakburkar</a>
+            <a href="index.html#produkter">Choklad</a>
+            <a href="index.html#produkter">Knäck & kola</a>
+            <a href="index.html#produkter">Småkakor</a>
+          </div>
+          <div class="footer-section">
+            <h4>Support</h4>
+            <a href="index.html#sa-funkar-det">Så funkar det</a>
+            <a href="#kontakt">Kontakt</a>
+            <a href="#faq">Vanliga frågor</a>
+            <a href="#privacy">Integritet</a>
+          </div>
+          <div class="footer-section">
+            <h4>Företag</h4>
+            <a href="#om-oss">Om oss</a>
+            <a href="#careers">Karriär</a>
+            <a href="#press">Press</a>
+            <a href="#partners">Partners</a>
+          </div>
+        </nav>
+      </div>
+      <div class="container footer-bottom">
+        <small>© <span id="year"></span> Klass Kraft UF - Hemsida designad & producerad av <a style="text-decoration: underline; color: #a1a1aa;" href="https://www.linkedin.com/in/martin-pranjic-99a278310/">Martin Pranjic</a></small>
+      </div>
+    </footer>
+
+    <!-- Config only needed for local development, not in production -->
+    <script>
+      // Only load config in local development (not on Netlify)
+      if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        const script = document.createElement('script');
+        script.src = 'config.local.js';
+        script.onerror = () => {
+          const fallback = document.createElement('script');
+          fallback.src = 'config.js';
+          document.head.appendChild(fallback);
+        };
+        document.head.appendChild(script);
+      }
+    </script>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script src="assets/js/main.js" defer></script>
+    <script src="assets/js/auth.js" defer></script>
+  </body>
+</html>

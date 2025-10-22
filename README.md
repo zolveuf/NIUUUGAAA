@@ -92,9 +92,32 @@ git push origin main
    - Build settings: Lämna tomt (static site)
    - Deploy!
 
-3. **Sätt miljövariabler på Netlify**
+3. **Lägg till Environment Variables i Netlify**
    - Site settings → Environment variables
-   - Lägg till alla värden från `config.js`
+   - Lägg till alla variabler från `env.example`
+   - **VIKTIGT**: Lägg till `SITE_URL` = din Netlify URL
+
+## 🔐 Authentication System
+
+The application now includes a complete authentication system:
+
+### Features
+- **Secure Login**: Users can log in with email and password
+- **Dashboard**: Personalized dashboard showing application status
+- **Session Management**: Automatic login/logout handling
+- **Password Security**: Passwords are hashed by Supabase Auth
+- **Row Level Security**: Users can only see their own data
+
+### Pages
+- `login.html` - Login page
+- `dashboard.html` - User dashboard (protected)
+
+### Security Features
+- **Supabase Auth**: Industry-standard authentication
+- **JWT Tokens**: Secure session management
+- **RLS Policies**: Database-level security
+- **Auto-redirect**: Unauthorized users redirected to login
+- **Session Persistence**: Users stay logged in across browser sessions
 
 ### Vercel (Alternativ)
 
