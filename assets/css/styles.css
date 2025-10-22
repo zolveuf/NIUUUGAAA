@@ -1697,4 +1697,15 @@ body.no-scroll { overflow: hidden; }
   }
 }
 
+/* No Orders Message */
+.no-orders {
+  text-align: center;
+  color: var(--text-muted);
+  font-style: italic;
+  padding: var(--space-8);
+  background: var(--bg-light);
+  border-radius: var(--radius-md);
+  border: 2px dashed var(--border-color);
+}
+
 

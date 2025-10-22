@@ -652,15 +652,32 @@ class AuthManager {
       if (response.ok && result.success) {
         this.showMessage(`Alla ${orders.length} beställningar har skickats till Kakservice!`, 'success');
         
-        // Delete sent orders from database
-        await this.deleteSentOrders(orders.map(order => order.id));
-        
-        // Reload orders to update the display
-        await this.loadOrders(this.currentAccountId);
-        
-        if (button) {
-          button.textContent = '✅ Alla skickade';
-          button.style.background = '#10b981';
+        try {
+          // Delete sent orders from database
+          await this.deleteSentOrders(orders.map(order => order.id));
+          
+          // Clear orders container immediately
+          const ordersContainer = document.getElementById('orders-container');
+          if (ordersContainer) {
+            ordersContainer.innerHTML = '<p class="no-orders">Inga beställningar att visa</p>';
+          }
+          
+          // Clear any cached order data
+          this.clearOrderCache();
+          
+          // Reload orders to update the display (should be empty now)
+          await this.loadOrders(this.currentAccountId);
+          
+          // Update stats to reflect empty orders
+          await this.loadStats(this.currentAccountId);
+          
+          if (button) {
+            button.textContent = '✅ Alla skickade';
+            button.style.background = '#10b981';
+          }
+        } catch (deleteError) {
+          console.error('Error deleting orders:', deleteError);
+          this.showMessage('Beställningar skickades men kunde inte raderas från hemsidan. Kontakta support.', 'error');
         }
       } else {
         throw new Error(result.error || 'Kunde inte skicka beställningar');
@@ -676,6 +693,34 @@ class AuthManager {
         button.textContent = '📧 Skicka alla beställningar till Kakservice';
         button.disabled = false;
       }
+  }
+
+  // Clear any cached order data
+  clearOrderCache() {
+    try {
+      // Clear localStorage cache
+      const keysToRemove = [];
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key && key.includes('orders')) {
+          keysToRemove.push(key);
+        }
+      }
+      keysToRemove.forEach(key => localStorage.removeItem(key));
+      
+      // Clear sessionStorage cache
+      const sessionKeysToRemove = [];
+      for (let i = 0; i < sessionStorage.length; i++) {
+        const key = sessionStorage.key(i);
+        if (key && key.includes('orders')) {
+          sessionKeysToRemove.push(key);
+        }
+      }
+      sessionKeysToRemove.forEach(key => sessionStorage.removeItem(key));
+      
+      console.log('Order cache cleared');
+    } catch (error) {
+      console.error('Error clearing order cache:', error);
     }
   }
 
@@ -691,12 +736,14 @@ class AuthManager {
 
       if (error) {
         console.error('Error deleting orders:', error);
-        // Don't throw error here, just log it
+        throw new Error('Kunde inte radera beställningar från databasen: ' + error.message);
       } else {
-        console.log('Orders deleted successfully');
+        console.log('Orders deleted successfully from database');
+        return true;
       }
     } catch (error) {
       console.error('Error deleting orders:', error);
+      throw error;
     }
   }
 
