@@ -8,26 +8,32 @@ class OrderManager {
   }
 
   async init() {
-    // Wait for config to load
-    await this.waitForConfig();
-    
-    // Initialize Supabase client
-    this.supabase = supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
-    console.log('Supabase client initialized for orders');
-    
-    // Get order code from URL
-    this.accountCode = this.getOrderCodeFromURL();
-    
-    if (!this.accountCode) {
-      this.showError('Ingen beställningskod hittades i URL:en.');
-      return;
+    try {
+      // Wait for config to load
+      await this.waitForConfig();
+      
+      // Initialize Supabase client
+      this.supabase = supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
+      console.log('Supabase client initialized for orders');
+      
+      // Get order code from URL
+      this.accountCode = this.getOrderCodeFromURL();
+      
+      if (!this.accountCode) {
+        this.showError('Ingen beställningskod hittades i URL:en.');
+        return;
+      }
+      
+      // Load account information
+      await this.loadAccountInfo();
+      
+      // Set up event listeners
+      this.setupEventListeners();
+      
+    } catch (error) {
+      console.error('Order initialization error:', error);
+      this.showError('Konfiguration kunde inte laddas. Kontrollera att alla API-nycklar är korrekt inställda.');
     }
-    
-    // Load account information
-    await this.loadAccountInfo();
-    
-    // Set up event listeners
-    this.setupEventListeners();
   }
 
   async waitForConfig() {
@@ -40,9 +46,13 @@ class OrderManager {
         
         if (window.SUPABASE_URL && window.SUPABASE_ANON_KEY) {
           console.log('Config loaded successfully for orders');
+          console.log('SUPABASE_URL:', window.SUPABASE_URL);
+          console.log('SUPABASE_ANON_KEY:', window.SUPABASE_ANON_KEY ? 'Present' : 'Missing');
           resolve();
         } else if (attempts >= maxAttempts) {
           console.error('Config loading timeout for orders');
+          console.error('SUPABASE_URL:', window.SUPABASE_URL);
+          console.error('SUPABASE_ANON_KEY:', window.SUPABASE_ANON_KEY);
           reject(new Error('Config loading timeout'));
         } else {
           setTimeout(checkConfig, 100);
