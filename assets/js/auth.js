@@ -103,7 +103,10 @@ class AuthManager {
     // Login form
     const loginForm = document.getElementById('login-form');
     if (loginForm) {
+      console.log('Login form found, adding event listener');
       loginForm.addEventListener('submit', (e) => this.handleLogin(e));
+    } else {
+      console.log('Login form not found!');
     }
 
     // Logout button
@@ -137,11 +140,14 @@ class AuthManager {
   }
 
   async handleLogin(e) {
+    console.log('handleLogin called!');
     e.preventDefault();
     
     const formData = new FormData(e.target);
     const email = formData.get('email');
     const password = formData.get('password');
+
+    console.log('Login attempt with email:', email);
 
     const submitBtn = e.target.querySelector('.auth-submit');
     const originalText = submitBtn.textContent;
@@ -152,10 +158,15 @@ class AuthManager {
       submitBtn.disabled = true;
 
       // Attempt to sign in
+      console.log('Attempting Supabase sign in...');
+      console.log('Supabase client:', this.supabase);
+      
       const { data, error } = await this.supabase.auth.signInWithPassword({
         email: email,
         password: password
       });
+      
+      console.log('Supabase response:', { data, error });
 
       if (error) {
         throw error;
