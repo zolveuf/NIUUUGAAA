@@ -44,7 +44,8 @@ CREATE TABLE applications (
   
   -- Application Details
   goal TEXT,
-  timeline TEXT,
+  experience TEXT,
+  additional_info TEXT,
   
   -- Preferences
   newsletter BOOLEAN DEFAULT FALSE,
