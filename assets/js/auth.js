@@ -620,13 +620,14 @@ class AuthManager {
         button.disabled = true;
       }
       
-      const response = await fetch('/.netlify/functions/send-order', {
+      const response = await fetch('/.netlify/functions/submit-application', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          orderId: orderId
+          orderId: orderId,
+          action: 'send-to-kakservice'
         })
       });
 
