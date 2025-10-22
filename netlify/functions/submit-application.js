@@ -53,7 +53,9 @@ exports.handler = async (event, context) => {
     const supabase = createClient(supabaseUrl, supabaseKey);
 
     // Get client IP and user agent
-    const ipAddress = event.headers['x-forwarded-for'] || event.headers['client-ip'];
+    // x-forwarded-for can contain multiple IPs, take the first one
+    const forwardedFor = event.headers['x-forwarded-for'] || event.headers['client-ip'] || '';
+    const ipAddress = forwardedFor.split(',')[0].trim() || null;
     const userAgent = event.headers['user-agent'];
 
     // Insert application into Supabase
