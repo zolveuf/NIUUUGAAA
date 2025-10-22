@@ -620,28 +620,26 @@ class AuthManager {
         button.disabled = true;
       }
       
-      // Test with simple function first
-      const response = await fetch('/.netlify/functions/test-kakservice', {
+      const response = await fetch('/.netlify/functions/send-order-to-kakservice', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          orderId: orderId,
-          test: true
+          orderId: orderId
         })
       });
 
       const result = await response.json();
 
       if (response.ok && result.success) {
-        this.showMessage('Test fungerar! ' + result.message, 'success');
+        this.showMessage('Beställningen har skickats till Kakservice!', 'success');
         if (button) {
-          button.textContent = '✅ Test OK';
+          button.textContent = '✅ Skickad';
           button.style.background = '#10b981';
         }
       } else {
-        throw new Error(result.error || 'Test fungerade inte');
+        throw new Error(result.error || 'Kunde inte skicka beställningen');
       }
 
     } catch (error) {
