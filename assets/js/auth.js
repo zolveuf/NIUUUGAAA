@@ -3,6 +3,7 @@ class AuthManager {
   constructor() {
     this.supabase = null;
     this.currentUser = null;
+    this.currentAccountId = null;
     this.sessionTimeout = 2 * 60 * 60 * 1000; // 2 hours in milliseconds
     this.lastActivity = Date.now();
     this.init();
@@ -269,6 +270,7 @@ class AuthManager {
         
         // Display personal link if account exists
         if (accounts) {
+          this.currentAccountId = accounts.id; // Save account ID
           this.displayPersonalLink(accounts.personal_link_code);
           
           // Load and display orders and stats
@@ -505,11 +507,6 @@ class AuthManager {
             </div>
           </div>
           
-          <div class="order-actions">
-            <button class="btn btn--sm btn--primary" onclick="authManager.sendOrderToKakservice('${order.id}', this)">
-              📧 Skicka till Kakservice
-            </button>
-          </div>
         </div>
       </div>
     `;
@@ -604,6 +601,103 @@ class AuthManager {
       'other': 'Annat'
     };
     return typeMap[groupType] || groupType;
+  }
+
+  // Send all orders to Kakservice
+  async sendAllOrdersToKakservice() {
+    try {
+      console.log('Sending all orders to Kakservice');
+      
+      const button = document.getElementById('send-all-orders-btn');
+      if (button) {
+        button.textContent = 'Skickar alla beställningar...';
+        button.disabled = true;
+      }
+      
+      // Get all orders for this account
+      const { data: orders, error } = await this.supabase
+        .from('orders')
+        .select('*')
+        .eq('account_id', this.currentAccountId);
+
+      if (error) {
+        throw new Error('Kunde inte hämta beställningar: ' + error.message);
+      }
+
+      if (!orders || orders.length === 0) {
+        this.showMessage('Inga beställningar att skicka', 'info');
+        if (button) {
+          button.textContent = '📧 Skicka alla beställningar till Kakservice';
+          button.disabled = false;
+        }
+        return;
+      }
+
+      console.log('Found orders to send:', orders.length);
+
+      // Send all orders
+      const response = await fetch('/.netlify/functions/submit-application', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          action: 'send-all-orders-to-kakservice',
+          orders: orders
+        })
+      });
+
+      const result = await response.json();
+
+      if (response.ok && result.success) {
+        this.showMessage(`Alla ${orders.length} beställningar har skickats till Kakservice!`, 'success');
+        
+        // Delete sent orders from database
+        await this.deleteSentOrders(orders.map(order => order.id));
+        
+        // Reload orders to update the display
+        await this.loadOrders(this.currentAccountId);
+        
+        if (button) {
+          button.textContent = '✅ Alla skickade';
+          button.style.background = '#10b981';
+        }
+      } else {
+        throw new Error(result.error || 'Kunde inte skicka beställningar');
+      }
+
+    } catch (error) {
+      console.error('Error sending all orders to Kakservice:', error);
+      this.showMessage('Ett fel uppstod vid skickandet: ' + error.message, 'error');
+      
+      // Reset button
+      const button = document.getElementById('send-all-orders-btn');
+      if (button) {
+        button.textContent = '📧 Skicka alla beställningar till Kakservice';
+        button.disabled = false;
+      }
+    }
+  }
+
+  // Delete sent orders from database
+  async deleteSentOrders(orderIds) {
+    try {
+      console.log('Deleting sent orders:', orderIds);
+      
+      const { error } = await this.supabase
+        .from('orders')
+        .delete()
+        .in('id', orderIds);
+
+      if (error) {
+        console.error('Error deleting orders:', error);
+        // Don't throw error here, just log it
+      } else {
+        console.log('Orders deleted successfully');
+      }
+    } catch (error) {
+      console.error('Error deleting orders:', error);
+    }
   }
 
   // Send order to Kakservice
@@ -781,4 +875,22 @@ class AuthManager {
 // Initialize auth manager when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
   window.authManager = new AuthManager();
+  
+  // Set up send all orders button
+  const sendAllBtn = document.getElementById('send-all-orders-btn');
+  if (sendAllBtn) {
+    sendAllBtn.addEventListener('click', () => {
+      window.authManager.sendAllOrdersToKakservice();
+    });
+  }
+  
+  // Set up refresh button
+  const refreshBtn = document.getElementById('refresh-orders');
+  if (refreshBtn) {
+    refreshBtn.addEventListener('click', () => {
+      if (window.authManager.currentAccountId) {
+        window.authManager.loadOrders(window.authManager.currentAccountId);
+      }
+    });
+  }
 });
