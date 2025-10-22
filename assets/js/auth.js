@@ -3,7 +3,6 @@ class AuthManager {
   constructor() {
     this.supabase = null;
     this.currentUser = null;
-    this.loginAttempts = this.getStoredLoginAttempts();
     this.sessionTimeout = 2 * 60 * 60 * 1000; // 2 hours in milliseconds
     this.lastActivity = Date.now();
     this.init();
@@ -156,13 +155,6 @@ class AuthManager {
     const password = formData.get('password');
 
     console.log('Login attempt with email:', email);
-    
-    // Check rate limiting
-    if (this.isRateLimited()) {
-      const timeLeft = this.getRateLimitTimeLeft();
-      this.showMessage(`För många inloggningsförsök. Försök igen om ${timeLeft} minuter.`, 'error');
-      return;
-    }
 
     const submitBtn = e.target.querySelector('.auth-submit');
     const originalText = submitBtn.textContent;
@@ -184,13 +176,11 @@ class AuthManager {
       console.log('Supabase response:', { data, error });
 
       if (error) {
-        this.recordFailedAttempt();
         throw error;
       }
 
       // Success - redirect will happen automatically via auth state change
       console.log('Login successful! Data:', data);
-      this.clearFailedAttempts(); // Clear failed attempts on successful login
       this.showMessage('Inloggning lyckades! Omdirigerar...', 'success');
       
       // Force redirect if auth state change doesn't work
@@ -605,51 +595,6 @@ class AuthManager {
       console.error('Error updating contact info:', error);
       this.showMessage('Kunde inte uppdatera kontaktinformation.', 'error');
     }
-  }
-
-  // Rate limiting functions
-  getStoredLoginAttempts() {
-    try {
-      const stored = localStorage.getItem('loginAttempts');
-      return stored ? JSON.parse(stored) : { attempts: 0, lastAttempt: 0 };
-    } catch {
-      return { attempts: 0, lastAttempt: 0 };
-    }
-  }
-
-  recordFailedAttempt() {
-    const now = Date.now();
-    const attempts = this.loginAttempts.attempts + 1;
-    const lastAttempt = now;
-    
-    this.loginAttempts = { attempts, lastAttempt };
-    localStorage.setItem('loginAttempts', JSON.stringify(this.loginAttempts));
-  }
-
-  clearFailedAttempts() {
-    this.loginAttempts = { attempts: 0, lastAttempt: 0 };
-    localStorage.removeItem('loginAttempts');
-  }
-
-  isRateLimited() {
-    const now = Date.now();
-    const oneHour = 60 * 60 * 1000; // 1 hour in milliseconds
-    
-    // Reset attempts if more than 1 hour has passed
-    if (now - this.loginAttempts.lastAttempt > oneHour) {
-      this.clearFailedAttempts();
-      return false;
-    }
-    
-    // Allow max 5 attempts per hour
-    return this.loginAttempts.attempts >= 5;
-  }
-
-  getRateLimitTimeLeft() {
-    const now = Date.now();
-    const oneHour = 60 * 60 * 1000;
-    const timeLeft = Math.ceil((oneHour - (now - this.loginAttempts.lastAttempt)) / (60 * 1000));
-    return Math.max(0, timeLeft);
   }
 
   // Session timeout functions
