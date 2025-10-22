@@ -1,10 +1,10 @@
 const { createClient } = require('@supabase/supabase-js');
 const sgMail = require('@sendgrid/mail');
 
-console.log('send-order-to-kakservice function loaded');
+console.log('send-order function loaded');
 
 exports.handler = async (event, context) => {
-  console.log('=== SEND ORDER TO KAKSERVICE FUNCTION CALLED ===');
+  console.log('=== SEND ORDER FUNCTION CALLED ===');
   console.log('Method:', event.httpMethod);
   console.log('Body:', event.body);
   
@@ -31,9 +31,17 @@ exports.handler = async (event, context) => {
     if (!orderId) {
       return {
         statusCode: 400,
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Headers': 'Content-Type',
+          'Access-Control-Allow-Methods': 'POST, OPTIONS'
+        },
         body: JSON.stringify({ error: 'Order ID is required' })
       };
     }
+
+    console.log('Processing order:', orderId);
 
     // Initialize Supabase client with service role key
     const supabaseUrl = process.env.SUPABASE_URL;
@@ -43,6 +51,12 @@ exports.handler = async (event, context) => {
       console.error('Missing Supabase credentials');
       return {
         statusCode: 500,
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Headers': 'Content-Type',
+          'Access-Control-Allow-Methods': 'POST, OPTIONS'
+        },
         body: JSON.stringify({ error: 'Server configuration error' })
       };
     }
@@ -77,6 +91,12 @@ exports.handler = async (event, context) => {
       console.error('Error fetching order:', orderError);
       return {
         statusCode: 404,
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Headers': 'Content-Type',
+          'Access-Control-Allow-Methods': 'POST, OPTIONS'
+        },
         body: JSON.stringify({ error: 'Order not found' })
       };
     }
@@ -102,7 +122,7 @@ BESTÄLLNING TILL KAKSERVICE
 FÖRENING/ORGANISATION:
 • Namn: ${application.name}
 • Organisation: ${application.organization}
-• Typ: ${this.getGroupTypeText(application.group_type)}
+• Typ: ${getGroupTypeText(application.group_type)}
 • Kontakt: ${application.email}
 • Telefon: ${application.phone || 'Ej angiven'}
 
@@ -124,7 +144,7 @@ TOTAL SUMMA: ${order.total_amount} kr
 SPECIELLA ÖNSKNINGAR:
 ${order.special_requests || 'Inga speciella önskemål'}
 
-STATUS: ${this.getOrderStatusText(order.status)}
+STATUS: ${getOrderStatusText(order.status)}
 
 ---
 Detta är en automatisk beställning från Kakservice-plattformen.
@@ -146,7 +166,7 @@ Beställningslänk: ${process.env.SITE_URL || 'https://rad-speculoos-252665.netl
             <h3 style="color: #374151; margin-top: 0;">Förening/Organisation</h3>
             <p><strong>Namn:</strong> ${application.name}</p>
             <p><strong>Organisation:</strong> ${application.organization}</p>
-            <p><strong>Typ:</strong> ${this.getGroupTypeText(application.group_type)}</p>
+            <p><strong>Typ:</strong> ${getGroupTypeText(application.group_type)}</p>
             <p><strong>Kontakt:</strong> ${application.email}</p>
             <p><strong>Telefon:</strong> ${application.phone || 'Ej angiven'}</p>
           </div>
