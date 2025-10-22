@@ -123,7 +123,7 @@ Beställningslänk: ${process.env.SITE_URL || 'https://rad-speculoos-252665.netl
 
     // Send email to Kakservice
     const msg = {
-      to: process.env.ADMIN_EMAIL || 'admin@yourdomain.com',
+      to: process.env.ADMIN_EMAIL || 'martinpranjic32@gmail.com',
       from: process.env.FROM_EMAIL || 'noreply@yourdomain.com',
       subject: `🍪 Ny beställning från ${application.organization} - ${order.total_amount} kr`,
       text: orderSummary,

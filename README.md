@@ -147,7 +147,7 @@ Systemet skickar automatiskt:
 - **Bekräftelse till användare** - Bekräftar att ansökan mottagits
 - **Notifiering till admin** - Med all ansökningsdata
 - **Beställningsbekräftelse** - Till kund när beställning görs
-- **Beställning till Kakservice** - Komplett beställningssammanfattning när förening skickar beställning
+- **Beställning till Kakservice** - Komplett beställningssammanfattning skickas till martinpranjic32@gmail.com
 
 ## 🍪 Kakservice Integration
 
