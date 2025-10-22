@@ -79,21 +79,14 @@ class OrderManager {
       errorState.style.display = 'none';
 
       // Get account information
-      const { data: accounts, error } = await this.supabase
+      const { data: accounts, error: accountError } = await this.supabase
         .from('accounts')
-        .select(`
-          *,
-          applications!inner(
-            organization,
-            name,
-            group_type
-          )
-        `)
+        .select('*')
         .eq('personal_link_code', this.accountCode)
         .single();
 
-      if (error) {
-        console.error('Error loading account:', error);
+      if (accountError) {
+        console.error('Error loading account:', accountError);
         throw new Error('Kunde inte hitta beställningsinformation');
       }
 
@@ -101,11 +94,27 @@ class OrderManager {
         throw new Error('Beställningslänken är ogiltig');
       }
 
-      this.accountData = accounts;
+      // Get application information separately
+      const { data: applications, error: appError } = await this.supabase
+        .from('applications')
+        .select('organization, name, group_type')
+        .eq('user_id', accounts.user_id)
+        .single();
+
+      if (appError) {
+        console.error('Error loading application:', appError);
+        throw new Error('Kunde inte hitta organisationsinformation');
+      }
+
+      this.accountData = {
+        ...accounts,
+        applications: applications
+      };
+      
       console.log('Account loaded:', this.accountData);
 
       // Update UI with account information
-      document.getElementById('organization-name').textContent = accounts.applications.organization;
+      document.getElementById('organization-name').textContent = applications.organization;
 
       // Load products
       this.loadProducts();
