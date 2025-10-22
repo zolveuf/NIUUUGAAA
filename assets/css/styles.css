@@ -832,6 +832,142 @@ body.no-scroll { overflow: hidden; }
   }
 }
 
+/* Order Page Styles */
+.order-container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.order-form-container {
+  background: var(--color-white);
+  border-radius: var(--radius-lg);
+  padding: var(--space-8);
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--color-border);
+}
+
+.order-info {
+  text-align: center;
+  margin-bottom: var(--space-8);
+  padding-bottom: var(--space-6);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.order-info h2 {
+  margin-bottom: var(--space-2);
+  color: var(--color-text);
+}
+
+.order-info p {
+  color: var(--color-text-muted);
+}
+
+.product-selection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+}
+
+.product-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-4);
+  background: var(--color-gray-50);
+  border-radius: var(--radius);
+  border: 1px solid var(--color-border);
+}
+
+.product-info h4 {
+  margin-bottom: var(--space-1);
+  color: var(--color-text);
+}
+
+.product-info p {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+}
+
+.product-price {
+  font-weight: 600;
+  color: var(--color-primary);
+}
+
+.product-quantity {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.product-quantity label {
+  font-weight: 500;
+  color: var(--color-text);
+}
+
+.quantity-input {
+  width: 80px;
+  padding: var(--space-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  text-align: center;
+  font-weight: 500;
+}
+
+.quantity-input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+}
+
+.order-submit {
+  width: 100%;
+  margin-top: var(--space-6);
+}
+
+.order-message {
+  padding: var(--space-3);
+  border-radius: var(--radius);
+  margin-bottom: var(--space-4);
+  font-size: var(--text-sm);
+}
+
+.order-message--success {
+  background: #f0f9ff;
+  color: #0369a1;
+  border: 1px solid #bae6fd;
+}
+
+.order-message--error {
+  background: #fef2f2;
+  color: #dc2626;
+  border: 1px solid #fecaca;
+}
+
+.order-message--info {
+  background: #f8fafc;
+  color: #475569;
+  border: 1px solid #e2e8f0;
+}
+
+/* Responsive adjustments for order page */
+@media (max-width: 768px) {
+  .order-form-container {
+    padding: var(--space-6);
+  }
+  
+  .product-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-3);
+  }
+  
+  .product-quantity {
+    align-self: flex-end;
+  }
+}
+
 .checkbox-group {
   flex-direction: row;
   align-items: flex-start;

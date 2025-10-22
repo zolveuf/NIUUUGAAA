@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="sv">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Beställ produkter - Kakservice</title>
+    <meta name="description" content="Beställ produkter från Kakservice." />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/styles.css" />
+  </head>
+  <body>
+    <header class="site-header" data-header>
+      <div class="container header-inner">
+        <a href="index.html" class="logo" aria-label="Hem">Kakservice</a>
+
+        <button class="nav-toggle" aria-expanded="false" aria-controls="site-nav" aria-label="Öppna meny">
+          <span class="nav-toggle__bar" aria-hidden="true"></span>
+          <span class="nav-toggle__bar" aria-hidden="true"></span>
+          <span class="nav-toggle__bar" aria-hidden="true"></span>
+        </button>
+
+        <nav id="site-nav" class="site-nav" aria-label="Huvudmeny">
+          <ul class="nav-list">
+            <li class="nav-item has-dropdown">
+              <button class="dropdown-toggle" aria-expanded="false" aria-haspopup="true" aria-controls="dropdown-produkter">
+                Produkter
+                <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10l5 5 5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+              <ul id="dropdown-produkter" class="dropdown-menu" role="menu">
+                <li role="none"><a role="menuitem" href="index.html#produkter" class="dropdown-link">Kakburkar</a></li>
+                <li role="none"><a role="menuitem" href="index.html#produkter" class="dropdown-link">Knäck & kola</a></li>
+                <li role="none"><a role="menuitem" href="index.html#produkter" class="dropdown-link">Choklad</a></li>
+              </ul>
+            </li>
+            <li class="nav-item"><a href="index.html#sa-funkar-det">Så funkar det</a></li>
+            <li class="nav-item"><a href="#om-oss">Om oss</a></li>
+            <li class="nav-item"><a href="login.html" class="btn btn--sm btn--ghost">Min förening</a></li>
+            <li class="nav-item"><a href="börja-sälja.html" class="btn btn--sm btn--primary">Börja sälja</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="page-hero">
+        <div class="container">
+          <div class="page-hero-content">
+            <h1>Beställ produkter</h1>
+            <p>Fyll i formuläret nedan för att beställa produkter.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="page-content">
+        <div class="container">
+          <div class="order-container">
+            <!-- Loading state -->
+            <div class="loading-state" id="loading-state">
+              <div class="loading-spinner"></div>
+              <p>Laddar beställningsinformation...</p>
+            </div>
+
+            <!-- Order form -->
+            <div class="order-form-container" id="order-form-container" style="display: none;">
+              <div class="order-info">
+                <h2>Beställ från <span id="organization-name">-</span></h2>
+                <p>Fyll i formuläret nedan för att beställa produkter.</p>
+              </div>
+
+              <form class="order-form" id="order-form">
+                <div class="form-group">
+                  <label for="customer-name">Ditt namn *</label>
+                  <input type="text" id="customer-name" name="customerName" required>
+                </div>
+
+                <div class="form-group">
+                  <label for="customer-email">E-postadress</label>
+                  <input type="email" id="customer-email" name="customerEmail">
+                </div>
+
+                <div class="form-group">
+                  <label for="customer-phone">Telefonnummer</label>
+                  <input type="tel" id="customer-phone" name="customerPhone">
+                </div>
+
+                <div class="form-group">
+                  <label for="product-selection">Välj produkter *</label>
+                  <div class="product-selection" id="product-selection">
+                    <!-- Products will be loaded dynamically -->
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="special-requests">Särskilda önskemål</label>
+                  <textarea id="special-requests" name="specialRequests" rows="4" placeholder="T.ex. allergier, leveransdatum, etc."></textarea>
+                </div>
+
+                <button type="submit" class="btn btn--primary btn--lg order-submit">
+                  Skicka beställning
+                </button>
+              </form>
+            </div>
+
+            <!-- Error state -->
+            <div class="error-state" id="error-state" style="display: none;">
+              <div class="error-message">
+                <h3>Beställningslänken är ogiltig</h3>
+                <p id="error-message">Denna beställningslänk finns inte eller har gått ut.</p>
+                <a href="index.html" class="btn btn--primary">Gå till startsidan</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer id="om-oss" class="site-footer">
+      <div class="container footer-inner">
+        <div class="footer-brand">
+          <a href="index.html" class="logo">Kakservice</a>
+          <p>Vi hjälper lag och klasser att nå sina mål genom god försäljning. Enkelt, säkert och framgångsrikt.</p>
+          <div class="footer-cta">
+            <a href="börja-sälja.html" class="btn btn--primary">Börja sälja</a>
+            <a href="index.html#sa-funkar-det" class="btn btn--ghost">Läs mer</a>
+          </div>
+        </div>
+        <nav class="footer-nav" aria-label="Footer">
+          <div class="footer-section">
+            <h4>Produkter</h4>
+            <a href="index.html#produkter">Kakburkar</a>
+            <a href="index.html#produkter">Choklad</a>
+            <a href="index.html#produkter">Knäck & kola</a>
+            <a href="index.html#produkter">Småkakor</a>
+          </div>
+          <div class="footer-section">
+            <h4>Support</h4>
+            <a href="index.html#sa-funkar-det">Så funkar det</a>
+            <a href="#kontakt">Kontakt</a>
+            <a href="#faq">Vanliga frågor</a>
+            <a href="#privacy">Integritet</a>
+          </div>
+          <div class="footer-section">
+            <h4>Företag</h4>
+            <a href="#om-oss">Om oss</a>
+            <a href="#careers">Karriär</a>
+            <a href="#press">Press</a>
+            <a href="#partners">Partners</a>
+          </div>
+        </nav>
+      </div>
+      <div class="container footer-bottom">
+        <small>© <span id="year"></span> Klass Kraft UF - Hemsida designad & producerad av <a style="text-decoration: underline; color: #a1a1aa;" href="https://www.linkedin.com/in/martin-pranjic-99a278310/">Martin Pranjic</a></small>
+      </div>
+    </footer>
+
+    <!-- Config loading -->
+    <script>
+      // Load config for local development
+      if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        const script = document.createElement('script');
+        script.src = 'config.local.js';
+        script.onerror = () => {
+          const fallback = document.createElement('script');
+          fallback.src = 'config.js';
+          document.head.appendChild(fallback);
+        };
+        document.head.appendChild(script);
+      } else {
+        // For production (Netlify), use environment variables
+        // These will be injected by Netlify at build time
+        window.SUPABASE_URL = 'YOUR_SUPABASE_URL_HERE';
+        window.SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY_HERE';
+        window.SENDGRID_API_KEY = 'YOUR_SENDGRID_API_KEY_HERE';
+        window.FROM_EMAIL = 'noreply@yourdomain.com';
+        window.ADMIN_EMAIL = 'admin@yourdomain.com';
+        window.APP_NAME = 'Kakservice';
+        window.COMPANY_NAME = 'Klass Kraft UF';
+      }
+    </script>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script src="assets/js/main.js" defer></script>
+    <script src="assets/js/order.js" defer></script>
+  </body>
+</html>

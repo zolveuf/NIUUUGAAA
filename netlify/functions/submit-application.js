@@ -2,6 +2,16 @@
 const { createClient } = require('@supabase/supabase-js');
 const sgMail = require('@sendgrid/mail');
 
+// Function to generate unique link codes
+function generateLinkCode() {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  let result = '';
+  for (let i = 0; i < 8; i++) {
+    result += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return result;
+}
+
 exports.handler = async (event, context) => {
   // Only allow POST requests
   if (event.httpMethod !== 'POST') {
@@ -153,6 +163,30 @@ exports.handler = async (event, context) => {
 
     const application = applicationData[0];
 
+    // Create account with personal link code
+    console.log('Creating account with personal link for user:', userId);
+    const linkCode = generateLinkCode();
+    
+    const { data: accountData, error: accountError } = await supabase
+      .from('accounts')
+      .insert([
+        {
+          user_id: userId,
+          personal_link_code: linkCode
+        }
+      ])
+      .select();
+
+    if (accountError) {
+      console.error('Account creation error:', accountError);
+      return {
+        statusCode: 500,
+        body: JSON.stringify({ error: 'Account creation failed: ' + accountError.message })
+      };
+    }
+
+    console.log('Account created with link code:', linkCode);
+
     // Initialize SendGrid
     sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
@@ -183,6 +217,13 @@ exports.handler = async (event, context) => {
           </ul>
           
           <p><strong>Logga in här:</strong> <a href="${process.env.SITE_URL || 'https://rad-speculoos-252665.netlify.app'}/login.html">login.html</a></p>
+          
+          <h3>Din personliga beställningslänk:</h3>
+          <p>Dela denna länk med dina kunder så att de kan lägga beställningar:</p>
+          <p style="background: #f0f9ff; padding: 15px; border-radius: 8px; font-family: monospace; font-size: 18px; text-align: center;">
+            <strong>${process.env.SITE_URL || 'https://rad-speculoos-252665.netlify.app'}/order.html?code=${linkCode}</strong>
+          </p>
+          <p><em>Alla beställningar som görs via denna länk kommer att visas på din dashboard!</em></p>
           
           <p>Vi ser fram emot att hjälpa er att nå era mål!</p>
           <p>Med vänliga hälsningar,<br>${process.env.COMPANY_NAME || 'Klass Kraft UF'}</p>
