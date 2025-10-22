@@ -286,22 +286,10 @@ async function handleSendOrderToKakservice(data) {
 
     console.log('Fetching order details for:', orderId);
 
-    // Fetch order details with account and application info
+    // Fetch order details first
     const { data: order, error: orderError } = await supabase
       .from('orders')
-      .select(`
-        *,
-        accounts!inner(
-          personal_link_code,
-          applications!inner(
-            name,
-            organization,
-            email,
-            phone,
-            group_type
-          )
-        )
-      `)
+      .select('*')
       .eq('id', orderId)
       .single();
 
@@ -315,6 +303,40 @@ async function handleSendOrderToKakservice(data) {
 
     console.log('Order found:', order);
 
+    // Fetch account details
+    const { data: account, error: accountError } = await supabase
+      .from('accounts')
+      .select('*')
+      .eq('id', order.account_id)
+      .single();
+
+    if (accountError) {
+      console.error('Error fetching account:', accountError);
+      return {
+        statusCode: 404,
+        body: JSON.stringify({ error: 'Account not found' })
+      };
+    }
+
+    console.log('Account found:', account);
+
+    // Fetch application details
+    const { data: application, error: applicationError } = await supabase
+      .from('applications')
+      .select('*')
+      .eq('user_id', account.user_id)
+      .single();
+
+    if (applicationError) {
+      console.error('Error fetching application:', applicationError);
+      return {
+        statusCode: 404,
+        body: JSON.stringify({ error: 'Application not found' })
+      };
+    }
+
+    console.log('Application found:', application);
+
     // Parse order details
     const orderDetails = order.order_details || {};
     const orderItems = Object.values(orderDetails)
@@ -323,8 +345,7 @@ async function handleSendOrderToKakservice(data) {
       .join('\n');
 
     // Get application info
-    const application = order.accounts.applications;
-    const accountCode = order.accounts.personal_link_code;
+    const accountCode = account.personal_link_code;
 
     // Create comprehensive order summary
     const orderSummary = `
