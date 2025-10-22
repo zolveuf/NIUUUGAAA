@@ -173,7 +173,14 @@ class AuthManager {
       }
 
       // Success - redirect will happen automatically via auth state change
+      console.log('Login successful! Data:', data);
       this.showMessage('Inloggning lyckades! Omdirigerar...', 'success');
+      
+      // Force redirect if auth state change doesn't work
+      setTimeout(() => {
+        console.log('Forcing redirect to dashboard...');
+        window.location.href = 'dashboard.html';
+      }, 1000);
       
     } catch (error) {
       console.error('Login error:', error);
