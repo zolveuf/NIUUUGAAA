@@ -62,36 +62,55 @@ exports.handler = async (event, context) => {
     const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY;
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-    // Check if user already exists
-    console.log('Checking if user exists with email:', email);
-    const { data: existingUser } = await supabase.auth.admin.getUserByEmail(email);
-    
+    // Create user account with Supabase Auth
+    console.log('Creating user with email:', email);
     let userId;
-    if (existingUser.user) {
-      console.log('User already exists:', existingUser.user.id);
-      userId = existingUser.user.id;
-    } else {
-      // First, create user account with Supabase Auth
-      console.log('Creating new user with email:', email);
-      const { data: authData, error: authError } = await supabase.auth.admin.createUser({
-        email: email,
-        password: password,
-        email_confirm: true, // Auto-confirm email
-        user_metadata: {
-          name: name,
-          organization: organization,
-          group_type: groupType
-        }
-      });
+    const { data: authData, error: authError } = await supabase.auth.admin.createUser({
+      email: email,
+      password: password,
+      email_confirm: true, // Auto-confirm email
+      user_metadata: {
+        name: name,
+        organization: organization,
+        group_type: groupType
+      }
+    });
 
-      if (authError) {
-        console.error('Auth error:', authError);
+    if (authError) {
+      console.error('Auth error:', authError);
+      
+      // If user already exists, try to get the existing user
+      if (authError.message.includes('already registered') || authError.message.includes('User already registered')) {
+        console.log('User already exists, attempting to get user by email');
+        
+        // Try to get user by email using listUsers and filter
+        const { data: users, error: listError } = await supabase.auth.admin.listUsers();
+        
+        if (listError) {
+          console.error('Error listing users:', listError);
+          return {
+            statusCode: 400,
+            body: JSON.stringify({ error: 'Could not check existing users: ' + listError.message })
+          };
+        }
+        
+        const existingUser = users.users.find(user => user.email === email);
+        if (existingUser) {
+          console.log('Found existing user:', existingUser.id);
+          userId = existingUser.id;
+        } else {
+          return {
+            statusCode: 400,
+            body: JSON.stringify({ error: 'User creation failed and user not found: ' + authError.message })
+          };
+        }
+      } else {
         return {
           statusCode: 400,
           body: JSON.stringify({ error: 'Account creation failed: ' + authError.message })
         };
       }
-
+    } else {
       console.log('User created successfully:', authData.user.id);
       userId = authData.user.id;
     }
