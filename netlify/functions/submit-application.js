@@ -13,10 +13,8 @@ function generateLinkCode() {
 }
 
 // Handle order submissions
-async function handleOrderSubmission(event, context) {
+async function handleOrderSubmission(data) {
   try {
-    // Parse request body
-    const data = JSON.parse(event.body);
     const {
       accountCode,
       customerName,
@@ -219,15 +217,14 @@ exports.handler = async (event, context) => {
     };
   }
 
-  // Check if this is an order submission (has accountCode)
-  const body = JSON.parse(event.body);
-  if (body.accountCode) {
-    return handleOrderSubmission(event, context);
-  }
-
   try {
-    // Parse request body
+    // Parse request body once
     const data = JSON.parse(event.body);
+    
+    // Check if this is an order submission (has accountCode)
+    if (data.accountCode) {
+      return handleOrderSubmission(data);
+    }
     const {
       name,
       email,
