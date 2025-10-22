@@ -4,14 +4,21 @@ const sgMail = require('@sendgrid/mail');
 console.log('send-order-to-kakservice function loaded');
 
 exports.handler = async (event, context) => {
-  console.log('Function called with method:', event.httpMethod);
-  console.log('Function called with body:', event.body);
+  console.log('=== SEND ORDER TO KAKSERVICE FUNCTION CALLED ===');
+  console.log('Method:', event.httpMethod);
+  console.log('Body:', event.body);
   
   // Only allow POST requests
   if (event.httpMethod !== 'POST') {
     console.log('Method not allowed:', event.httpMethod);
     return {
       statusCode: 405,
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Headers': 'Content-Type',
+        'Access-Control-Allow-Methods': 'POST, OPTIONS'
+      },
       body: JSON.stringify({ error: 'Method not allowed' })
     };
   }
@@ -190,6 +197,12 @@ Beställningslänk: ${process.env.SITE_URL || 'https://rad-speculoos-252665.netl
 
     return {
       statusCode: 200,
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Headers': 'Content-Type',
+        'Access-Control-Allow-Methods': 'POST, OPTIONS'
+      },
       body: JSON.stringify({ 
         success: true,
         message: 'Beställningen har skickats till Kakservice'
@@ -200,6 +213,12 @@ Beställningslänk: ${process.env.SITE_URL || 'https://rad-speculoos-252665.netl
     console.error('Error sending order to Kakservice:', error);
     return {
       statusCode: 500,
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Headers': 'Content-Type',
+        'Access-Control-Allow-Methods': 'POST, OPTIONS'
+      },
       body: JSON.stringify({ error: 'Ett fel uppstod vid skickandet av beställningen' })
     };
   }

@@ -608,11 +608,12 @@ class AuthManager {
 
   // Send order to Kakservice
   async sendOrderToKakservice(orderId, buttonElement = null) {
+    // Show loading state
+    const button = buttonElement || document.querySelector(`[onclick*="${orderId}"]`);
+    
     try {
       console.log('Sending order to Kakservice:', orderId);
       
-      // Show loading state
-      const button = buttonElement || document.querySelector(`[onclick*="${orderId}"]`);
       if (button) {
         const originalText = button.textContent;
         button.textContent = 'Skickar...';
