@@ -693,6 +693,7 @@ class AuthManager {
         button.textContent = '📧 Skicka alla beställningar till Kakservice';
         button.disabled = false;
       }
+    }
   }
 
   // Clear any cached order data
