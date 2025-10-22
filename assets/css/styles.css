@@ -786,6 +786,140 @@ body.no-scroll { overflow: hidden; }
   font-style: italic;
 }
 
+/* Orders Styles */
+.orders-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.order-card {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  background: var(--color-white);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.order-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--space-4);
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.order-info h4 {
+  margin: 0 0 var(--space-1) 0;
+  color: var(--color-text);
+  font-size: var(--text-lg);
+  font-weight: 600;
+}
+
+.order-date {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+}
+
+.order-status {
+  flex-shrink: 0;
+}
+
+.order-details {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-6);
+}
+
+.customer-info p {
+  margin: 0 0 var(--space-2) 0;
+  color: var(--color-text);
+}
+
+.customer-info p:last-child {
+  margin-bottom: 0;
+}
+
+.order-items h5 {
+  margin: 0 0 var(--space-3) 0;
+  color: var(--color-text);
+  font-size: var(--text-base);
+  font-weight: 600;
+}
+
+.order-items ul {
+  margin: 0 0 var(--space-4) 0;
+  padding-left: var(--space-5);
+  color: var(--color-text);
+}
+
+.order-items li {
+  margin-bottom: var(--space-1);
+}
+
+.order-total {
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--color-border);
+  color: var(--color-text);
+  font-size: var(--text-lg);
+  font-weight: 600;
+}
+
+.no-orders {
+  text-align: center;
+  padding: var(--space-8);
+  color: var(--color-text-muted);
+}
+
+.no-orders p {
+  margin: 0;
+  font-size: var(--text-base);
+}
+
+/* Order Status Colors */
+.status-pending {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.status-confirmed {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.status-shipped {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.status-delivered {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.status-cancelled {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+@media (max-width: 768px) {
+  .order-details {
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+  }
+  
+  .order-header {
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+  
+  .order-status {
+    align-self: flex-start;
+  }
+}
+
 .user-menu {
   display: flex;
   align-items: center;

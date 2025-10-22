@@ -263,6 +263,9 @@ class AuthManager {
         // Display personal link if account exists
         if (accounts) {
           this.displayPersonalLink(accounts.personal_link_code);
+          
+          // Load and display orders
+          await this.loadOrders(accounts.id);
         }
       } else {
         this.showNoApplicationMessage();
@@ -326,6 +329,113 @@ class AuthManager {
     document.getElementById('contact-email').textContent = application.email;
     document.getElementById('contact-phone').textContent = application.phone || 'Inte angivet';
     document.getElementById('contact-organization').textContent = application.organization;
+  }
+
+  async loadOrders(accountId) {
+    try {
+      console.log('Loading orders for account:', accountId);
+      
+      const { data: orders, error } = await this.supabase
+        .from('orders')
+        .select('*')
+        .eq('account_id', accountId)
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.error('Error loading orders:', error);
+        return;
+      }
+
+      console.log('Orders loaded:', orders);
+      this.displayOrders(orders || []);
+      
+    } catch (error) {
+      console.error('Error loading orders:', error);
+    }
+  }
+
+  displayOrders(orders) {
+    const ordersContainer = document.getElementById('orders-container');
+    if (!ordersContainer) {
+      console.log('Orders container not found');
+      return;
+    }
+
+    if (orders.length === 0) {
+      ordersContainer.innerHTML = `
+        <div class="no-orders">
+          <p>Inga beställningar än. Dela din personliga länk för att börja ta emot beställningar!</p>
+        </div>
+      `;
+      return;
+    }
+
+    ordersContainer.innerHTML = `
+      <h3>Beställningar (${orders.length})</h3>
+      <div class="orders-list">
+        ${orders.map(order => this.createOrderCard(order)).join('')}
+      </div>
+    `;
+  }
+
+  createOrderCard(order) {
+    const orderDate = new Date(order.created_at).toLocaleDateString('sv-SE');
+    const orderTime = new Date(order.created_at).toLocaleTimeString('sv-SE', { 
+      hour: '2-digit', 
+      minute: '2-digit' 
+    });
+    
+    const statusClass = `status-${order.status}`;
+    const statusText = this.getOrderStatusText(order.status);
+    
+    // Parse order details
+    let orderItems = '';
+    if (order.order_details && typeof order.order_details === 'object') {
+      orderItems = Object.values(order.order_details)
+        .map(item => `<li>${item.name} x${item.quantity} - ${item.subtotal} kr</li>`)
+        .join('');
+    }
+
+    return `
+      <div class="order-card">
+        <div class="order-header">
+          <div class="order-info">
+            <h4>Beställning #${order.id.slice(-8)}</h4>
+            <p class="order-date">${orderDate} kl ${orderTime}</p>
+          </div>
+          <div class="order-status">
+            <span class="status-badge ${statusClass}">${statusText}</span>
+          </div>
+        </div>
+        
+        <div class="order-details">
+          <div class="customer-info">
+            <p><strong>Kund:</strong> ${order.customer_name}</p>
+            ${order.customer_email ? `<p><strong>E-post:</strong> ${order.customer_email}</p>` : ''}
+            ${order.customer_phone ? `<p><strong>Telefon:</strong> ${order.customer_phone}</p>` : ''}
+          </div>
+          
+          <div class="order-items">
+            <h5>Beställda produkter:</h5>
+            <ul>${orderItems}</ul>
+            <div class="order-total">
+              <strong>Totalt: ${order.total_amount} kr</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  getOrderStatusText(status) {
+    const statusMap = {
+      'pending': 'Väntar',
+      'confirmed': 'Bekräftad',
+      'shipped': 'Skickad',
+      'delivered': 'Levererad',
+      'cancelled': 'Avbruten'
+    };
+    return statusMap[status] || status;
   }
 
   displayPersonalLink(linkCode) {
