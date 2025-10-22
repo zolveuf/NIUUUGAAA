@@ -129,7 +129,7 @@
       const data = Object.fromEntries(formData);
       
       // Simple validation
-      const requiredFields = ['name', 'email', 'organization', 'group-type', 'terms'];
+      const requiredFields = ['name', 'email', 'password', 'organization', 'group-type', 'terms'];
       const missingFields = requiredFields.filter(field => !data[field]);
       
       if (missingFields.length > 0) {
@@ -144,10 +144,17 @@
         return;
       }
       
+      // Validate password
+      if (data.password.length < 8) {
+        showMessage('Lösenordet måste vara minst 8 tecken långt.', 'error');
+        return;
+      }
+      
       // Prepare data for API
       const submitData = {
         name: data.name,
         email: data.email,
+        password: data.password,
         phone: data.phone || null,
         organization: data.organization,
         groupType: data['group-type'],

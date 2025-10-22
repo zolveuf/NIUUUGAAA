@@ -6,6 +6,9 @@ CREATE TABLE applications (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   
+  -- Link to auth user
+  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+  
   -- Personal Information
   name TEXT NOT NULL,
   email TEXT NOT NULL,
@@ -34,6 +37,7 @@ CREATE TABLE applications (
 );
 
 -- Create indexes for better performance
+CREATE INDEX idx_applications_user_id ON applications(user_id);
 CREATE INDEX idx_applications_email ON applications(email);
 CREATE INDEX idx_applications_created_at ON applications(created_at);
 CREATE INDEX idx_applications_status ON applications(status);
@@ -45,9 +49,17 @@ ALTER TABLE applications ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Anyone can submit applications" ON applications
   FOR INSERT WITH CHECK (true);
 
--- Create policy for admin access (you'll need to set up admin users)
+-- Create policy for users to view their own applications
+CREATE POLICY "Users can view own applications" ON applications
+  FOR SELECT USING (auth.uid() = user_id);
+
+-- Create policy for users to update their own applications
+CREATE POLICY "Users can update own applications" ON applications
+  FOR UPDATE USING (auth.uid() = user_id);
+
+-- Create policy for admin access (service role bypasses RLS)
 -- CREATE POLICY "Admins can view all applications" ON applications
---   FOR SELECT USING (auth.role() = 'service_role');
+--   FOR ALL USING (auth.role() = 'service_role');
 
 -- Create a function to send email notifications
 CREATE OR REPLACE FUNCTION notify_new_application()
