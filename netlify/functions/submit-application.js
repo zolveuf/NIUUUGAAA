@@ -62,27 +62,39 @@ exports.handler = async (event, context) => {
     const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY;
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-    // First, create user account with Supabase Auth
-    const { data: authData, error: authError } = await supabase.auth.admin.createUser({
-      email: email,
-      password: password,
-      email_confirm: true, // Auto-confirm email
-      user_metadata: {
-        name: name,
-        organization: organization,
-        group_type: groupType
+    // Check if user already exists
+    console.log('Checking if user exists with email:', email);
+    const { data: existingUser } = await supabase.auth.admin.getUserByEmail(email);
+    
+    let userId;
+    if (existingUser.user) {
+      console.log('User already exists:', existingUser.user.id);
+      userId = existingUser.user.id;
+    } else {
+      // First, create user account with Supabase Auth
+      console.log('Creating new user with email:', email);
+      const { data: authData, error: authError } = await supabase.auth.admin.createUser({
+        email: email,
+        password: password,
+        email_confirm: true, // Auto-confirm email
+        user_metadata: {
+          name: name,
+          organization: organization,
+          group_type: groupType
+        }
+      });
+
+      if (authError) {
+        console.error('Auth error:', authError);
+        return {
+          statusCode: 400,
+          body: JSON.stringify({ error: 'Account creation failed: ' + authError.message })
+        };
       }
-    });
 
-    if (authError) {
-      console.error('Auth error:', authError);
-      return {
-        statusCode: 400,
-        body: JSON.stringify({ error: 'Account creation failed: ' + authError.message })
-      };
+      console.log('User created successfully:', authData.user.id);
+      userId = authData.user.id;
     }
-
-    const userId = authData.user.id;
 
     // Get client IP and user agent
     // x-forwarded-for can contain multiple IPs, take the first one
