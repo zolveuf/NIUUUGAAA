@@ -232,21 +232,38 @@ class AuthManager {
       dashboardContent.style.display = 'none';
       errorState.style.display = 'none';
 
-      // Get user's application
-      const { data: applications, error } = await this.supabase
+      // Get user's application and account
+      const { data: applications, error: appError } = await this.supabase
         .from('applications')
         .select('*')
         .eq('user_id', this.currentUser.id)
         .order('created_at', { ascending: false })
         .limit(1);
 
-      if (error) {
-        throw error;
+      if (appError) {
+        throw appError;
+      }
+
+      // Get user's account with personal link
+      const { data: accounts, error: accountError } = await this.supabase
+        .from('accounts')
+        .select('*')
+        .eq('user_id', this.currentUser.id)
+        .single();
+
+      if (accountError && accountError.code !== 'PGRST116') {
+        console.error('Account error:', accountError);
+        // Don't throw error, just continue without account
       }
 
       if (applications && applications.length > 0) {
         const application = applications[0];
         this.displayApplicationData(application);
+        
+        // Display personal link if account exists
+        if (accounts) {
+          this.displayPersonalLink(accounts.personal_link_code);
+        }
       } else {
         this.showNoApplicationMessage();
       }
@@ -309,6 +326,30 @@ class AuthManager {
     document.getElementById('contact-email').textContent = application.email;
     document.getElementById('contact-phone').textContent = application.phone || 'Inte angivet';
     document.getElementById('contact-organization').textContent = application.organization;
+  }
+
+  displayPersonalLink(linkCode) {
+    const personalLinkInput = document.getElementById('personal-link');
+    const siteUrl = window.location.origin;
+    const fullLink = `${siteUrl}/order.html?code=${linkCode}`;
+    
+    personalLinkInput.value = fullLink;
+    
+    // Set up copy functionality
+    const copyBtn = document.getElementById('copy-link-btn');
+    copyBtn.addEventListener('click', () => {
+      personalLinkInput.select();
+      document.execCommand('copy');
+      
+      const originalText = copyBtn.textContent;
+      copyBtn.textContent = 'Kopierad!';
+      copyBtn.style.background = '#10b981';
+      
+      setTimeout(() => {
+        copyBtn.textContent = originalText;
+        copyBtn.style.background = '';
+      }, 2000);
+    });
   }
 
   showNoApplicationMessage() {
