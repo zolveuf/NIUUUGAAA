@@ -271,8 +271,9 @@ class AuthManager {
         if (accounts) {
           this.displayPersonalLink(accounts.personal_link_code);
           
-          // Load and display orders
+          // Load and display orders and stats
           await this.loadOrders(accounts.id);
+          await this.loadStats(accounts.id);
         }
       } else {
         this.showNoApplicationMessage();
@@ -378,11 +379,85 @@ class AuthManager {
     }
 
     ordersContainer.innerHTML = `
-      <h3>Beställningar (${orders.length})</h3>
       <div class="orders-list">
         ${orders.map(order => this.createOrderCard(order)).join('')}
       </div>
     `;
+  }
+
+  async loadStats(accountId) {
+    try {
+      console.log('Loading stats for account:', accountId);
+      
+      const { data: orders, error } = await this.supabase
+        .from('orders')
+        .select('*')
+        .eq('account_id', accountId);
+
+      if (error) {
+        console.error('Error loading stats:', error);
+        return;
+      }
+
+      console.log('Orders for stats:', orders);
+      this.displayStats(orders || []);
+      
+    } catch (error) {
+      console.error('Error loading stats:', error);
+    }
+  }
+
+  displayStats(orders) {
+    // Update hero stats
+    const heroStats = document.getElementById('hero-stats');
+    if (heroStats) {
+      const totalOrders = orders.length;
+      const totalRevenue = orders.reduce((sum, order) => sum + (order.total_amount || 0), 0);
+      const pendingOrders = orders.filter(order => order.status === 'pending').length;
+      
+      heroStats.innerHTML = `
+        <div class="stat-item">
+          <span class="stat-number">${totalOrders}</span>
+          <span class="stat-label">Beställningar</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number">${totalRevenue} kr</span>
+          <span class="stat-label">Total försäljning</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number">${pendingOrders}</span>
+          <span class="stat-label">Väntande</span>
+        </div>
+      `;
+    }
+
+    // Update stats grid
+    const statsGrid = document.getElementById('stats-grid');
+    if (statsGrid) {
+      const totalOrders = orders.length;
+      const totalRevenue = orders.reduce((sum, order) => sum + (order.total_amount || 0), 0);
+      const avgOrderValue = totalOrders > 0 ? Math.round(totalRevenue / totalOrders) : 0;
+      const completedOrders = orders.filter(order => order.status === 'delivered').length;
+      
+      statsGrid.innerHTML = `
+        <div class="stat-card">
+          <span class="number">${totalOrders}</span>
+          <span class="label">Totalt antal</span>
+        </div>
+        <div class="stat-card">
+          <span class="number">${avgOrderValue} kr</span>
+          <span class="label">Genomsnitt</span>
+        </div>
+        <div class="stat-card">
+          <span class="number">${completedOrders}</span>
+          <span class="label">Levererade</span>
+        </div>
+        <div class="stat-card">
+          <span class="number">${totalRevenue} kr</span>
+          <span class="label">Total summa</span>
+        </div>
+      `;
+    }
   }
 
   createOrderCard(order) {

@@ -47,11 +47,16 @@
     </header>
 
     <main>
-      <section class="page-hero">
+      <section class="dashboard-hero">
         <div class="container">
-          <div class="page-hero-content">
-            <h1>Min sida</h1>
-            <p>Här kan du se din ansökan och följa processen.</p>
+          <div class="dashboard-hero-content">
+            <div class="hero-info">
+              <h1>Min förening</h1>
+              <p>Din centrala hub för att hantera beställningar och följa din ansökan</p>
+            </div>
+            <div class="hero-stats" id="hero-stats">
+              <!-- Stats will be populated by JavaScript -->
+            </div>
           </div>
         </div>
       </section>
@@ -67,81 +72,105 @@
 
             <!-- Dashboard content -->
             <div class="dashboard-content" id="dashboard-content" style="display: none;">
-              <div class="dashboard-grid">
-                <!-- Application Status -->
-                <div class="dashboard-card status-card">
-                  <h3>Status på din ansökan</h3>
-                  <div class="status-indicator" id="status-indicator">
-                    <span class="status-badge" id="status-badge">Mottagen</span>
-                    <p class="status-message" id="status-message">Vi har mottagit din ansökan och kommer att kontakta dig inom 24 timmar.</p>
-                  </div>
-                </div>
-
-                <!-- Application Details -->
-                <div class="dashboard-card">
-                  <h3>Din ansökan</h3>
-                  <div class="application-details" id="application-details">
-                    <!-- Will be populated by JavaScript -->
-                  </div>
-                </div>
-
-                <!-- Next Steps -->
-                <div class="dashboard-card">
-                  <h3>Nästa steg</h3>
-                  <div class="next-steps" id="next-steps">
-                    <div class="step">
-                      <div class="step-icon">📞</div>
-                      <div class="step-content">
-                        <h4>Telefonkontakt</h4>
-                        <p>Vi ringer dig inom 24 timmar för att diskutera din ansökan.</p>
+              <div class="dashboard-layout">
+                <!-- Main Content Area -->
+                <div class="dashboard-main">
+                  <!-- Quick Actions -->
+                  <div class="quick-actions">
+                    <div class="action-card primary">
+                      <div class="action-icon">🔗</div>
+                      <div class="action-content">
+                        <h3>Dela beställningslänk</h3>
+                        <p>Kopiera och dela din personliga länk</p>
+                        <div class="link-container">
+                          <input type="text" id="personal-link" readonly class="link-input">
+                          <button class="btn btn--sm btn--primary" id="copy-link-btn">Kopiera</button>
+                        </div>
                       </div>
                     </div>
-                    <div class="step">
-                      <div class="step-icon">📋</div>
-                      <div class="step-content">
-                        <h4>Godkännande</h4>
-                        <p>Efter vårt samtal godkänner vi din ansökan.</p>
-                      </div>
-                    </div>
-                    <div class="step">
-                      <div class="step-icon">📦</div>
-                      <div class="step-content">
-                        <h4>Produkter</h4>
-                        <p>Vi skickar produkter och material till er grupp.</p>
+                    
+                    <div class="action-card">
+                      <div class="action-icon">📊</div>
+                      <div class="action-content">
+                        <h3>Beställningsstatistik</h3>
+                        <div class="stats-grid" id="stats-grid">
+                          <!-- Stats will be populated by JavaScript -->
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
 
-                <!-- Personal Link -->
-                <div class="dashboard-card personal-link-card">
-                  <h3>Din personliga beställningslänk</h3>
-                  <div class="personal-link-info">
-                    <p>Dela denna länk med dina kunder så att de kan lägga beställningar:</p>
-                    <div class="link-container">
-                      <input type="text" id="personal-link" readonly class="link-input">
-                      <button class="btn btn--sm btn--primary" id="copy-link-btn">Kopiera</button>
+                  <!-- Orders Section -->
+                  <div class="orders-section">
+                    <div class="section-header">
+                      <h2>Beställningar</h2>
+                      <div class="section-actions">
+                        <button class="btn btn--sm btn--ghost" id="refresh-orders">Uppdatera</button>
+                      </div>
                     </div>
-                    <p class="link-help">Alla beställningar som görs via denna länk visas här på din dashboard!</p>
+                    <div id="orders-container">
+                      <!-- Orders will be loaded here -->
+                    </div>
                   </div>
                 </div>
 
-                <!-- Orders -->
-                <div class="dashboard-card">
-                  <div id="orders-container">
-                    <!-- Orders will be loaded here -->
+                <!-- Sidebar -->
+                <div class="dashboard-sidebar">
+                  <!-- Status Card -->
+                  <div class="status-card">
+                    <h3>Status</h3>
+                    <div class="status-indicator" id="status-indicator">
+                      <span class="status-badge" id="status-badge">Mottagen</span>
+                      <p class="status-message" id="status-message">Vi har mottagit din ansökan och kommer att kontakta dig inom 24 timmar.</p>
+                    </div>
                   </div>
-                </div>
 
-                <!-- Contact Info -->
-                <div class="dashboard-card">
-                  <h3>Kontaktinformation</h3>
-                  <div class="contact-info">
-                    <p><strong>E-post:</strong> <span id="contact-email">-</span></p>
-                    <p><strong>Telefon:</strong> <span id="contact-phone">-</span></p>
-                    <p><strong>Organisation:</strong> <span id="contact-organization">-</span></p>
+                  <!-- Application Details -->
+                  <div class="info-card">
+                    <h3>Din ansökan</h3>
+                    <div class="application-details" id="application-details">
+                      <!-- Will be populated by JavaScript -->
+                    </div>
                   </div>
-                  <button class="btn btn--primary btn--sm" id="update-contact-btn">Uppdatera kontaktinfo</button>
+
+                  <!-- Contact Info -->
+                  <div class="info-card">
+                    <h3>Kontaktinformation</h3>
+                    <div class="contact-info">
+                      <p><strong>E-post:</strong> <span id="contact-email">-</span></p>
+                      <p><strong>Telefon:</strong> <span id="contact-phone">-</span></p>
+                      <p><strong>Organisation:</strong> <span id="contact-organization">-</span></p>
+                    </div>
+                    <button class="btn btn--primary btn--sm" id="update-contact-btn">Uppdatera</button>
+                  </div>
+
+                  <!-- Next Steps -->
+                  <div class="info-card">
+                    <h3>Nästa steg</h3>
+                    <div class="next-steps" id="next-steps">
+                      <div class="step">
+                        <div class="step-icon">📞</div>
+                        <div class="step-content">
+                          <h4>Telefonkontakt</h4>
+                          <p>Vi ringer dig inom 24 timmar för att diskutera din ansökan.</p>
+                        </div>
+                      </div>
+                      <div class="step">
+                        <div class="step-icon">📋</div>
+                        <div class="step-content">
+                          <h4>Godkännande</h4>
+                          <p>Efter vårt samtal godkänner vi din ansökan.</p>
+                        </div>
+                      </div>
+                      <div class="step">
+                        <div class="step-icon">📦</div>
+                        <div class="step-content">
+                          <h4>Produkter</h4>
+                          <p>Vi skickar produkter och material till er grupp.</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
