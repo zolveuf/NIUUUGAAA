@@ -49,6 +49,7 @@ const CONFIG = {
   // Supabase Configuration
   SUPABASE_URL: 'https://your-project.supabase.co',
   SUPABASE_ANON_KEY: 'your-supabase-anon-key',
+  SUPABASE_SERVICE_ROLE_KEY: 'your-service-role-key', // Only for backend!
   
   // SendGrid Configuration
   SENDGRID_API_KEY: 'your-sendgrid-api-key',
