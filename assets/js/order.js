@@ -155,15 +155,19 @@ class OrderManager {
     ];
 
     productSelection.innerHTML = products.map(product => `
-      <div class="product-item">
-        <div class="product-info">
-          <h4>${product.name}</h4>
-          <p>${product.description}</p>
+      <div class="product-card">
+        <div class="product-header">
+          <h4 class="product-name">${product.name}</h4>
           <span class="product-price">${product.price} kr</span>
         </div>
+        <p class="product-description">${product.description}</p>
         <div class="product-quantity">
-          <label for="qty-${product.id}">Antal:</label>
-          <input type="number" id="qty-${product.id}" name="qty-${product.id}" min="0" max="100" value="0" class="quantity-input">
+          <label for="qty-${product.id}" class="quantity-label">Antal:</label>
+          <div class="quantity-controls">
+            <button type="button" class="quantity-btn quantity-decrease" data-product="${product.id}">-</button>
+            <input type="number" id="qty-${product.id}" name="qty-${product.id}" min="0" max="100" value="0" class="quantity-input">
+            <button type="button" class="quantity-btn quantity-increase" data-product="${product.id}">+</button>
+          </div>
         </div>
       </div>
     `).join('');
@@ -174,6 +178,32 @@ class OrderManager {
     if (orderForm) {
       orderForm.addEventListener('submit', (e) => this.handleOrderSubmit(e));
     }
+    
+    // Add quantity button event listeners
+    this.setupQuantityButtons();
+  }
+
+  setupQuantityButtons() {
+    // Decrease buttons
+    document.addEventListener('click', (e) => {
+      if (e.target.classList.contains('quantity-decrease')) {
+        const productId = e.target.dataset.product;
+        const input = document.getElementById(`qty-${productId}`);
+        const currentValue = parseInt(input.value) || 0;
+        if (currentValue > 0) {
+          input.value = currentValue - 1;
+        }
+      }
+      
+      if (e.target.classList.contains('quantity-increase')) {
+        const productId = e.target.dataset.product;
+        const input = document.getElementById(`qty-${productId}`);
+        const currentValue = parseInt(input.value) || 0;
+        if (currentValue < 100) {
+          input.value = currentValue + 1;
+        }
+      }
+    });
   }
 
   async handleOrderSubmit(e) {
