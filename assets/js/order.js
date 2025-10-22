@@ -121,10 +121,18 @@ class OrderManager {
     
     // Sample products - you can make this dynamic later
     const products = [
-      { id: 'kakburkar', name: 'Kakburkar', price: 25, description: 'Mixade kakburkar' },
-      { id: 'choklad', name: 'Choklad', price: 30, description: 'Premium choklad' },
-      { id: 'knack', name: 'Knäck & kola', price: 20, description: 'Hemlagad knäck och kola' },
-      { id: 'smakakor', name: 'Småkakor', price: 15, description: 'Olika småkakor' }
+      { id: 'kakburkar', name: 'Kakburkar Mix', price: 25, description: 'Mixade kakburkar med olika smaker' },
+      { id: 'choklad', name: 'Premium Choklad', price: 30, description: 'Högkvalitativ choklad från Belgien' },
+      { id: 'knack', name: 'Knäck & Kola', price: 20, description: 'Hemlagad knäck och kola' },
+      { id: 'smakakor', name: 'Småkakor Mix', price: 15, description: 'Olika småkakor i praktisk förpackning' },
+      { id: 'pepparkakor', name: 'Pepparkakor', price: 18, description: 'Klassiska pepparkakor med kanel' },
+      { id: 'mazariner', name: 'Mazariner', price: 22, description: 'Svenska mazariner med mandelmassa' },
+      { id: 'prinsesstårta', name: 'Prinsesstårta', price: 45, description: 'Klassisk prinsesstårta med grädde' },
+      { id: 'kanelbullar', name: 'Kanelbullar', price: 12, description: 'Hemlagade kanelbullar med socker' },
+      { id: 'semlor', name: 'Semlor', price: 28, description: 'Traditionella semlor med mandelmassa' },
+      { id: 'kladdkaka', name: 'Kladdkaka', price: 35, description: 'Chokladkladdkaka med vispgrädde' },
+      { id: 'dammsugare', name: 'Dammsugare', price: 16, description: 'Klassiska dammsugare med kokos' },
+      { id: 'napoleonbakelse', name: 'Napoleonbakelse', price: 38, description: 'Elegant napoleonbakelse med vaniljkräm' }
     ];
 
     productSelection.innerHTML = products.map(product => `
@@ -163,10 +171,18 @@ class OrderManager {
     const orderDetails = {};
     let totalAmount = 0;
     const products = [
-      { id: 'kakburkar', name: 'Kakburkar', price: 25 },
-      { id: 'choklad', name: 'Choklad', price: 30 },
-      { id: 'knack', name: 'Knäck & kola', price: 20 },
-      { id: 'smakakor', name: 'Småkakor', price: 15 }
+      { id: 'kakburkar', name: 'Kakburkar Mix', price: 25 },
+      { id: 'choklad', name: 'Premium Choklad', price: 30 },
+      { id: 'knack', name: 'Knäck & Kola', price: 20 },
+      { id: 'smakakor', name: 'Småkakor Mix', price: 15 },
+      { id: 'pepparkakor', name: 'Pepparkakor', price: 18 },
+      { id: 'mazariner', name: 'Mazariner', price: 22 },
+      { id: 'prinsesstårta', name: 'Prinsesstårta', price: 45 },
+      { id: 'kanelbullar', name: 'Kanelbullar', price: 12 },
+      { id: 'semlor', name: 'Semlor', price: 28 },
+      { id: 'kladdkaka', name: 'Kladdkaka', price: 35 },
+      { id: 'dammsugare', name: 'Dammsugare', price: 16 },
+      { id: 'napoleonbakelse', name: 'Napoleonbakelse', price: 38 }
     ];
 
     products.forEach(product => {

@@ -912,8 +912,8 @@ body.no-scroll { overflow: hidden; }
 }
 
 .product-selection {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: var(--space-4);
   margin-bottom: var(--space-6);
 }
@@ -1004,6 +1004,10 @@ body.no-scroll { overflow: hidden; }
 @media (max-width: 768px) {
   .order-form-container {
     padding: var(--space-6);
+  }
+  
+  .product-selection {
+    grid-template-columns: 1fr;
   }
   
   .product-item {
