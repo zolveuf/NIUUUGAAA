@@ -7,24 +7,40 @@ class AuthManager {
   }
 
   async init() {
-    // Wait for config to load
-    await this.waitForConfig();
-    
-    // Initialize Supabase client
-    this.supabase = supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
-    
-    // Check if user is already logged in
-    await this.checkAuthState();
-    
-    // Set up event listeners
-    this.setupEventListeners();
+    try {
+      // Wait for config to load
+      await this.waitForConfig();
+      
+      // Initialize Supabase client
+      this.supabase = supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
+      console.log('Supabase client initialized');
+      
+      // Check if user is already logged in
+      await this.checkAuthState();
+      
+      // Set up event listeners
+      this.setupEventListeners();
+      
+    } catch (error) {
+      console.error('Auth initialization error:', error);
+      this.showConfigError();
+    }
   }
 
   async waitForConfig() {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
+      let attempts = 0;
+      const maxAttempts = 50; // 5 seconds max wait
+      
       const checkConfig = () => {
+        attempts++;
+        
         if (window.SUPABASE_URL && window.SUPABASE_ANON_KEY) {
+          console.log('Config loaded successfully');
           resolve();
+        } else if (attempts >= maxAttempts) {
+          console.error('Config loading timeout. SUPABASE_URL:', window.SUPABASE_URL, 'SUPABASE_ANON_KEY:', window.SUPABASE_ANON_KEY);
+          reject(new Error('Config loading timeout'));
         } else {
           setTimeout(checkConfig, 100);
         }
@@ -358,6 +374,23 @@ class AuthManager {
         messageEl.remove();
       }
     }, 5000);
+  }
+
+  showConfigError() {
+    const errorMessage = 'Konfiguration kunde inte laddas. Kontrollera att alla API-nycklar är korrekt inställda.';
+    
+    // Show error on login page
+    if (window.location.pathname.includes('login.html')) {
+      this.showMessage(errorMessage, 'error');
+    } else {
+      // Show error on dashboard
+      const errorState = document.getElementById('error-state');
+      const errorText = document.getElementById('error-message');
+      if (errorState && errorText) {
+        errorText.textContent = errorMessage;
+        errorState.style.display = 'block';
+      }
+    }
   }
 
   showUpdateContactForm() {

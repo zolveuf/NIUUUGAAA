@@ -178,9 +178,9 @@
       </div>
     </footer>
 
-    <!-- Config only needed for local development, not in production -->
+    <!-- Config loading -->
     <script>
-      // Only load config in local development (not on Netlify)
+      // Load config for local development
       if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
         const script = document.createElement('script');
         script.src = 'config.local.js';
@@ -189,6 +189,11 @@
           fallback.src = 'config.js';
           document.head.appendChild(fallback);
         };
+        document.head.appendChild(script);
+      } else {
+        // For production (Netlify), load config.js
+        const script = document.createElement('script');
+        script.src = 'config.js';
         document.head.appendChild(script);
       }
     </script>
