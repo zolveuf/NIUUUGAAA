@@ -54,6 +54,9 @@ exports.handler = async (event, context) => {
     }
 
     // Generate reset token using Supabase Auth
+    console.log('Generating reset link for:', email);
+    console.log('Redirect to:', redirectTo);
+    
     const { data: resetData, error: resetError } = await supabase.auth.admin.generateLink({
       type: 'recovery',
       email: email,
@@ -69,6 +72,9 @@ exports.handler = async (event, context) => {
         body: JSON.stringify({ error: 'Kunde inte generera återställningslänk' })
       };
     }
+
+    console.log('Reset data received:', resetData);
+    console.log('Action link:', resetData.properties.action_link);
 
     // Initialize SendGrid
     sgMail.setApiKey(process.env.SENDGRID_API_KEY);
