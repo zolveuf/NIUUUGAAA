@@ -81,7 +81,11 @@ class ResetPasswordManager {
       const accessToken = urlParams.get('access_token');
       const refreshToken = urlParams.get('refresh_token');
       
-      console.log('URL parameters:', { accessToken: !!accessToken, refreshToken: !!refreshToken });
+      console.log('URL parameters:', { 
+        accessToken: !!accessToken, 
+        refreshToken: !!refreshToken,
+        fullUrl: window.location.href 
+      });
       
       if (!accessToken || !refreshToken) {
         console.log('No reset tokens found in URL');
@@ -92,7 +96,15 @@ class ResetPasswordManager {
         return false;
       }
 
+      // Clear any existing session first to avoid conflicts
+      console.log('Clearing existing session...');
+      await this.supabase.auth.signOut();
+
+      // Wait a moment for cleanup
+      await new Promise(resolve => setTimeout(resolve, 100));
+
       // Set the session using the tokens from URL
+      console.log('Setting new session with reset tokens...');
       const { data: { session }, error } = await this.supabase.auth.setSession({
         access_token: accessToken,
         refresh_token: refreshToken
@@ -100,7 +112,7 @@ class ResetPasswordManager {
 
       if (error) {
         console.error('Session set error:', error);
-        this.showMessage('Återställningslänken är ogiltig eller har gått ut', 'error');
+        this.showMessage('Återställningslänken är ogiltig eller har gått ut: ' + error.message, 'error');
         setTimeout(() => {
           window.location.href = 'forgot-password.html';
         }, 3000);
@@ -117,9 +129,13 @@ class ResetPasswordManager {
       }
 
       console.log('Valid reset session established for user:', session.user.email);
+      console.log('Session expires at:', new Date(session.expires_at * 1000));
       
       // Show user info
       this.showUserInfo(session.user.email);
+      
+      // Set up session monitoring to prevent unexpected logouts
+      this.setupSessionMonitoring();
       
       return true;
       
@@ -241,6 +257,36 @@ class ResetPasswordManager {
     return true;
   }
 
+  setupSessionMonitoring() {
+    // Monitor auth state changes
+    this.supabase.auth.onAuthStateChange((event, session) => {
+      console.log('Auth state change:', event, session ? 'session exists' : 'no session');
+      
+      if (event === 'SIGNED_OUT' || !session) {
+        console.log('User was signed out unexpectedly');
+        this.showMessage('Din session har gått ut. Du omdirigeras till återställningssidan...', 'error');
+        setTimeout(() => {
+          window.location.href = 'forgot-password.html';
+        }, 2000);
+      }
+    });
+
+    // Check session every 30 seconds
+    this.sessionCheckInterval = setInterval(async () => {
+      const { data: { session } } = await this.supabase.auth.getSession();
+      if (!session) {
+        console.log('Session check failed - no active session');
+        this.showMessage('Din session har gått ut. Du omdirigeras till återställningssidan...', 'error');
+        clearInterval(this.sessionCheckInterval);
+        setTimeout(() => {
+          window.location.href = 'forgot-password.html';
+        }, 2000);
+      } else {
+        console.log('Session check passed - session still valid');
+      }
+    }, 30000); // Check every 30 seconds
+  }
+
   showUserInfo(email) {
     const userInfo = document.getElementById('user-info');
     const userEmail = document.getElementById('user-email');
@@ -273,4 +319,11 @@ class ResetPasswordManager {
 // Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
   window.resetPasswordManager = new ResetPasswordManager();
+});
+
+// Cleanup when page is unloaded
+window.addEventListener('beforeunload', () => {
+  if (window.resetPasswordManager && window.resetPasswordManager.sessionCheckInterval) {
+    clearInterval(window.resetPasswordManager.sessionCheckInterval);
+  }
 });
