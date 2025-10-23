@@ -75,16 +75,35 @@ class ResetPasswordManager {
 
   async checkResetSession() {
     try {
+      // Save debug info to localStorage so we can see it even after redirect
+      const debugInfo = {
+        timestamp: new Date().toISOString(),
+        fullUrl: window.location.href,
+        userAgent: navigator.userAgent
+      };
+      
       // Check for access_token and refresh_token in URL parameters
       const urlParams = new URLSearchParams(window.location.search);
       const accessToken = urlParams.get('access_token');
       const refreshToken = urlParams.get('refresh_token');
       
-      console.log('🔍 URL parameters:', { 
+      debugInfo.urlParams = { 
         accessToken: !!accessToken, 
         refreshToken: !!refreshToken,
-        fullUrl: window.location.href 
-      });
+        hasAccessToken: !!accessToken,
+        hasRefreshToken: !!refreshToken,
+        accessTokenLength: accessToken?.length || 0,
+        refreshTokenLength: refreshToken?.length || 0
+      };
+      
+      console.log('🔍 URL parameters:', debugInfo.urlParams);
+      console.log('🌐 Full URL:', window.location.href);
+      
+      // Save to localStorage immediately
+      localStorage.setItem('passwordResetDebug', JSON.stringify(debugInfo));
+      
+      // Show debug info on page immediately
+      this.showDebugInfo(debugInfo);
       
       if (!accessToken || !refreshToken) {
         console.log('❌ No reset tokens found in URL');
@@ -233,6 +252,16 @@ class ResetPasswordManager {
     }
 
     return true;
+  }
+
+  showDebugInfo(debugInfo) {
+    const debugUrl = document.getElementById('debug-url');
+    const debugTokens = document.getElementById('debug-tokens');
+    
+    if (debugUrl && debugTokens) {
+      debugUrl.textContent = `URL: ${debugInfo.fullUrl}`;
+      debugTokens.textContent = `Tokens: Access=${debugInfo.urlParams.hasAccessToken ? 'YES' : 'NO'}, Refresh=${debugInfo.urlParams.hasRefreshToken ? 'YES' : 'NO'}`;
+    }
   }
 
   showUserInfo(email) {
