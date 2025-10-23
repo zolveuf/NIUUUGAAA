@@ -28,9 +28,19 @@ exports.handler = async (event, context) => {
   }
 
   try {
+    console.log('Reset password function called');
+    console.log('Event body:', event.body);
+    
     const { token, password } = JSON.parse(event.body);
 
+    console.log('Parsed data:', { 
+      hasToken: !!token, 
+      tokenLength: token?.length,
+      hasPassword: !!password 
+    });
+
     if (!token || !password) {
+      console.log('Missing token or password');
       return {
         statusCode: 400,
         headers: {
@@ -46,6 +56,12 @@ exports.handler = async (event, context) => {
     // Initialize Supabase client
     const supabaseUrl = process.env.SUPABASE_URL;
     const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    
+    console.log('Environment variables:', {
+      hasSupabaseUrl: !!supabaseUrl,
+      hasServiceKey: !!supabaseServiceKey,
+      urlLength: supabaseUrl?.length
+    });
     
     if (!supabaseUrl || !supabaseServiceKey) {
       console.error('Missing Supabase environment variables');
@@ -63,11 +79,17 @@ exports.handler = async (event, context) => {
 
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    // Verify the token and update password
-    const { data, error } = await supabase.auth.admin.updateUserById(
-      token, // This should be the user ID from the token
-      { password: password }
-    );
+    // Parse the JWT token to get user information
+    const tokenPayload = JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString());
+    const userId = tokenPayload.sub;
+    
+    console.log('Token payload:', tokenPayload);
+    console.log('User ID:', userId);
+
+    // Update password using admin API
+    const { data, error } = await supabase.auth.admin.updateUserById(userId, {
+      password: password
+    });
 
     if (error) {
       console.error('Password update error:', error);

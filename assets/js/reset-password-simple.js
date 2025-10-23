@@ -137,6 +137,11 @@ class ResetPasswordManager {
       submitButton.disabled = true;
 
       console.log('🔄 Updating password via Netlify Function...');
+      console.log('Request data:', {
+        tokenLength: this.resetToken?.length,
+        tokenStart: this.resetToken?.substring(0, 20) + '...',
+        passwordLength: password.length
+      });
 
       // Call our custom Netlify Function
       const response = await fetch('/.netlify/functions/reset-password', {
@@ -150,7 +155,11 @@ class ResetPasswordManager {
         })
       });
 
+      console.log('Response status:', response.status);
+      console.log('Response headers:', Object.fromEntries(response.headers.entries()));
+
       const result = await response.json();
+      console.log('Response result:', result);
 
       if (!response.ok) {
         throw new Error(result.error || 'Nätverksfel');
