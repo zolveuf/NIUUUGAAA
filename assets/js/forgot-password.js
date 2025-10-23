@@ -99,21 +99,33 @@ class ForgotPasswordManager {
       submitButton.textContent = 'Skickar...';
       submitButton.disabled = true;
 
-      console.log('Sending password reset request for:', email);
+      console.log('🔄 Sending password reset request for:', email);
+      console.log('🌐 Current origin:', window.location.origin);
+      console.log('🔗 Redirect URL:', `${window.location.origin}/reset-password.html`);
 
       // Send password reset request to our backend
-      const response = await fetch('/.netlify/functions/send-password-reset', {
+      const requestUrl = '/.netlify/functions/send-password-reset';
+      const requestBody = {
+        email: email,
+        redirectTo: `${window.location.origin}/reset-password.html`
+      };
+      
+      console.log('📤 Request URL:', requestUrl);
+      console.log('📤 Request body:', requestBody);
+
+      const response = await fetch(requestUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          email: email,
-          redirectTo: `${window.location.origin}/reset-password.html`
-        })
+        body: JSON.stringify(requestBody)
       });
 
+      console.log('📥 Response status:', response.status);
+      console.log('📥 Response headers:', Object.fromEntries(response.headers.entries()));
+
       const result = await response.json();
+      console.log('📥 Response result:', result);
 
       if (!response.ok) {
         throw new Error(result.error || 'Kunde inte skicka återställningslänk');
