@@ -101,14 +101,22 @@ class ForgotPasswordManager {
 
       console.log('Sending password reset request for:', email);
 
-      // Send password reset email using Supabase Auth
-      const { error } = await this.supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/reset-password.html`
+      // Send password reset request to our backend
+      const response = await fetch('/.netlify/functions/send-password-reset', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: email,
+          redirectTo: `${window.location.origin}/reset-password.html`
+        })
       });
 
-      if (error) {
-        console.error('Password reset error:', error);
-        throw new Error('Kunde inte skicka återställningslänk: ' + error.message);
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Kunde inte skicka återställningslänk');
       }
 
       this.showMessage('Återställningslänk har skickats till din e-postadress!', 'success');

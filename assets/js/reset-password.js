@@ -74,10 +74,28 @@ class ResetPasswordManager {
 
   async checkResetSession() {
     try {
-      const { data: { session }, error } = await this.supabase.auth.getSession();
+      // Check for access_token and refresh_token in URL parameters
+      const urlParams = new URLSearchParams(window.location.search);
+      const accessToken = urlParams.get('access_token');
+      const refreshToken = urlParams.get('refresh_token');
       
+      if (!accessToken || !refreshToken) {
+        console.log('No reset tokens found in URL');
+        this.showMessage('Återställningslänken är ogiltig eller har gått ut', 'error');
+        setTimeout(() => {
+          window.location.href = 'forgot-password.html';
+        }, 3000);
+        return;
+      }
+
+      // Set the session using the tokens from URL
+      const { data: { session }, error } = await this.supabase.auth.setSession({
+        access_token: accessToken,
+        refresh_token: refreshToken
+      });
+
       if (error) {
-        console.error('Session check error:', error);
+        console.error('Session set error:', error);
         this.showMessage('Återställningslänken är ogiltig eller har gått ut', 'error');
         setTimeout(() => {
           window.location.href = 'forgot-password.html';
@@ -86,7 +104,7 @@ class ResetPasswordManager {
       }
 
       if (!session) {
-        console.log('No valid session found');
+        console.log('No valid session after setting tokens');
         this.showMessage('Återställningslänken är ogiltig eller har gått ut', 'error');
         setTimeout(() => {
           window.location.href = 'forgot-password.html';
@@ -94,7 +112,7 @@ class ResetPasswordManager {
         return;
       }
 
-      console.log('Valid reset session found');
+      console.log('Valid reset session established');
       
     } catch (error) {
       console.error('Session check error:', error);
