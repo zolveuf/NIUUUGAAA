@@ -377,6 +377,7 @@ class AuthManager {
           <p>Inga beställningar än. Dela din personliga länk för att börja ta emot beställningar!</p>
         </div>
       `;
+      this.updateSendButtonState([]);
       return;
     }
 
@@ -385,6 +386,31 @@ class AuthManager {
         ${orders.map(order => this.createOrderCard(order)).join('')}
       </div>
     `;
+    
+    // Update send button state based on orders
+    this.updateSendButtonState(orders);
+  }
+
+  updateSendButtonState(orders) {
+    const sendButton = document.getElementById('send-all-orders-btn');
+    if (!sendButton) return;
+
+    // Check if there are any pending orders
+    const pendingOrders = orders.filter(order => order.status === 'pending');
+    
+    if (pendingOrders.length === 0) {
+      // No pending orders - disable button
+      sendButton.disabled = true;
+      sendButton.textContent = 'Inga beställningar kan skickas';
+      sendButton.style.background = '#9ca3af';
+      sendButton.style.cursor = 'not-allowed';
+    } else {
+      // Has pending orders - enable button
+      sendButton.disabled = false;
+      sendButton.textContent = '📧 Skicka alla beställningar till Kakservice';
+      sendButton.style.background = '';
+      sendButton.style.cursor = 'pointer';
+    }
   }
 
   async loadStats(accountId) {
@@ -675,6 +701,8 @@ class AuthManager {
           if (button) {
             button.textContent = '✅ Alla skickade';
             button.style.background = '#10b981';
+            button.disabled = true;
+            button.style.cursor = 'not-allowed';
           }
         } catch (updateError) {
           console.error('Error updating orders status:', updateError);
