@@ -95,7 +95,7 @@ class OrderManager {
       }
 
       // Check if personal link has been deleted (sales period ended)
-      if (!accounts.personal_link_code) {
+      if (!accounts.personal_link_code || accounts.personal_link_code === 'DELETED') {
         throw new Error('Försäljningsperioden är avslutad. Denna länk fungerar inte längre.');
       }
 
