@@ -18,10 +18,12 @@ class ResetPasswordManager {
       console.log('Supabase client initialized for reset password');
       
       // Check if we have a valid session/token
-      await this.checkResetSession();
+      const sessionValid = await this.checkResetSession();
       
-      // Set up form handler
-      this.setupFormHandler();
+      if (sessionValid) {
+        // Set up form handler only if session is valid
+        this.setupFormHandler();
+      }
       
     } catch (error) {
       console.error('Reset password initialization error:', error);
@@ -79,13 +81,15 @@ class ResetPasswordManager {
       const accessToken = urlParams.get('access_token');
       const refreshToken = urlParams.get('refresh_token');
       
+      console.log('URL parameters:', { accessToken: !!accessToken, refreshToken: !!refreshToken });
+      
       if (!accessToken || !refreshToken) {
         console.log('No reset tokens found in URL');
         this.showMessage('Återställningslänken är ogiltig eller har gått ut', 'error');
         setTimeout(() => {
           window.location.href = 'forgot-password.html';
         }, 3000);
-        return;
+        return false;
       }
 
       // Set the session using the tokens from URL
@@ -100,19 +104,24 @@ class ResetPasswordManager {
         setTimeout(() => {
           window.location.href = 'forgot-password.html';
         }, 3000);
-        return;
+        return false;
       }
 
-      if (!session) {
+      if (!session || !session.user) {
         console.log('No valid session after setting tokens');
         this.showMessage('Återställningslänken är ogiltig eller har gått ut', 'error');
         setTimeout(() => {
           window.location.href = 'forgot-password.html';
         }, 3000);
-        return;
+        return false;
       }
 
-      console.log('Valid reset session established');
+      console.log('Valid reset session established for user:', session.user.email);
+      
+      // Show user info
+      this.showUserInfo(session.user.email);
+      
+      return true;
       
     } catch (error) {
       console.error('Session check error:', error);
@@ -120,6 +129,7 @@ class ResetPasswordManager {
       setTimeout(() => {
         window.location.href = 'forgot-password.html';
       }, 3000);
+      return false;
     }
   }
 
@@ -162,8 +172,18 @@ class ResetPasswordManager {
 
       console.log('Updating password');
 
+      // Check current session before updating
+      const { data: { session }, error: sessionError } = await this.supabase.auth.getSession();
+      
+      if (sessionError || !session) {
+        console.error('No valid session for password update:', sessionError);
+        throw new Error('Ingen giltig session för lösenordsuppdatering');
+      }
+
+      console.log('Current session user:', session.user?.email);
+
       // Update password using Supabase Auth
-      const { error } = await this.supabase.auth.updateUser({
+      const { data, error } = await this.supabase.auth.updateUser({
         password: password
       });
 
@@ -171,6 +191,8 @@ class ResetPasswordManager {
         console.error('Password update error:', error);
         throw new Error('Kunde inte uppdatera lösenordet: ' + error.message);
       }
+
+      console.log('Password updated successfully:', data);
 
       this.showMessage('Lösenordet har uppdaterats! Du omdirigeras till inloggningssidan...', 'success');
       
@@ -217,6 +239,16 @@ class ResetPasswordManager {
     }
 
     return true;
+  }
+
+  showUserInfo(email) {
+    const userInfo = document.getElementById('user-info');
+    const userEmail = document.getElementById('user-email');
+    
+    if (userInfo && userEmail) {
+      userEmail.textContent = email;
+      userInfo.style.display = 'block';
+    }
   }
 
   showMessage(text, type) {
