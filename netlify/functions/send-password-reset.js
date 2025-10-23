@@ -3,8 +3,13 @@ const { createClient } = require('@supabase/supabase-js');
 const sgMail = require('@sendgrid/mail');
 
 exports.handler = async (event, context) => {
+  console.log('🔍 send-password-reset function called');
+  console.log('HTTP Method:', event.httpMethod);
+  console.log('Event body:', event.body);
+  
   // Only allow POST requests
   if (event.httpMethod !== 'POST') {
+    console.log('❌ Method not allowed:', event.httpMethod);
     return {
       statusCode: 405,
       body: JSON.stringify({ error: 'Method not allowed' })
@@ -15,6 +20,8 @@ exports.handler = async (event, context) => {
     // Parse request body
     const data = JSON.parse(event.body);
     const { email, redirectTo } = data;
+    
+    console.log('📧 Parsed request data:', { email, redirectTo });
 
     if (!email) {
       return {
@@ -75,12 +82,24 @@ exports.handler = async (event, context) => {
 
     console.log('Reset data received:', resetData);
     console.log('Action link:', resetData.properties.action_link);
+    
+    // Check if the link contains tokens
+    const actionLink = resetData.properties.action_link;
+    const hasAccessToken = actionLink.includes('access_token=');
+    const hasRefreshToken = actionLink.includes('refresh_token=');
+    
+    console.log('🔍 Link analysis:', {
+      hasAccessToken,
+      hasRefreshToken,
+      linkLength: actionLink.length,
+      linkPreview: actionLink.substring(0, 100) + '...'
+    });
 
     // Initialize SendGrid
     sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
     // Create reset link
-    const resetLink = resetData.properties.action_link;
+    const resetLink = actionLink;
 
     // Email template
     const msg = {
@@ -129,9 +148,12 @@ exports.handler = async (event, context) => {
     };
 
     // Send email
+    console.log('📤 Sending email to:', email);
+    console.log('📤 Email link:', resetLink);
+    
     await sgMail.send(msg);
 
-    console.log('Password reset email sent to:', email);
+    console.log('✅ Password reset email sent successfully to:', email);
 
     return {
       statusCode: 200,
