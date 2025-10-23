@@ -1115,6 +1115,11 @@ body.no-scroll { overflow: hidden; }
   color: #991b1b;
 }
 
+.status-sent {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
 @media (max-width: 768px) {
   .order-details {
     grid-template-columns: 1fr;

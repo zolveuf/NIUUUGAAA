@@ -518,7 +518,8 @@ class AuthManager {
       'confirmed': 'Bekräftad',
       'shipped': 'Skickad',
       'delivered': 'Levererad',
-      'cancelled': 'Avbruten'
+      'cancelled': 'Avbruten',
+      'sent': 'Skickad till Kakservice'
     };
     return statusMap[status] || status;
   }
@@ -653,8 +654,8 @@ class AuthManager {
         this.showMessage(`Alla ${orders.length} beställningar har skickats till Kakservice!`, 'success');
         
         try {
-          // Delete sent orders from database
-          await this.deleteSentOrders(orders.map(order => order.id));
+          // Update orders status to "sent" instead of deleting
+          await this.updateOrdersStatus(orders.map(order => order.id), 'sent');
           
           // Clear orders container immediately
           const ordersContainer = document.getElementById('orders-container');
@@ -665,19 +666,19 @@ class AuthManager {
           // Clear any cached order data
           this.clearOrderCache();
           
-          // Reload orders to update the display (should be empty now)
+          // Reload orders to update the display (should show sent orders now)
           await this.loadOrders(this.currentAccountId);
           
-          // Update stats to reflect empty orders
+          // Update stats to reflect sent orders
           await this.loadStats(this.currentAccountId);
           
           if (button) {
             button.textContent = '✅ Alla skickade';
             button.style.background = '#10b981';
           }
-        } catch (deleteError) {
-          console.error('Error deleting orders:', deleteError);
-          this.showMessage('Beställningar skickades men kunde inte raderas från hemsidan. Kontakta support.', 'error');
+        } catch (updateError) {
+          console.error('Error updating orders status:', updateError);
+          this.showMessage('Beställningar skickades men kunde inte uppdatera status. Kontakta support.', 'error');
         }
       } else {
         throw new Error(result.error || 'Kunde inte skicka beställningar');
@@ -693,6 +694,32 @@ class AuthManager {
         button.textContent = '📧 Skicka alla beställningar till Kakservice';
         button.disabled = false;
       }
+    }
+  }
+
+  // Update orders status
+  async updateOrdersStatus(orderIds, status) {
+    try {
+      console.log('Updating orders status:', orderIds, 'to:', status);
+      
+      const { error } = await this.supabase
+        .from('orders')
+        .update({ 
+          status: status,
+          updated_at: new Date().toISOString()
+        })
+        .in('id', orderIds);
+
+      if (error) {
+        console.error('Error updating orders status:', error);
+        throw new Error('Kunde inte uppdatera beställningsstatus: ' + error.message);
+      } else {
+        console.log('Orders status updated successfully to:', status);
+        return true;
+      }
+    } catch (error) {
+      console.error('Error updating orders status:', error);
+      throw error;
     }
   }
 
