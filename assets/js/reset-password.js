@@ -10,6 +10,9 @@ class ResetPasswordManager {
       // Wait for config to load
       await this.waitForConfig();
       
+      // Wait for Supabase library to load
+      await this.waitForSupabase();
+      
       // Initialize Supabase client
       this.supabase = supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
       console.log('Supabase client initialized for reset password');
@@ -44,6 +47,28 @@ class ResetPasswordManager {
       };
       
       checkConfig();
+    });
+  }
+
+  async waitForSupabase() {
+    return new Promise((resolve, reject) => {
+      let attempts = 0;
+      const maxAttempts = 50; // 5 seconds max wait
+      
+      const checkSupabase = () => {
+        attempts++;
+        
+        if (typeof supabase !== 'undefined') {
+          console.log('Supabase library loaded successfully');
+          resolve();
+        } else if (attempts >= maxAttempts) {
+          reject(new Error('Supabase library loading timeout'));
+        } else {
+          setTimeout(checkSupabase, 100);
+        }
+      };
+      
+      checkSupabase();
     });
   }
 
