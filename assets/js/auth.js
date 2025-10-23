@@ -552,26 +552,38 @@ class AuthManager {
 
   displayPersonalLink(linkCode) {
     const personalLinkInput = document.getElementById('personal-link');
-    const siteUrl = window.location.origin;
-    const fullLink = `${siteUrl}/order.html?code=${linkCode}`;
+    const linkContainer = document.querySelector('.personal-link-card');
     
-    personalLinkInput.value = fullLink;
-    
-    // Set up copy functionality
-    const copyBtn = document.getElementById('copy-link-btn');
-    copyBtn.addEventListener('click', () => {
-      personalLinkInput.select();
-      document.execCommand('copy');
+    if (linkCode) {
+      const siteUrl = window.location.origin;
+      const fullLink = `${siteUrl}/order.html?code=${linkCode}`;
       
-      const originalText = copyBtn.textContent;
-      copyBtn.textContent = 'Kopierad!';
-      copyBtn.style.background = '#10b981';
+      personalLinkInput.value = fullLink;
       
-      setTimeout(() => {
-        copyBtn.textContent = originalText;
-        copyBtn.style.background = '';
-      }, 2000);
-    });
+      // Set up copy functionality
+      const copyBtn = document.getElementById('copy-link-btn');
+      copyBtn.addEventListener('click', () => {
+        personalLinkInput.select();
+        document.execCommand('copy');
+        
+        const originalText = copyBtn.textContent;
+        copyBtn.textContent = 'Kopierad!';
+        copyBtn.style.background = '#10b981';
+        
+        setTimeout(() => {
+          copyBtn.textContent = originalText;
+          copyBtn.style.background = '';
+        }, 2000);
+      });
+    } else if (linkContainer) {
+      // Personal link has been deleted
+      linkContainer.innerHTML = `
+        <div class="link-deleted-message">
+          <h3>🔒 Din personliga länk har raderats</h3>
+          <p class="text-muted">Försäljningsperioden är avslutad</p>
+        </div>
+      `;
+    }
   }
 
   showNoApplicationMessage() {
@@ -635,6 +647,12 @@ class AuthManager {
     try {
       console.log('Sending all orders to Kakservice');
       
+      // Show confirmation dialog
+      const confirmed = confirm('Är du säker att du vill skicka beställningen? Då är eran försäljningsperiod över.');
+      if (!confirmed) {
+        return;
+      }
+      
       const button = document.getElementById('send-all-orders-btn');
       if (button) {
         button.textContent = 'Skickar alla beställningar...';
@@ -683,14 +701,8 @@ class AuthManager {
           // Update orders status to "sent" instead of deleting
           await this.updateOrdersStatus(orders.map(order => order.id), 'sent');
           
-          // Clear orders container immediately
-          const ordersContainer = document.getElementById('orders-container');
-          if (ordersContainer) {
-            ordersContainer.innerHTML = '<p class="no-orders">Inga beställningar att visa</p>';
-          }
-          
-          // Clear any cached order data
-          this.clearOrderCache();
+          // Delete the personal link to prevent further orders
+          await this.deletePersonalLink();
           
           // Reload orders to update the display (should show sent orders now)
           await this.loadOrders(this.currentAccountId);
@@ -699,11 +711,14 @@ class AuthManager {
           await this.loadStats(this.currentAccountId);
           
           if (button) {
-            button.textContent = '✅ Alla skickade';
+            button.textContent = '✅ Försäljningsperiod avslutad';
             button.style.background = '#10b981';
             button.disabled = true;
             button.style.cursor = 'not-allowed';
           }
+          
+          // Show success message
+          this.showMessage('Försäljningsperioden är nu avslutad! Din personliga länk har raderats.', 'success');
         } catch (updateError) {
           console.error('Error updating orders status:', updateError);
           this.showMessage('Beställningar skickades men kunde inte uppdatera status. Kontakta support.', 'error');
@@ -747,6 +762,32 @@ class AuthManager {
       }
     } catch (error) {
       console.error('Error updating orders status:', error);
+      throw error;
+    }
+  }
+
+  // Delete personal link to prevent further orders
+  async deletePersonalLink() {
+    try {
+      console.log('Deleting personal link for account:', this.currentAccountId);
+      
+      const { error } = await this.supabase
+        .from('accounts')
+        .update({ 
+          personal_link_code: null,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', this.currentAccountId);
+
+      if (error) {
+        console.error('Error deleting personal link:', error);
+        throw new Error('Kunde inte radera personlig länk: ' + error.message);
+      } else {
+        console.log('Personal link deleted successfully');
+        return true;
+      }
+    } catch (error) {
+      console.error('Error deleting personal link:', error);
       throw error;
     }
   }

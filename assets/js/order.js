@@ -94,6 +94,11 @@ class OrderManager {
         throw new Error('Beställningslänken är ogiltig');
       }
 
+      // Check if personal link has been deleted (sales period ended)
+      if (!accounts.personal_link_code) {
+        throw new Error('Försäljningsperioden är avslutad. Denna länk fungerar inte längre.');
+      }
+
       // Get application information separately
       const { data: applications, error: appError } = await this.supabase
         .from('applications')
