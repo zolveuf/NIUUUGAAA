@@ -97,14 +97,22 @@ class ResetPasswordManager {
       }
 
       // Clear any existing session first to avoid conflicts
-      console.log('Clearing existing session...');
-      await this.supabase.auth.signOut();
+      console.log('🧹 Clearing existing session...');
+      const signOutResult = await this.supabase.auth.signOut();
+      console.log('Sign out result:', signOutResult);
 
       // Wait a moment for cleanup
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise(resolve => setTimeout(resolve, 500));
 
       // Set the session using the tokens from URL
-      console.log('Setting new session with reset tokens...');
+      console.log('🔐 Setting new session with reset tokens...');
+      console.log('Token details:', {
+        accessTokenLength: accessToken.length,
+        refreshTokenLength: refreshToken.length,
+        accessTokenStart: accessToken.substring(0, 20) + '...',
+        refreshTokenStart: refreshToken.substring(0, 20) + '...'
+      });
+      
       const { data: { session }, error } = await this.supabase.auth.setSession({
         access_token: accessToken,
         refresh_token: refreshToken
@@ -128,14 +136,18 @@ class ResetPasswordManager {
         return false;
       }
 
-      console.log('Valid reset session established for user:', session.user.email);
-      console.log('Session expires at:', new Date(session.expires_at * 1000));
+      console.log('✅ Valid reset session established for user:', session.user.email);
+      console.log('⏰ Session expires at:', new Date(session.expires_at * 1000));
+      console.log('⏱️ Time until expiry:', Math.round((session.expires_at * 1000 - Date.now()) / 1000), 'seconds');
       
       // Show user info
       this.showUserInfo(session.user.email);
       
       // Set up session monitoring to prevent unexpected logouts
       this.setupSessionMonitoring();
+      
+      // Set up token refresh to keep session alive
+      this.setupTokenRefresh();
       
       return true;
       
@@ -257,34 +269,88 @@ class ResetPasswordManager {
     return true;
   }
 
+  setupTokenRefresh() {
+    console.log('🔄 Setting up token refresh...');
+    
+    // Refresh token every 5 minutes to keep session alive
+    this.tokenRefreshInterval = setInterval(async () => {
+      try {
+        console.log('🔄 Refreshing token...');
+        const { data: { session }, error } = await this.supabase.auth.refreshSession();
+        
+        if (error) {
+          console.error('❌ Token refresh error:', error);
+        } else if (session) {
+          console.log('✅ Token refreshed successfully');
+          console.log('⏰ New expiry:', new Date(session.expires_at * 1000));
+        }
+      } catch (error) {
+        console.error('❌ Token refresh exception:', error);
+      }
+    }, 5 * 60 * 1000); // Every 5 minutes
+  }
+
   setupSessionMonitoring() {
+    console.log('Setting up session monitoring...');
+    
     // Monitor auth state changes
     this.supabase.auth.onAuthStateChange((event, session) => {
-      console.log('Auth state change:', event, session ? 'session exists' : 'no session');
+      console.log('🔍 Auth state change detected:', {
+        event: event,
+        hasSession: !!session,
+        userEmail: session?.user?.email,
+        expiresAt: session?.expires_at ? new Date(session.expires_at * 1000) : null,
+        timestamp: new Date().toISOString()
+      });
       
       if (event === 'SIGNED_OUT' || !session) {
-        console.log('User was signed out unexpectedly');
+        console.log('❌ User was signed out unexpectedly');
         this.showMessage('Din session har gått ut. Du omdirigeras till återställningssidan...', 'error');
         setTimeout(() => {
           window.location.href = 'forgot-password.html';
         }, 2000);
+      } else if (event === 'SIGNED_IN') {
+        console.log('✅ User signed in successfully');
+      } else if (event === 'TOKEN_REFRESHED') {
+        console.log('🔄 Token refreshed successfully');
       }
     });
 
-    // Check session every 30 seconds
+    // Check session every 10 seconds for more frequent monitoring
     this.sessionCheckInterval = setInterval(async () => {
-      const { data: { session } } = await this.supabase.auth.getSession();
-      if (!session) {
-        console.log('Session check failed - no active session');
-        this.showMessage('Din session har gått ut. Du omdirigeras till återställningssidan...', 'error');
-        clearInterval(this.sessionCheckInterval);
-        setTimeout(() => {
-          window.location.href = 'forgot-password.html';
-        }, 2000);
-      } else {
-        console.log('Session check passed - session still valid');
+      try {
+        const { data: { session }, error } = await this.supabase.auth.getSession();
+        
+        console.log('🔍 Session check:', {
+          hasSession: !!session,
+          error: error?.message,
+          userEmail: session?.user?.email,
+          expiresAt: session?.expires_at ? new Date(session.expires_at * 1000) : null,
+          timeUntilExpiry: session?.expires_at ? Math.round((session.expires_at * 1000 - Date.now()) / 1000) : null,
+          timestamp: new Date().toISOString()
+        });
+        
+        if (error) {
+          console.error('❌ Session check error:', error);
+          this.showMessage('Session-fel: ' + error.message, 'error');
+          clearInterval(this.sessionCheckInterval);
+          setTimeout(() => {
+            window.location.href = 'forgot-password.html';
+          }, 2000);
+        } else if (!session) {
+          console.log('❌ Session check failed - no active session');
+          this.showMessage('Din session har gått ut. Du omdirigeras till återställningssidan...', 'error');
+          clearInterval(this.sessionCheckInterval);
+          setTimeout(() => {
+            window.location.href = 'forgot-password.html';
+          }, 2000);
+        } else {
+          console.log('✅ Session check passed - session still valid');
+        }
+      } catch (error) {
+        console.error('❌ Session check exception:', error);
       }
-    }, 30000); // Check every 30 seconds
+    }, 10000); // Check every 10 seconds
   }
 
   showUserInfo(email) {
@@ -323,7 +389,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Cleanup when page is unloaded
 window.addEventListener('beforeunload', () => {
-  if (window.resetPasswordManager && window.resetPasswordManager.sessionCheckInterval) {
-    clearInterval(window.resetPasswordManager.sessionCheckInterval);
+  if (window.resetPasswordManager) {
+    if (window.resetPasswordManager.sessionCheckInterval) {
+      clearInterval(window.resetPasswordManager.sessionCheckInterval);
+    }
+    if (window.resetPasswordManager.tokenRefreshInterval) {
+      clearInterval(window.resetPasswordManager.tokenRefreshInterval);
+    }
   }
 });
