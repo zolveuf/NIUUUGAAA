@@ -1907,6 +1907,12 @@ body.no-scroll { overflow: hidden; }
   border: 1px solid #fecaca;
 }
 
+.status-message.warning {
+  background: #fef3c7;
+  color: #92400e;
+  border: 1px solid #f59e0b;
+}
+
 @media (max-width: 768px) {
   .delete-account-section {
     padding: 2rem 0;

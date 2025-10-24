@@ -138,12 +138,16 @@ exports.handler = async (event, context) => {
     const application = applicationData[0];
     console.log('Application created:', application.id);
 
-    // Create account with personal link code
+    // Create account with personal link code and pending status
     console.log('Creating account with personal link...');
     const linkCode = generateLinkCode();
     const { data: accountData, error: accountError } = await supabase
       .from('accounts')
-      .insert([{ user_id: userId, personal_link_code: linkCode }])
+      .insert([{ 
+        user_id: userId, 
+        personal_link_code: linkCode,
+        status: 'pending'
+      }])
       .select();
 
     if (accountError) {
@@ -180,13 +184,20 @@ exports.handler = async (event, context) => {
             ${additionalInfo ? `<p><strong>Ytterligare information:</strong> ${additionalInfo}</p>` : ''}
           </div>
           
+          <div style="background: #fef3c7; padding: 20px; border-radius: 8px; margin: 20px 0; border: 2px solid #f59e0b;">
+            <h3 style="color: #92400e; margin-top: 0;">⏳ Din ansökan behandlas</h3>
+            <p><strong>Status:</strong> Väntar på godkännande</p>
+            <p>Vi kommer att granska din ansökan och godkänna ditt konto inom 24 timmar. Du kommer att få ett e-post när ditt konto är godkänt.</p>
+            <p><strong>Du kan INTE logga in förrän vi har godkänt ditt konto.</strong></p>
+          </div>
+          
           <h3>Din personliga länk:</h3>
           <div style="background: #e3f2fd; padding: 20px; border-radius: 8px; margin: 20px 0;">
             <p><strong>Dela denna länk för att låta andra beställa från din organisation:</strong></p>
             <p style="font-size: 18px; font-weight: bold; color: #1976d2;">
               ${process.env.SITE_URL || 'https://rad-speculoos-252665.netlify.app'}/order.html?code=${linkCode}
             </p>
-            <p><small>Du kan logga in på din dashboard för att se alla beställningar som kommer via denna länk.</small></p>
+            <p><small>Du kan logga in på din dashboard för att se alla beställningar som kommer via denna länk (efter godkännande).</small></p>
           </div>
           
           <h3>Logga in på din dashboard:</h3>
@@ -194,7 +205,7 @@ exports.handler = async (event, context) => {
           <p><strong>Lösenord:</strong> [Det lösenord du angav]</p>
           <p><a href="${process.env.SITE_URL || 'https://rad-speculoos-252665.netlify.app'}/login.html" style="background: #0ea5e9; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; display: inline-block;">Logga in här</a></p>
           
-          <p>Vi kommer att kontakta dig för att diskutera nästa steg.</p>
+          <p>Vi kommer att kontakta dig för att diskutera nästa steg när ditt konto är godkänt.</p>
           <p>Med vänliga hälsningar,<br>${process.env.COMPANY_NAME || 'Klass Kraft UF'}</p>
         </div>
       `
@@ -208,15 +219,15 @@ exports.handler = async (event, context) => {
       // Don't fail the application if email fails
     }
 
-    // Send notification email to admin
+    // Send notification email to admin with approval links
     const adminEmailTemplate = {
       to: process.env.ADMIN_EMAIL,
       from: process.env.FROM_EMAIL,
-      subject: `Ny ansökan mottagen - ${process.env.APP_NAME || 'Kakservice'}`,
+      subject: `🔔 Ny ansökan väntar på godkännande - ${process.env.APP_NAME || 'Kakservice'}`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-          <h2>Ny ansökan mottagen!</h2>
-          <p>En ny ansökan har mottagits via webbplatsen.</p>
+          <h2 style="color: #dc2626;">🔔 Ny ansökan väntar på godkännande!</h2>
+          <p>En ny ansökan har mottagits via webbplatsen och väntar på ditt godkännande.</p>
           
           <h3>Ansökningsinformation:</h3>
           <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
@@ -231,6 +242,34 @@ exports.handler = async (event, context) => {
             ${additionalInfo ? `<p><strong>Ytterligare information:</strong> ${additionalInfo}</p>` : ''}
             <p><strong>IP-adress:</strong> ${ipAddress}</p>
             <p><strong>Personlig länk:</strong> ${process.env.SITE_URL || 'https://rad-speculoos-252665.netlify.app'}/order.html?code=${linkCode}</p>
+            <p><strong>Konto-ID:</strong> ${accountData[0].id}</p>
+          </div>
+          
+          <div style="background: #fef2f2; padding: 20px; border-radius: 8px; margin: 20px 0; border: 2px solid #fecaca;">
+            <h3 style="color: #dc2626; margin-top: 0;">⚠️ Viktigt: Konto är inaktiverat</h3>
+            <p>Användaren kan INTE logga in förrän du godkänner kontot.</p>
+            <p><strong>Status:</strong> <span style="color: #dc2626; font-weight: bold;">VÄNTAR PÅ GODKÄNNANDE</span></p>
+          </div>
+          
+          <div style="background: #f0fdf4; padding: 20px; border-radius: 8px; margin: 20px 0;">
+            <h3 style="color: #166534; margin-top: 0;">Godkänn eller avvis kontot:</h3>
+            <p>Klicka på länkarna nedan för att godkänna eller avvisa detta konto:</p>
+            
+            <div style="margin: 20px 0; text-align: center;">
+              <a href="${process.env.SITE_URL || 'https://rad-speculoos-252665.netlify.app'}/admin-approve.html?action=approve&accountId=${accountData[0].id}&key=${process.env.ADMIN_APPROVAL_KEY}" 
+                 style="background: #16a34a; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; display: inline-block; margin: 0 10px;">
+                ✅ Godkänn konto
+              </a>
+              
+              <a href="${process.env.SITE_URL || 'https://rad-speculoos-252665.netlify.app'}/admin-approve.html?action=reject&accountId=${accountData[0].id}&key=${process.env.ADMIN_APPROVAL_KEY}" 
+                 style="background: #dc2626; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; display: inline-block; margin: 0 10px;">
+                ❌ Avvis konto
+              </a>
+            </div>
+            
+            <p style="font-size: 14px; color: #6b7280;">
+              <strong>Alternativt:</strong> Du kan också logga in på admin-panelen för att hantera godkännanden.
+            </p>
           </div>
           
           <p>Med vänliga hälsningar,<br>${process.env.COMPANY_NAME || 'Klass Kraft UF'}</p>

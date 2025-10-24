@@ -180,8 +180,25 @@ class AuthManager {
         throw error;
       }
 
-      // Success - redirect will happen automatically via auth state change
+      // Success - check account status before redirecting
       console.log('Login successful! Data:', data);
+      
+      // Check account status
+      const accountStatus = await this.checkAccountStatus(data.user.id);
+      
+      if (accountStatus === 'pending') {
+        this.showMessage('Ditt konto väntar fortfarande på godkännande. Vi kommer att kontakta dig när det är klart.', 'warning');
+        submitBtn.textContent = originalText;
+        submitBtn.disabled = false;
+        return;
+      } else if (accountStatus === 'rejected') {
+        this.showMessage('Ditt konto har avvisats. Kontakta support för mer information.', 'error');
+        submitBtn.textContent = originalText;
+        submitBtn.disabled = false;
+        return;
+      }
+      
+      // Account is approved - proceed with login
       this.showMessage('Inloggning lyckades! Omdirigerar...', 'success');
       
       // Force redirect if auth state change doesn't work
@@ -818,6 +835,31 @@ class AuthManager {
       console.log('Order cache cleared');
     } catch (error) {
       console.error('Error clearing order cache:', error);
+    }
+  }
+
+  // Check account status for a user
+  async checkAccountStatus(userId) {
+    try {
+      console.log('Checking account status for user:', userId);
+      
+      const { data: account, error } = await this.supabase
+        .from('accounts')
+        .select('status')
+        .eq('user_id', userId)
+        .single();
+
+      if (error) {
+        console.error('Error checking account status:', error);
+        return 'unknown';
+      }
+
+      console.log('Account status:', account.status);
+      return account.status || 'unknown';
+      
+    } catch (error) {
+      console.error('Error in checkAccountStatus:', error);
+      return 'unknown';
     }
   }
 

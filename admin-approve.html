@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="sv">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Admin Godkännande - Kakservice</title>
+    <meta name="description" content="Admin-godkännande för nya konton" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/styles.css" />
+  </head>
+  <body>
+    <header class="site-header" data-header>
+      <div class="container header-inner">
+        <a href="index.html" class="logo" aria-label="Hem">Kakservice</a>
+        <nav class="site-nav">
+          <ul class="nav-list">
+            <li class="nav-item"><a href="index.html">Hem</a></li>
+            <li class="nav-item"><a href="login.html">Logga in</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="page-hero">
+        <div class="container">
+          <div class="page-hero-content">
+            <h1>Admin Godkännande</h1>
+            <p>Hantera godkännande av nya konton</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="page-content">
+        <div class="container">
+          <div class="content-grid">
+            <div class="content-form">
+              <div class="form-card">
+                <div id="approval-status" class="status-message" style="display: none;"></div>
+                
+                <div id="loading-state" class="loading-state">
+                  <div class="spinner"></div>
+                  <p>Behandlar godkännande...</p>
+                </div>
+
+                <div id="success-state" style="display: none;">
+                  <h2>✅ Godkännande genomfört!</h2>
+                  <p id="success-message"></p>
+                  <div class="section-actions">
+                    <a href="index.html" class="btn btn--primary">Tillbaka till startsidan</a>
+                    <a href="login.html" class="btn btn--ghost">Logga in</a>
+                  </div>
+                </div>
+
+                <div id="error-state" style="display: none;">
+                  <h2>❌ Fel uppstod</h2>
+                  <p id="error-message"></p>
+                  <div class="section-actions">
+                    <a href="index.html" class="btn btn--primary">Tillbaka till startsidan</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-inner">
+        <div class="footer-brand">
+          <a href="index.html" class="logo">Kakservice</a>
+          <p>Vi hjälper lag och klasser att nå sina mål genom god försäljning. Enkelt, säkert och framgångsrikt.</p>
+        </div>
+      </div>
+      <div class="container footer-bottom">
+        <small>© <span id="year"></span> Klass Kraft UF - Hemsida designad & producerad av <a style="text-decoration: underline; color: #a1a1aa;" href="https://www.linkedin.com/in/martin-pranjic-99a278310/">Martin Pranjic</a></small>
+      </div>
+    </footer>
+
+    <script src="assets/js/main.js" defer></script>
+    <script src="assets/js/admin-approve.js" defer></script>
+  </body>
+</html>
