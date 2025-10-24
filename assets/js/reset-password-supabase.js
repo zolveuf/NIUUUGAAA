@@ -82,10 +82,13 @@ class ResetPasswordManager {
         userAgent: navigator.userAgent
       };
       
-      // Check for access_token and refresh_token in URL parameters
-      const urlParams = new URLSearchParams(window.location.search);
-      const accessToken = urlParams.get('access_token');
-      const refreshToken = urlParams.get('refresh_token');
+      // Check for access_token and refresh_token in URL hash fragment
+      const hashParams = new URLSearchParams(window.location.hash.substring(1));
+      const accessToken = hashParams.get('access_token');
+      const refreshToken = hashParams.get('refresh_token');
+      
+      console.log('🔍 Hash fragment:', window.location.hash);
+      console.log('🔍 Hash params:', Object.fromEntries(hashParams.entries()));
       
       debugInfo.urlParams = { 
         accessToken: !!accessToken, 
@@ -107,10 +110,27 @@ class ResetPasswordManager {
       
       if (!accessToken || !refreshToken) {
         console.log('❌ No reset tokens found in URL');
-        this.showMessage('Återställningslänken är ogiltig eller har gått ut', 'error');
+        
+        // Check for error parameters
+        const error = hashParams.get('error');
+        const errorCode = hashParams.get('error_code');
+        const errorDescription = hashParams.get('error_description');
+        
+        if (error) {
+          console.log('❌ Supabase error:', { error, errorCode, errorDescription });
+          
+          if (errorCode === 'otp_expired') {
+            this.showMessage('Återställningslänken har gått ut. Begär en ny länk.', 'error');
+          } else {
+            this.showMessage('Återställningslänken är ogiltig: ' + errorDescription, 'error');
+          }
+        } else {
+          this.showMessage('Återställningslänken är ogiltig eller har gått ut', 'error');
+        }
+        
         setTimeout(() => {
           window.location.href = 'forgot-password.html';
-        }, 3000);
+        }, 5000);
         return false;
       }
 
