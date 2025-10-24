@@ -554,7 +554,7 @@ class AuthManager {
     const personalLinkInput = document.getElementById('personal-link');
     const linkContainer = document.querySelector('.personal-link-card');
     
-    if (linkCode && !linkCode.startsWith('DELETED_')) {
+    if (linkCode && !linkCode.startsWith('DEL_')) {
       const siteUrl = window.location.origin;
       const fullLink = `${siteUrl}/order.html?code=${linkCode}`;
       
@@ -774,7 +774,7 @@ class AuthManager {
       const { error } = await this.supabase
         .from('accounts')
         .update({ 
-          personal_link_code: `DELETED_${this.currentAccountId}_${Date.now()}`,
+          personal_link_code: `DEL_${Date.now().toString().slice(-10)}`,
           updated_at: new Date().toISOString()
         })
         .eq('id', this.currentAccountId);
