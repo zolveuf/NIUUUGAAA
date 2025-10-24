@@ -821,6 +821,69 @@ class AuthManager {
     }
   }
 
+  // Delete user account completely
+  async deleteAccount(email, password) {
+    try {
+      console.log('Starting account deletion process');
+
+      // First, verify the user's credentials by signing in
+      const { data: signInData, error: signInError } = await this.supabase.auth.signInWithPassword({
+        email: email,
+        password: password
+      });
+
+      if (signInError) {
+        throw new Error('Felaktig e-postadress eller lösenord');
+      }
+
+      if (!signInData.user) {
+        throw new Error('Kunde inte verifiera användaruppgifter');
+      }
+
+      // Get the current account ID
+      const accountId = this.currentAccountId;
+      if (!accountId) {
+        throw new Error('Kunde inte hitta kontoinformation');
+      }
+
+      console.log('Credentials verified, proceeding with account deletion');
+
+      // Delete all orders for this account
+      const { error: ordersError } = await this.supabase
+        .from('orders')
+        .delete()
+        .eq('account_id', accountId);
+
+      if (ordersError) {
+        console.warn('Warning: Could not delete orders:', ordersError);
+      } else {
+        console.log('Orders deleted successfully');
+      }
+
+      // Delete the account record
+      const { error: accountError } = await this.supabase
+        .from('accounts')
+        .delete()
+        .eq('id', accountId);
+
+      if (accountError) {
+        throw new Error('Kunde inte radera kontoinformation: ' + accountError.message);
+      }
+
+      console.log('Account record deleted successfully');
+
+      // Sign out the user
+      await this.supabase.auth.signOut();
+
+      console.log('Account deletion completed successfully');
+      return true;
+
+    } catch (error) {
+      console.error('Error deleting account:', error);
+      throw error;
+    }
+  }
+
   // Delete sent orders from database
   async deleteSentOrders(orderIds) {
     try {
@@ -1037,4 +1100,69 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   }
+
+  // Set up delete account functionality
+  setupDeleteAccount();
 });
+
+// Delete Account Functionality
+function setupDeleteAccount() {
+  const deleteForm = document.getElementById('delete-account-form');
+  const deleteBtn = document.getElementById('delete-account-btn');
+  const confirmCheckbox = document.getElementById('confirm-delete');
+  const deleteStatus = document.getElementById('delete-status');
+
+  if (!deleteForm || !deleteBtn || !confirmCheckbox || !deleteStatus) {
+    return;
+  }
+
+  // Enable/disable delete button based on checkbox
+  confirmCheckbox.addEventListener('change', () => {
+    deleteBtn.disabled = !confirmCheckbox.checked;
+  });
+
+  // Handle form submission
+  deleteForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const email = document.getElementById('delete-email').value;
+    const password = document.getElementById('delete-password').value;
+
+    if (!email || !password || !confirmCheckbox.checked) {
+      showDeleteStatus('Vänligen fyll i alla fält och bekräfta att du förstår konsekvenserna.', 'error');
+      return;
+    }
+
+    try {
+      deleteBtn.disabled = true;
+      deleteBtn.textContent = 'Raderar konto...';
+      
+      await window.authManager.deleteAccount(email, password);
+      
+      showDeleteStatus('Ditt konto har raderats framgångsrikt. Du kommer att omdirigeras till startsidan.', 'success');
+      
+      // Redirect to home page after 3 seconds
+      setTimeout(() => {
+        window.location.href = 'index.html';
+      }, 3000);
+      
+    } catch (error) {
+      console.error('Error deleting account:', error);
+      showDeleteStatus(`Fel vid radering av konto: ${error.message}`, 'error');
+      deleteBtn.disabled = false;
+      deleteBtn.textContent = 'Radera konto permanent';
+    }
+  });
+}
+
+function showDeleteStatus(message, type) {
+  const deleteStatus = document.getElementById('delete-status');
+  if (deleteStatus) {
+    deleteStatus.textContent = message;
+    deleteStatus.className = `status-message ${type}`;
+    deleteStatus.style.display = 'block';
+    
+    // Scroll to status message
+    deleteStatus.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+}

@@ -191,6 +191,42 @@
       </section>
     </main>
 
+    <!-- Delete Account Section -->
+    <section class="delete-account-section">
+      <div class="container">
+        <div class="delete-account-card">
+          <h3>Radera konto</h3>
+          <p>Varning: Detta kommer att permanent radera ditt konto och all data. Denna åtgärd kan inte ångras.</p>
+          
+          <form id="delete-account-form" class="delete-form">
+            <div class="form-group">
+              <label for="delete-email">E-postadress</label>
+              <input type="email" id="delete-email" name="email" required placeholder="Din e-postadress">
+            </div>
+            
+            <div class="form-group">
+              <label for="delete-password">Lösenord</label>
+              <input type="password" id="delete-password" name="password" required placeholder="Ditt lösenord">
+            </div>
+            
+            <div class="form-group">
+              <label class="checkbox-label">
+                <input type="checkbox" id="confirm-delete" required>
+                <span class="checkmark"></span>
+                Jag förstår att detta kommer att permanent radera mitt konto och all data
+              </label>
+            </div>
+            
+            <button type="submit" class="btn btn--danger" id="delete-account-btn" disabled>
+              Radera konto permanent
+            </button>
+          </form>
+          
+          <div id="delete-status" class="status-message" style="display: none;"></div>
+        </div>
+      </div>
+    </section>
+
     <footer id="om-oss" class="site-footer">
       <div class="container footer-inner">
         <div class="footer-brand">
