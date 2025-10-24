@@ -840,8 +840,10 @@ class AuthManager {
         throw new Error('Kunde inte verifiera användaruppgifter');
       }
 
-      // Get the current account ID
+      // Get the current account ID and user ID
       const accountId = this.currentAccountId;
+      const userId = signInData.user.id;
+      
       if (!accountId) {
         throw new Error('Kunde inte hitta kontoinformation');
       }
@@ -871,6 +873,25 @@ class AuthManager {
       }
 
       console.log('Account record deleted successfully');
+
+      // Delete the user from Supabase Auth using Netlify Function
+      console.log('Deleting user from Supabase Auth:', userId);
+      
+      const deleteUserResponse = await fetch('/.netlify/functions/delete-user', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userId: userId })
+      });
+
+      const deleteUserResult = await deleteUserResponse.json();
+
+      if (!deleteUserResponse.ok) {
+        throw new Error('Kunde inte radera användare från autentiseringssystemet: ' + deleteUserResult.error);
+      }
+
+      console.log('User deleted from Supabase Auth successfully');
 
       // Sign out the user
       await this.supabase.auth.signOut();
