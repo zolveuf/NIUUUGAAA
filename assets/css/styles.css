@@ -9,8 +9,8 @@
   --color-surface: #f8fafc; /* subtle background */
   --color-text: #0f172a; /* slate-900 */
   --color-text-muted: #475569; /* slate-600 */
-  --color-primary: #0ea5e9; /* sky-500 */
-  --color-primary-600: #0284c7; /* sky-600 */
+  --color-primary: #203f30; /* sky-500 */
+  --color-primary-600: #3f624a; /* sky-600 */
   --color-secondary: #f59e0b; /* amber-500 */
   --color-border: #e2e8f0; /* slate-200 */
   --color-success: #16a34a;
@@ -70,8 +70,52 @@ a { color: inherit; text-decoration: none; }
 .section--alt { background: var(--color-surface); }
 .section-header { margin-bottom: var(--space-8); text-align: center; }
 
-/* Header */
-.site-header { position: sticky; top: 0; z-index: 50; background: var(--color-bg); border-bottom: 1px solid var(--color-border); }
+/* Logo styling */
+.logo-image {
+  height: 40px;
+  width: auto;
+  max-width: 200px;
+}
+
+/* Hero image styling */
+.hero-image {
+  width: 100%;
+  height: auto;
+  max-width: 500px;
+  border-radius: 1rem;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+/* Mobile responsiveness for logo and hero image */
+@media (max-width: 768px) {
+  .logo-image {
+    height: 35px;
+  }
+  
+  .hero-image {
+    max-width: 400px;
+  }
+}
+
+@media (max-width: 480px) {
+  .logo-image {
+    height: 30px;
+  }
+  
+  .hero-image {
+    max-width: 300px;
+  }
+}
+
+@media (max-width: 320px) {
+  .logo-image {
+    height: 25px;
+  }
+  
+  .hero-image {
+    max-width: 250px;
+  }
+}
 .header-inner { display: flex; align-items: center; justify-content: space-between; padding: var(--space-3) 0; gap: var(--space-4); }
 .logo { font-weight: 700; letter-spacing: 0.2px; }
 
@@ -101,7 +145,7 @@ a { color: inherit; text-decoration: none; }
 .dropdown-link:hover { background: var(--color-surface); }
 
 /* Hero */
-.hero { padding: var(--space-12) 0; background: linear-gradient(180deg, #ecfeff, #ffffff); }
+.hero { padding: var(--space-12) 0; background: linear-gradient(180deg, #f1ebdd, #ffffff); }
 .hero-inner { display: grid; grid-template-columns: 1fr; align-items: center; gap: var(--space-8); }
 .hero-copy h1 { font-size: clamp(1.6rem, 4vw, 2.25rem); line-height: 1.15; margin: 0 0 var(--space-3) 0; }
 .hero-copy p { color: var(--color-text-muted); margin: 0 0 var(--space-6) 0; }
@@ -115,7 +159,7 @@ a { color: inherit; text-decoration: none; }
 .products-visual { 
   position: relative; 
   height: 300px; 
-  background: linear-gradient(135deg, #fef3c7 0%, #f1f5f9 50%, #e0f2fe 100%); 
+  background: linear-gradient(135deg, #b7dec3 0%, #ffffff 50%, #f1ebdd 100%); 
   border-radius: var(--radius-lg); 
   overflow: hidden; 
   box-shadow: var(--shadow-md);
