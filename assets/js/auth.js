@@ -25,7 +25,7 @@ class AuthManager {
       this.setupEventListeners();
       
     } catch (error) {
-      console.error('Auth initialization error:', error);
+      console.error('Autentisering initialiseringsfel:', error);
       this.showConfigError();
     }
   }
@@ -39,11 +39,11 @@ class AuthManager {
         attempts++;
         
         if (window.SUPABASE_URL && window.SUPABASE_ANON_KEY) {
-          console.log('Config loaded successfully');
+          console.log('Konfigurationen har laddats');
           resolve();
         } else if (attempts >= maxAttempts) {
           console.error('Config loading timeout. SUPABASE_URL:', window.SUPABASE_URL, 'SUPABASE_ANON_KEY:', window.SUPABASE_ANON_KEY);
-          reject(new Error('Config loading timeout'));
+          reject(new Error('Konfigurationstid överträdelse'));
         } else {
           setTimeout(checkConfig, 100);
         }
@@ -106,10 +106,10 @@ class AuthManager {
     // Login form
     const loginForm = document.getElementById('login-form');
     if (loginForm) {
-      console.log('Login form found, adding event listener');
+      console.log('Inloggningsformulär hittades, lyssnare tillagd');
       loginForm.addEventListener('submit', (e) => this.handleLogin(e));
     } else {
-      console.log('Login form not found!');
+      console.log('Inloggningsformulär hittades inte!');
     }
 
     // Logout button
@@ -148,14 +148,14 @@ class AuthManager {
   }
 
   async handleLogin(e) {
-    console.log('handleLogin called!');
+    console.log('handleLogin anropades!');
     e.preventDefault();
     
     const formData = new FormData(e.target);
     const email = formData.get('email');
     const password = formData.get('password');
 
-    console.log('Login attempt with email:', email);
+    console.log('Inloggningsförsök med e-post:', email);
 
     const submitBtn = e.target.querySelector('.auth-submit');
     const originalText = submitBtn.textContent;
@@ -166,7 +166,7 @@ class AuthManager {
       submitBtn.disabled = true;
 
       // Attempt to sign in
-      console.log('Attempting Supabase sign in...');
+      console.log('Försöker att logga in med Supabase...');
       console.log('Supabase client:', this.supabase);
       
       const { data, error } = await this.supabase.auth.signInWithPassword({
@@ -174,14 +174,14 @@ class AuthManager {
         password: password
       });
       
-      console.log('Supabase response:', { data, error });
+      console.log('Supabase svar:', { data, error });
 
       if (error) {
         throw error;
       }
 
       // Success - check account status before redirecting
-      console.log('Login successful! Data:', data);
+      console.log('Inloggning lyckades! Data:', data);
       
       // Check account status
       const accountStatus = await this.checkAccountStatus(data.user.id);
@@ -199,21 +199,21 @@ class AuthManager {
       }
       
       // Account is approved - proceed with login
-      this.showMessage('Inloggning lyckades! Omdirigerar...', 'success');
+      this.showMessage('Inloggningen lyckades! Omdirigerar...', 'success');
       
       // Force redirect if auth state change doesn't work
       setTimeout(() => {
-        console.log('Forcing redirect to dashboard...');
+        console.log('Tvingar omdirigering till instrumentpanelen...');
         window.location.href = 'dashboard.html';
       }, 1000);
       
     } catch (error) {
-      console.error('Login error:', error);
+      console.error('Inloggningsfel:', error);
       
       let errorMessage = 'Inloggning misslyckades.';
       
       if (error.message.includes('Invalid login credentials')) {
-        errorMessage = 'Felaktig e-post eller lösenord.';
+        errorMessage = 'Ogiltig e-post eller lösenord.';
       } else if (error.message.includes('Email not confirmed')) {
         errorMessage = 'E-postadressen är inte bekräftad. Kontrollera din e-post.';
       } else if (error.message.includes('Too many requests')) {
@@ -241,7 +241,7 @@ class AuthManager {
       this.showMessage('Du har loggats ut.', 'info');
       
     } catch (error) {
-      console.error('Logout error:', error);
+      console.error('Utloggningsfel:', error);
       this.showMessage('Ett fel uppstod vid utloggning.', 'error');
     }
   }
@@ -277,7 +277,7 @@ class AuthManager {
         .single();
 
       if (accountError && accountError.code !== 'PGRST116') {
-        console.error('Account error:', accountError);
+        console.error('Kontofel:', accountError);
         // Don't throw error, just continue without account
       }
 
@@ -303,14 +303,14 @@ class AuthManager {
       dashboardContent.style.display = 'block';
 
     } catch (error) {
-      console.error('Error loading dashboard data:', error);
+      console.error('Fel vid ladda instrumentpaneldata:', error);
       
       loadingState.style.display = 'none';
       dashboardContent.style.display = 'none';
       errorState.style.display = 'block';
       
       const errorMessage = document.getElementById('error-message');
-      errorMessage.textContent = 'Kunde inte ladda din information. Försök igen senare.';
+      errorMessage.textContent = 'Kunde inte ladda din information. Försök igen senare eller kontakta support.';
     }
   }
 
@@ -360,7 +360,7 @@ class AuthManager {
 
   async loadOrders(accountId) {
     try {
-      console.log('Loading orders for account:', accountId);
+      console.log('Laddar beställningar för konto:', accountId);
       
       const { data: orders, error } = await this.supabase
         .from('orders')
@@ -369,22 +369,22 @@ class AuthManager {
         .order('created_at', { ascending: false });
 
       if (error) {
-        console.error('Error loading orders:', error);
+        console.error('Fel vid laddning av beställningar:', error);
         return;
       }
 
-      console.log('Orders loaded:', orders);
+      console.log('Beställningar laddade:', orders);
       this.displayOrders(orders || []);
       
     } catch (error) {
-      console.error('Error loading orders:', error);
+      console.error('Fel vid laddning av beställningar:', error);
     }
   }
 
   displayOrders(orders) {
     const ordersContainer = document.getElementById('orders-container');
     if (!ordersContainer) {
-      console.log('Orders container not found');
+      console.log('Beställningar container hittades inte');
       return;
     }
 
@@ -432,7 +432,7 @@ class AuthManager {
 
   async loadStats(accountId) {
     try {
-      console.log('Loading stats for account:', accountId);
+      console.log('Laddar statistik för konto:', accountId);
       
       const { data: orders, error } = await this.supabase
         .from('orders')
@@ -440,15 +440,15 @@ class AuthManager {
         .eq('account_id', accountId);
 
       if (error) {
-        console.error('Error loading stats:', error);
+        console.error('Fel vid laddning av statistik:', error);
         return;
       }
 
-      console.log('Orders for stats:', orders);
+      console.log('Beställningar för statistik:', orders);
       this.displayStats(orders || []);
       
     } catch (error) {
-      console.error('Error loading stats:', error);
+      console.error('Fel vid laddning av statistik:', error);
     }
   }
 
@@ -662,7 +662,7 @@ class AuthManager {
   // Send all orders to Kakservice
   async sendAllOrdersToKakservice() {
     try {
-      console.log('Sending all orders to Kakservice');
+      console.log('Skickar alla beställningar till Kakservice');
       
       // Show confirmation dialog
       const confirmed = confirm('Är du säker att du vill skicka beställningen? Då är eran försäljningsperiod över.');
@@ -687,7 +687,7 @@ class AuthManager {
       }
 
       if (!orders || orders.length === 0) {
-        this.showMessage('Inga beställningar att skicka', 'info');
+        this.showMessage('Inga beställningar att skicka till Kakservice', 'info');
         if (button) {
           button.textContent = '📧 Skicka alla beställningar till Kakservice';
           button.disabled = false;
@@ -695,7 +695,7 @@ class AuthManager {
         return;
       }
 
-      console.log('Found orders to send:', orders.length);
+      console.log('Hittade beställningar att skicka:', orders.length);
 
       // Send all orders
       const response = await fetch('/.netlify/functions/submit-application', {
@@ -712,7 +712,7 @@ class AuthManager {
       const result = await response.json();
 
       if (response.ok && result.success) {
-        this.showMessage(`Alla ${orders.length} beställningar har skickats till Kakservice!`, 'success');
+        this.showMessage(`Alla ${orders.length} beställningar har skickats till Kakservice! Försäljningsperioden är nu avslutad.`, 'success');
         
         try {
           // Update orders status to "sent" instead of deleting

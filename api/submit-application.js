@@ -15,7 +15,7 @@ sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 export default async function handler(req, res) {
   // Only allow POST requests
   if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
+    return res.status(405).json({ error: 'Metod inte tillåten' });
   }
 
   try {
@@ -35,7 +35,7 @@ export default async function handler(req, res) {
     // Validate required fields
     if (!name || !email || !organization || !groupType || !termsAccepted) {
       return res.status(400).json({ 
-        error: 'Missing required fields',
+        error: 'Saknar obligatoriska fält',
         required: ['name', 'email', 'organization', 'groupType', 'termsAccepted']
       });
     }
@@ -43,7 +43,7 @@ export default async function handler(req, res) {
     // Validate email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      return res.status(400).json({ error: 'Invalid email format' });
+      return res.status(400).json({ error: 'Ogiltlig e-postadress' });
     }
 
     // Get client IP and user agent
@@ -72,8 +72,8 @@ export default async function handler(req, res) {
       .select();
 
     if (error) {
-      console.error('Supabase error:', error);
-      return res.status(500).json({ error: 'Database error' });
+      console.error('Supabase fel:', error);
+      return res.status(500).json({ error: 'Databasfel' });
     }
 
     const application = data[0];
@@ -146,19 +146,19 @@ export default async function handler(req, res) {
     try {
       await sgMail.send([userEmailTemplate, adminEmailTemplate]);
     } catch (emailError) {
-      console.error('SendGrid error:', emailError);
+      console.error('SendGrid fel:', emailError);
       // Don't fail the request if email fails
     }
 
     // Return success response
     return res.status(200).json({
       success: true,
-      message: 'Application submitted successfully',
+      message: 'Ansökan mottagen',
       applicationId: application.id
     });
 
   } catch (error) {
-    console.error('Server error:', error);
-    return res.status(500).json({ error: 'Internal server error' });
-  }
+    console.error('Serverfel:', error);
+    return res.status(500).json({ error: 'Serverfel' });
+  } 
 }

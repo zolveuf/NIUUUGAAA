@@ -13,12 +13,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // Validate required parameters
   if (!action || !accountId || !adminKey) {
-    showError('Saknade parametrar. Kontrollera att länken är korrekt.');
+    showError('Saknar parametrar. Kontrollera att länken är korrekt.');
     return;
   }
 
   if (action !== 'approve' && action !== 'reject') {
-    showError('Ogiltig åtgärd. Endast "approve" eller "reject" är tillåtna.');
+    showError('Ogiltig åtgärd. Endast "godkänn" eller "avvisa" är tillåtna.');
     return;
   }
 
@@ -47,13 +47,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (response.ok && result.success) {
       showSuccess(result.message, action);
     } else {
-      showError(result.error || 'Ett fel uppstod vid godkännandet.');
+      showError(result.error || 'Ett fel uppstod vid godkännande.');
     }
 
   } catch (error) {
-    console.error('Error processing approval:', error);
+    console.error('Fel vid godkännande:', error);
     loadingState.style.display = 'none';
-    showError('Ett fel uppstod vid kommunikationen med servern.');
+    showError('Ett fel uppstod vid kommunikation med server.');
   }
 });
 
@@ -61,7 +61,7 @@ function showSuccess(message, action) {
   const successState = document.getElementById('success-state');
   const successMessage = document.getElementById('success-message');
   
-  const actionText = action === 'approve' ? 'godkänt' : 'avvisat';
+  const actionText = action === 'godkänn' ? 'godkänt' : 'avvisat';
   successMessage.textContent = `Kontot har ${actionText} framgångsrikt. ${message}`;
   
   successState.style.display = 'block';

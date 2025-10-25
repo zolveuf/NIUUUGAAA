@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Så funkar det - Klass Kraft UF</title>
+  <meta name="description" content="Lär dig hur enkelt det är att sälja godsaker för laget och klassen med Klass Kraft UF." />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/styles.css" />
+  <style>
+    /* Additional styles for the how-it-works page */
+    .how-it-works-hero {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 4rem 0;
+      text-align: center;
+    }
+    
+    .how-it-works-hero h1 {
+      font-size: 3rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      line-height: 1.2;
+    }
+    
+    .how-it-works-hero p {
+      font-size: 1.25rem;
+      opacity: 0.9;
+      max-width: 600px;
+      margin: 0 auto 2rem;
+    }
+    
+    .steps-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 4rem 1rem;
+    }
+    
+    .step {
+      display: flex;
+      align-items: center;
+      margin-bottom: 4rem;
+      gap: 3rem;
+    }
+    
+    .step:nth-child(even) {
+      flex-direction: row-reverse;
+    }
+    
+    .step-number {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    
+    .step-content {
+      flex: 1;
+    }
+    
+    .step-content h3 {
+      font-size: 2rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      color: #1f2937;
+    }
+    
+    .step-content p {
+      font-size: 1.125rem;
+      line-height: 1.6;
+      color: #6b7280;
+      margin-bottom: 1.5rem;
+    }
+    
+    .step-features {
+      list-style: none;
+      padding: 0;
+    }
+    
+    .step-features li {
+      display: flex;
+      align-items: center;
+      margin-bottom: 0.75rem;
+      font-size: 1rem;
+      color: #374151;
+    }
+    
+    .step-features li::before {
+      content: "✓";
+      color: #10b981;
+      font-weight: bold;
+      margin-right: 0.75rem;
+      font-size: 1.25rem;
+    }
+    
+    .step-visual {
+      flex: 1;
+      background: #f8fafc;
+      border-radius: 1rem;
+      padding: 2rem;
+      text-align: center;
+      border: 2px solid #e5e7eb;
+    }
+    
+    .step-visual-icon {
+      width: 120px;
+      height: 120px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 1rem;
+      margin: 0 auto 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+      color: white;
+    }
+    
+    .benefits-section {
+      background: #f8fafc;
+      padding: 4rem 0;
+    }
+    
+    .benefits-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1rem;
+    }
+    
+    .benefit-card {
+      background: white;
+      padding: 2rem;
+      border-radius: 1rem;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      transition: transform 0.2s ease;
+    }
+    
+    .benefit-card:hover {
+      transform: translateY(-4px);
+    }
+    
+    .benefit-icon {
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 50%;
+      margin: 0 auto 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      color: white;
+    }
+    
+    .benefit-card h4 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      color: #1f2937;
+    }
+    
+    .benefit-card p {
+      color: #6b7280;
+      line-height: 1.6;
+    }
+    
+    .cta-section {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 4rem 0;
+      text-align: center;
+    }
+    
+    .cta-content h2 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+    
+    .cta-content p {
+      font-size: 1.25rem;
+      opacity: 0.9;
+      margin-bottom: 2rem;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    
+    .cta-buttons {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    
+    .btn--white {
+      background: white;
+      color: #667eea;
+      border: 2px solid white;
+    }
+    
+    .btn--white:hover {
+      background: transparent;
+      color: white;
+    }
+    
+    .btn--outline-white {
+      background: transparent;
+      color: white;
+      border: 2px solid white;
+    }
+    
+    .btn--outline-white:hover {
+      background: white;
+      color: #667eea;
+    }
+    
+    /* Mobile responsiveness */
+    @media (max-width: 768px) {
+      .how-it-works-hero h1 {
+        font-size: 2rem;
+      }
+      
+      .how-it-works-hero p {
+        font-size: 1.125rem;
+      }
+      
+      .step {
+        flex-direction: column !important;
+        text-align: center;
+        gap: 2rem;
+      }
+      
+      .step-number {
+        width: 60px;
+        height: 60px;
+        font-size: 1.5rem;
+      }
+      
+      .step-content h3 {
+        font-size: 1.5rem;
+      }
+      
+      .step-visual {
+        padding: 1.5rem;
+      }
+      
+      .step-visual-icon {
+        width: 80px;
+        height: 80px;
+        font-size: 2rem;
+      }
+      
+      .cta-content h2 {
+        font-size: 2rem;
+      }
+      
+      .cta-buttons {
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      .cta-buttons .btn {
+        width: 100%;
+        max-width: 300px;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .how-it-works-hero {
+        padding: 2rem 0;
+      }
+      
+      .steps-container {
+        padding: 2rem 1rem;
+      }
+      
+      .step {
+        margin-bottom: 3rem;
+      }
+      
+      .benefits-section {
+        padding: 2rem 0;
+      }
+      
+      .cta-section {
+        padding: 2rem 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header" data-header>
+    <div class="container header-inner">
+      <a href="index.html" class="logo" aria-label="Hem">Klass Kraft UF</a>
+
+      <button class="nav-toggle" aria-expanded="false" aria-controls="site-nav" aria-label="Öppna meny">
+        <span class="nav-toggle__bar" aria-hidden="true"></span>
+        <span class="nav-toggle__bar" aria-hidden="true"></span>
+        <span class="nav-toggle__bar" aria-hidden="true"></span>
+      </button>
+
+      <nav id="site-nav" class="site-nav" aria-label="Huvudmeny">
+        <ul class="nav-list">
+          <li class="nav-item has-dropdown">
+            <button class="dropdown-toggle" aria-expanded="false" aria-haspopup="true" aria-controls="dropdown-produkter">
+              Produkter
+              <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10l5 5 5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <ul id="dropdown-produkter" class="dropdown-menu" role="menu">
+              <li role="none"><a role="menuitem" href="index.html#produkter" class="dropdown-link">Kakor</a></li>
+              <li role="none"><a role="menuitem" href="index.html#produkter" class="dropdown-link">Knäck & kola</a></li>
+              <li role="none"><a role="menuitem" href="index.html#produkter" class="dropdown-link">Choklad</a></li>
+            </ul>
+          </li>
+          <li class="nav-item"><a href="sa-funkar-det.html" class="nav-link--active">Så funkar det</a></li>
+          <li class="nav-item"><a href="index.html#om-oss">Om oss</a></li>
+          <li class="nav-item"><a href="login.html" class="btn btn--sm btn--ghost">Min förening</a></li>
+          <li class="nav-item"><a href="börja-sälja.html" class="btn btn--sm btn--primary">Börja sälja</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="how-it-works-hero">
+      <div class="container">
+        <h1>Så funkar det</h1>
+        <p>Enkelt och smidigt från start till mål. Följ dessa tre enkla steg för att komma igång med er försäljning.</p>
+      </div>
+    </section>
+
+    <section class="steps-container">
+      <div class="step">
+        <div class="step-number">1</div>
+        <div class="step-content">
+          <h3>Skapa er förening</h3>
+          <p>Registrera er grupp och få en unik länk att dela med vänner, familj och kollegor. Det tar bara några minuter att komma igång.</p>
+          <ul class="step-features">
+            <li>Registrera er grupp med namn och kontaktuppgifter</li>
+            <li>Få en unik länk för er försäljning</li>
+            <li>Välj vilka produkter ni vill sälja</li>
+            <li>Sätt er försäljningsperiod</li>
+          </ul>
+        </div>
+        <div class="step-visual">
+          <div class="step-visual-icon">🏢</div>
+          <h4>Skapa förening</h4>
+          <p>Registrera er grupp och få er unika länk</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-number">2</div>
+        <div class="step-content">
+          <h3>Dela och samla beställningar</h3>
+          <p>Dela er länk med alla ni känner. Människor kan enkelt beställa produkter direkt via länken, och ni ser alla beställningar i realtid.</p>
+          <ul class="step-features">
+            <li>Dela länken via sociala medier, mejl eller SMS</li>
+            <li>Se alla beställningar i realtid</li>
+            <li>Automatisk betalningshantering</li>
+            <li>Enkel orderhantering</li>
+          </ul>
+        </div>
+        <div class="step-visual">
+          <div class="step-visual-icon">📱</div>
+          <h4>Dela länken</h4>
+          <p>Sprid ordet och samla beställningar</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-number">3</div>
+        <div class="step-content">
+          <h3>Skicka beställningar och leverera</h3>
+          <p>När försäljningsperioden är slut skickar ni alla beställningar till oss. Vi levererar produkterna till er, och ni distribuerar lokalt.</p>
+          <ul class="step-features">
+            <li>Skicka alla beställningar med ett klick</li>
+            <li>Vi levererar produkterna till er</li>
+            <li>Ni distribuerar lokalt till era kunder</li>
+            <li>Fira er framgång!</li>
+          </ul>
+        </div>
+        <div class="step-visual">
+          <div class="step-visual-icon">🚚</div>
+          <h4>Leverera</h4>
+          <p>Vi levererar, ni distribuerar lokalt</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="benefits-section">
+      <div class="container">
+        <header class="section-header">
+          <h2>Varför välja oss?</h2>
+          <p>Vi gör försäljning enkelt och framgångsrikt för er grupp</p>
+        </header>
+        <div class="benefits-grid">
+          <div class="benefit-card">
+            <div class="benefit-icon">⚡</div>
+            <h4>Snabb start</h4>
+            <p>Kom igång på några minuter. Ingen komplicerad setup eller långa processer.</p>
+          </div>
+          <div class="benefit-card">
+            <div class="benefit-icon">🔒</div>
+            <h4>Säker betalning</h4>
+            <p>Alla betalningar hanteras säkert. Ni behöver aldrig hantera pengar eller kortuppgifter.</p>
+          </div>
+          <div class="benefit-card">
+            <div class="benefit-icon">📊</div>
+            <h4>Realtidsstatistik</h4>
+            <p>Se exakt hur många beställningar ni har och hur mycket ni har sålt i realtid.</p>
+          </div>
+          <div class="benefit-card">
+            <div class="benefit-icon">🎯</div>
+            <h4>Stort sortiment</h4>
+            <p>Över 50 olika produkter att välja mellan. Perfekt för alla smaker och åldrar.</p>
+          </div>
+          <div class="benefit-card">
+            <div class="benefit-icon">📱</div>
+            <h4>Mobilanpassat</h4>
+            <p>Allt fungerar perfekt på mobil, surfplatta och dator. Så enkelt som möjligt.</p>
+          </div>
+          <div class="benefit-card">
+            <div class="benefit-icon">🤝</div>
+            <h4>Personlig support</h4>
+            <p>Vi hjälper er genom hela processen. Från start till mål finns vi här för er.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="cta-section">
+      <div class="container">
+        <div class="cta-content">
+          <h2>Redo att komma igång?</h2>
+          <p>Starta er försäljning idag och se hur enkelt det kan vara att nå era mål tillsammans.</p>
+          <div class="cta-buttons">
+            <a href="börja-sälja.html" class="btn btn--white btn--lg">Börja sälja nu</a>
+            <a href="index.html#kontakt" class="btn btn--outline-white btn--lg">Kontakta oss</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div class="footer-brand">
+        <a href="index.html" class="logo">Klass Kraft UF</a>
+        <p>Vi hjälper lag och klasser att nå sina mål genom god försäljning. Enkelt, säkert och framgångsrikt.</p>
+        <div class="footer-cta">
+          <a href="börja-sälja.html" class="btn btn--primary">Börja sälja</a>
+          <a href="sa-funkar-det.html" class="btn btn--ghost">Läs mer</a>
+        </div>
+      </div>
+      <nav class="footer-nav" aria-label="Footer">
+        <div class="footer-section">
+          <h4>Produkter</h4>
+          <a href="index.html#produkter">Kakburkar</a>
+          <a href="index.html#produkter">Choklad</a>
+          <a href="index.html#produkter">Knäck & kola</a>
+          <a href="index.html#produkter">Småkakor</a>
+        </div>
+        <div class="footer-section">
+          <h4>Support</h4>
+          <a href="sa-funkar-det.html">Så funkar det</a>
+          <a href="index.html#kontakt">Kontakt</a>
+          <a href="#faq">Vanliga frågor</a>
+          <a href="#privacy">Integritet</a>
+        </div>
+        <div class="footer-section">
+          <h4>Företag</h4>
+          <a href="index.html#om-oss">Om oss</a>
+          <a href="#careers">Karriär</a>
+          <a href="#press">Press</a>
+          <a href="#partners">Partners</a>
+        </div>
+      </nav>
+    </div>
+    <div class="container footer-bottom">
+      <small>© <span id="year"></span> Klass Kraft UF - Hemsida designad & producerad av <a style="text-decoration: underline; color: #a1a1aa;" href="https://www.linkedin.com/in/martin-pranjic-99a278310/">Martin Pranjic</a></small>
+    </div>
+  </footer>
+
+  <script src="assets/js/main.js" defer></script>
+</body>
+</html>

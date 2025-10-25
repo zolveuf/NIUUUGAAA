@@ -14,7 +14,7 @@ const APP_NAME = process.env.APP_NAME || 'Kakservice';
 const COMPANY_NAME = process.env.COMPANY_NAME || 'Klass Kraft UF';
 
 // Files to process
-const filesToProcess = ['login.html', 'dashboard.html', 'order.html', 'forgot-password.html', 'reset-password.html'];
+const filesToProcess = ['login.html', 'dashboard.html', 'order.html', 'forgot-password.html', 'reset-password.html', 'sa-funkar-det.html'];
 
 filesToProcess.forEach(fileName => {
   const filePath = path.join(__dirname, fileName);

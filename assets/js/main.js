@@ -186,7 +186,7 @@
         const result = await response.json();
         
         if (response.ok) {
-          showMessage('Tack för din ansökan! Vi kontaktar dig inom 24 timmar.', 'success');
+          showMessage('Tack för din ansökan! Vi kontaktar dig och godkänner eller avvisar din ansökan inom 24 timmar.', 'success');
           this.reset();
         } else {
           throw new Error(result.error || 'Ett fel uppstod');
