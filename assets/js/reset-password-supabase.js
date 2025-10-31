@@ -250,19 +250,25 @@ class ResetPasswordManager {
   }
 
   showMessage(text, type) {
-    const messageContainer = document.getElementById('message-container');
-    const message = document.getElementById('message');
-    
-    if (messageContainer && message) {
-      message.textContent = text;
-      message.className = `message message--${type}`;
-      messageContainer.style.display = 'block';
+    // Use global notification system if available
+    if (typeof showNotification === 'function') {
+      const duration = type === 'success' ? 0 : 5000; // Keep success messages until dismissed
+      showNotification(text, type, duration);
+    } else {
+      // Fallback: show inline message
+      const messageContainer = document.getElementById('message-container');
+      const message = document.getElementById('message');
       
-      // Auto-hide after 5 seconds (except for success messages)
-      if (type !== 'success') {
-        setTimeout(() => {
-          messageContainer.style.display = 'none';
-        }, 5000);
+      if (messageContainer && message) {
+        message.textContent = text;
+        message.className = `message message--${type}`;
+        messageContainer.style.display = 'block';
+        
+        if (type !== 'success') {
+          setTimeout(() => {
+            messageContainer.style.display = 'none';
+          }, 5000);
+        }
       }
     }
   }

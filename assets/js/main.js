@@ -232,28 +232,29 @@
 
   // Helper function to show messages
   function showMessage(message, type = 'info') {
-    // Remove existing messages
-    const existingMessage = document.querySelector('.form-message');
-    if (existingMessage) {
-      existingMessage.remove();
-    }
-    
-    // Create new message element
-    const messageEl = document.createElement('div');
-    messageEl.className = `form-message form-message--${type}`;
-    messageEl.textContent = message;
-    
-    // Insert after form
-    const form = document.getElementById('contact-form');
-    if (form) {
-      form.parentNode.insertBefore(messageEl, form.nextSibling);
+    // Use global notification system if available
+    if (typeof showNotification === 'function') {
+      showNotification(message, type, 5000);
+    } else {
+      // Fallback: show as inline message
+      const existingMessage = document.querySelector('.form-message');
+      if (existingMessage) {
+        existingMessage.remove();
+      }
       
-      // Auto-remove after 5 seconds
-      setTimeout(() => {
-        if (messageEl.parentNode) {
-          messageEl.remove();
-        }
-      }, 5000);
+      const messageEl = document.createElement('div');
+      messageEl.className = `form-message form-message--${type}`;
+      messageEl.textContent = message;
+      
+      const form = document.getElementById('contact-form');
+      if (form) {
+        form.parentNode.insertBefore(messageEl, form.nextSibling);
+        setTimeout(() => {
+          if (messageEl.parentNode) {
+            messageEl.remove();
+          }
+        }, 5000);
+      }
     }
   }
 })();

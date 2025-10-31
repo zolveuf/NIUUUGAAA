@@ -666,7 +666,7 @@ class AuthManager {
       console.log('Skickar alla beställningar till Kakservice');
       
       // Show confirmation dialog
-      const confirmed = confirm('Är du säker att du vill skicka beställningen? Då är eran försäljningsperiod över.');
+      const confirmed = await showConfirmDialog('Är du säker att du vill skicka beställningen? Då är eran försäljningsperiod över.', 'Ja, skicka', 'Avbryt');
       if (!confirmed) {
         return;
       }
@@ -1037,30 +1037,28 @@ class AuthManager {
   }
 
   showMessage(message, type = 'info') {
-    // Remove existing messages
-    const existingMessages = document.querySelectorAll('.auth-message');
-    existingMessages.forEach(msg => msg.remove());
-
-    // Create new message
-    const messageEl = document.createElement('div');
-    messageEl.className = `auth-message auth-message--${type}`;
-    messageEl.textContent = message;
-
-    // Insert message
-    const form = document.getElementById('login-form');
-    if (form) {
-      form.insertBefore(messageEl, form.firstChild);
+    // Use global notification system if available
+    if (typeof showNotification === 'function') {
+      showNotification(message, type, 5000);
     } else {
-      // Fallback: show as alert
-      alert(message);
-    }
+      // Fallback: show as inline message
+      const existingMessages = document.querySelectorAll('.auth-message');
+      existingMessages.forEach(msg => msg.remove());
 
-    // Auto-remove after 5 seconds
-    setTimeout(() => {
-      if (messageEl.parentNode) {
-        messageEl.remove();
+      const messageEl = document.createElement('div');
+      messageEl.className = `auth-message auth-message--${type}`;
+      messageEl.textContent = message;
+
+      const form = document.getElementById('login-form');
+      if (form) {
+        form.insertBefore(messageEl, form.firstChild);
+        setTimeout(() => {
+          if (messageEl.parentNode) {
+            messageEl.remove();
+          }
+        }, 5000);
       }
-    }, 5000);
+    }
   }
 
   showConfigError() {

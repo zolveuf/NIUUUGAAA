@@ -139,18 +139,23 @@ class ForgotPasswordManager {
   }
 
   showMessage(text, type) {
-    const messageContainer = document.getElementById('message-container');
-    const message = document.getElementById('message');
-    
-    if (messageContainer && message) {
-      message.textContent = text;
-      message.className = `message message--${type}`;
-      messageContainer.style.display = 'block';
+    // Use global notification system if available
+    if (typeof showNotification === 'function') {
+      showNotification(text, type, 5000);
+    } else {
+      // Fallback: show inline message
+      const messageContainer = document.getElementById('message-container');
+      const message = document.getElementById('message');
       
-      // Auto-hide after 5 seconds
-      setTimeout(() => {
-        messageContainer.style.display = 'none';
-      }, 5000);
+      if (messageContainer && message) {
+        message.textContent = text;
+        message.className = `message message--${type}`;
+        messageContainer.style.display = 'block';
+        
+        setTimeout(() => {
+          messageContainer.style.display = 'none';
+        }, 5000);
+      }
     }
   }
 }

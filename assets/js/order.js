@@ -322,27 +322,28 @@ class OrderManager {
   }
 
   showMessage(message, type = 'info') {
-    // Remove existing messages
-    const existingMessages = document.querySelectorAll('.order-message');
-    existingMessages.forEach(msg => msg.remove());
+    // Use global notification system if available
+    if (typeof showNotification === 'function') {
+      showNotification(message, type, 5000);
+    } else {
+      // Fallback: show as inline message
+      const existingMessages = document.querySelectorAll('.order-message');
+      existingMessages.forEach(msg => msg.remove());
 
-    // Create new message
-    const messageEl = document.createElement('div');
-    messageEl.className = `order-message order-message--${type}`;
-    messageEl.textContent = message;
+      const messageEl = document.createElement('div');
+      messageEl.className = `order-message order-message--${type}`;
+      messageEl.textContent = message;
 
-    // Insert message
-    const form = document.getElementById('order-form');
-    if (form) {
-      form.insertBefore(messageEl, form.firstChild);
-    }
-
-    // Auto-remove after 5 seconds
-    setTimeout(() => {
-      if (messageEl.parentNode) {
-        messageEl.remove();
+      const form = document.getElementById('order-form');
+      if (form) {
+        form.insertBefore(messageEl, form.firstChild);
+        setTimeout(() => {
+          if (messageEl.parentNode) {
+            messageEl.remove();
+          }
+        }, 5000);
       }
-    }, 5000);
+    }
   }
 
   showError(message) {
