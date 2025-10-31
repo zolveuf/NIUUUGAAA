@@ -12,9 +12,7 @@
   <body>
     <header class="site-header" data-header>
       <div class="container header-inner">
-        <a href="index.html" class="logo" aria-label="Hem">
-          <img src="img/Skärmbild 2025-10-25 195440.png" alt="Klass Kraft UF" class="logo-image">
-        </a>
+        <a href="index.html" class="logo" aria-label="Hem">Klass Kraft UF</a>
 
         <button class="nav-toggle" aria-expanded="false" aria-controls="site-nav" aria-label="Öppna meny">
           <span class="nav-toggle__bar" aria-hidden="true"></span>
@@ -24,17 +22,7 @@
 
         <nav id="site-nav" class="site-nav" aria-label="Huvudmeny">
           <ul class="nav-list">
-            <li class="nav-item has-dropdown">
-              <button class="dropdown-toggle" aria-expanded="false" aria-haspopup="true" aria-controls="dropdown-produkter">
-                Produkter
-                <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10l5 5 5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              </button>
-              <ul id="dropdown-produkter" class="dropdown-menu" role="menu">
-                <li role="none"><a role="menuitem" href="#produkter" class="dropdown-link">Kakor</a></li>
-                <li role="none"><a role="menuitem" href="#produkter" class="dropdown-link">Knäck & kola</a></li>
-                <li role="none"><a role="menuitem" href="#produkter" class="dropdown-link">Choklad</a></li>
-              </ul>
-            </li>
+            <li class="nav-item"><a href="#produkter">Produkter</a></li>
             <li class="nav-item"><a href="sa-funkar-det.html">Så funkar det</a></li>
             <li class="nav-item"><a href="om-oss.html">Om oss</a></li>
             <li class="nav-item"><a href="login.html" class="btn btn--sm btn--ghost">Min förening</a></li>
@@ -48,15 +36,15 @@
       <section class="hero">
         <div class="container hero-inner">
           <div class="hero-copy">
-            <h1>Enkelt att sälja godsaker för laget och klassen</h1>
+            <h1>Sälj lokalproducerade produkter för laget och klassen</h1>
             <p>Starta en försäljning på några minuter. Vi hanterar betalningar och logistik – ni fokuserar på att nå erat mål.</p>
             <div class="hero-actions">
-              <a href="#kontakt" class="btn btn--primary btn--lg">Starta försäljning</a>
+              <a href="börja-sälja.html" class="btn btn--primary btn--lg">Starta försäljning</a>
               <a href="sa-funkar-det.html" class="btn btn--ghost btn--lg">Läs mer</a>
             </div>
           </div>
           <div class="hero-media" aria-hidden="true">
-            <img src="img/Skärmbild 2025-10-25 195440.png" alt="Produkter" class="hero-image">
+            <img src="assets/images/alpacka.jpeg" alt="Produkter" class="hero-image">
           </div>
         </div>
       </section>
@@ -64,21 +52,15 @@
       <section id="produkter" class="section section--alt">
         <div class="container">
           <header class="section-header">
-            <h2>Våra produkter</h2>
+            <h1>Våra produkter</h1>
           </header>
           <div class="products-showcase">
             <div class="products-image">
-              <div class="products-visual" aria-hidden="true">
-                <div class="product-item product-item--1">Kakburkar</div>
-                <div class="product-item product-item--2">Choklad</div>
-                <div class="product-item product-item--3">Knäck & kola</div>
-                <div class="product-item product-item--4">Småkakor</div>
-                <div class="product-item product-item--5">Kex</div>
-              </div>
+              <img src="assets/images/produkter.webp" alt="Våra produkter" class="products-image-large">
             </div>
             <div class="products-cta">
               <h3>Utforska hela sortimentet</h3>
-              <p>Över 50 olika produkter att välja mellan. Perfekt för lag, klasser och föreningar.</p>
+              <p>Över 50 olika produkter att välja mellan. Perfekt för lag, klasser och föreningar. Varje produkt har sin egen karaktär och smak. Välj din favoritprodukt och starta din försäljning idag! </p>
               <a href="#produkter" class="btn btn--primary btn--lg">Visa alla produkter</a>
             </div>
           </div>
@@ -88,34 +70,34 @@
       <section id="sa-funkar-det" class="section">
         <div class="container">
           <header class="section-header">
-            <h2>Så funkar det</h2>
+            <h1>Så funkar det</h1>
           </header>
           <div class="how-it-works">
             <div class="work-step">
               <div class="work-image">
-                <div class="product-visual product-visual--1" aria-hidden="true"></div>
+                <img src="img/how-it-works-1.avif" alt="Skapa erat konto" class="work-visual-image">
               </div>
               <div class="work-content">
-                <h3>1. Välj produkter</h3>
-                <p>Bläddra genom vårt stora sortiment och välj de produkter som passar er grupp bäst.</p>
+                <h3>1. Skapa erat konto</h3>
+                <p>Registrera er grupp och få en unik länk att dela med vänner, familj och kollegor.</p>
               </div>
             </div>
             <div class="work-step">
               <div class="work-image">
-                <div class="product-visual product-visual--2" aria-hidden="true"></div>
+                <img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=800&h=600&fit=crop" alt="Dela och sälj" class="work-visual-image">
               </div>
               <div class="work-content">
                 <h3>2. Dela och sälj</h3>
-                <p>Få en unik länk att dela med vänner, familj och kollegor. Samla beställningar online.</p>
+                <p>Dela er länk med alla ni känner. Människor kan enkelt beställa produkter direkt via länken, och ni ser alla beställningar i realtid.</p>
               </div>
             </div>
             <div class="work-step">
               <div class="work-image">
-                <div class="product-visual product-visual--3" aria-hidden="true"></div>
+                <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&h=600&fit=crop" alt="Leverera och fira" class="work-visual-image">
               </div>
               <div class="work-content">
                 <h3>3. Leverera och fira</h3>
-                <p>Vi skickar produkterna till er. Ni levererar lokalt och firar er framgång!</p>
+                <p>När försäljningsperioden är slut skickar ni alla beställningar till oss. Vi levererar produkterna till er, och ni distribuerar lokalt.</p>
               </div>
             </div>
           </div>

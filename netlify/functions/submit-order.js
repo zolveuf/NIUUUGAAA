@@ -22,19 +22,20 @@ exports.handler = async (event, context) => {
       customerName,
       customerEmail,
       customerPhone,
+      sellerName,
       orderDetails,
       totalAmount,
       specialRequests
     } = data;
 
     // Validate required fields
-    if (!accountCode || !customerName || !orderDetails) {
+    if (!accountCode || !customerName || !sellerName || !orderDetails) {
       console.log('Missing required fields');
       return {
         statusCode: 400,
         body: JSON.stringify({ 
           error: 'Missing required fields',
-          required: ['accountCode', 'customerName', 'orderDetails']
+          required: ['accountCode', 'customerName', 'sellerName', 'orderDetails']
         })
       };
     }
@@ -99,6 +100,7 @@ exports.handler = async (event, context) => {
           customer_name: customerName,
           customer_email: customerEmail || null,
           customer_phone: customerPhone || null,
+          seller_name: sellerName,
           order_details: orderDetails,
           total_amount: totalAmount,
           status: 'pending'

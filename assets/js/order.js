@@ -219,6 +219,7 @@ class OrderManager {
     const customerName = formData.get('customerName');
     const customerEmail = formData.get('customerEmail');
     const customerPhone = formData.get('customerPhone');
+    const sellerName = formData.get('sellerName');
     const specialRequests = formData.get('specialRequests');
 
     // Collect product quantities
@@ -262,6 +263,11 @@ class OrderManager {
       return;
     }
 
+    if (!sellerName) {
+      this.showMessage('Ange vem du köper från.', 'error');
+      return;
+    }
+
     const submitBtn = e.target.querySelector('.order-submit');
     const originalText = submitBtn.textContent;
 
@@ -281,6 +287,7 @@ class OrderManager {
           customerName,
           customerEmail,
           customerPhone,
+          sellerName,
           orderDetails,
           totalAmount,
           specialRequests

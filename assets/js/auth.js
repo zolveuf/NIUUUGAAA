@@ -538,6 +538,7 @@ class AuthManager {
         <div class="order-details">
           <div class="customer-info">
             <p><strong>Kund:</strong> ${order.customer_name}</p>
+            ${order.seller_name ? `<p><strong>Köpt från:</strong> ${order.seller_name}</p>` : ''}
             ${order.customer_email ? `<p><strong>E-post:</strong> ${order.customer_email}</p>` : ''}
             ${order.customer_phone ? `<p><strong>Telefon:</strong> ${order.customer_phone}</p>` : ''}
           </div>
