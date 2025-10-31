@@ -78,48 +78,28 @@ class OrderManager {
       orderFormContainer.style.display = 'none';
       errorState.style.display = 'none';
 
-      // Get account information
-      const { data: accounts, error: accountError } = await this.supabase
-        .from('accounts')
-        .select('*')
-        .eq('personal_link_code', this.accountCode)
-        .single();
+      // Get account and application information via Netlify Function
+      const response = await fetch(`/.netlify/functions/get-order-info?code=${encodeURIComponent(this.accountCode)}`);
 
-      if (accountError) {
-        console.error('Error loading account:', accountError);
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Kunde inte hitta beställningsinformation');
+      }
+
+      if (!result.success || !result.account || !result.application) {
         throw new Error('Kunde inte hitta beställningsinformation');
       }
 
-      if (!accounts) {
-        throw new Error('Beställningslänken är ogiltig');
-      }
-
-      // Check if personal link has been deleted (sales period ended)
-      if (!accounts.personal_link_code || accounts.personal_link_code === 'DELETED') {
-        throw new Error('Försäljningsperioden är avslutad. Denna länk fungerar inte längre.');
-      }
-
-      // Get application information separately
-      const { data: applications, error: appError } = await this.supabase
-        .from('applications')
-        .select('organization, name, group_type')
-        .eq('user_id', accounts.user_id)
-        .single();
-
-      if (appError) {
-        console.error('Error loading application:', appError);
-        throw new Error('Kunde inte hitta organisationsinformation');
-      }
-
       this.accountData = {
-        ...accounts,
-        applications: applications
+        ...result.account,
+        applications: result.application
       };
       
       console.log('Account loaded:', this.accountData);
 
       // Update UI with account information
-      document.getElementById('organization-name').textContent = applications.organization;
+      document.getElementById('organization-name').textContent = result.application.organization;
 
       // Load products
       this.loadProducts();
@@ -136,7 +116,9 @@ class OrderManager {
       errorState.style.display = 'block';
       
       const errorMessage = document.getElementById('error-message');
-      errorMessage.textContent = error.message;
+      if (errorMessage) {
+        errorMessage.textContent = error.message;
+      }
     }
   }
 

@@ -18,10 +18,8 @@ function showNotification(message, type = 'info', duration = 5000) {
   const notification = document.createElement('div');
   notification.className = `notification notification--${type}`;
   
-  const icon = getNotificationIcon(type);
   notification.innerHTML = `
     <div class="notification-content">
-      <span class="notification-icon">${icon}</span>
       <span class="notification-message">${message}</span>
     </div>
     <button class="notification-close" aria-label="Stäng">&times;</button>
@@ -139,16 +137,6 @@ function removeNotification(notification) {
       notification.parentNode.removeChild(notification);
     }
   }, 300);
-}
-
-function getNotificationIcon(type) {
-  const icons = {
-    success: '✓',
-    error: '✕',
-    warning: '⚠',
-    info: 'ℹ'
-  };
-  return icons[type] || icons.info;
 }
 
 function getNotificationContainer() {

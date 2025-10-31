@@ -253,9 +253,9 @@ class AuthManager {
 
     try {
       // Show loading state
-      loadingState.style.display = 'block';
-      dashboardContent.style.display = 'none';
-      errorState.style.display = 'none';
+      if (loadingState) loadingState.style.display = 'block';
+      if (dashboardContent) dashboardContent.style.display = 'none';
+      if (errorState) errorState.style.display = 'none';
 
       // Get user's application and account
       const { data: applications, error: appError } = await this.supabase
@@ -270,15 +270,18 @@ class AuthManager {
       }
 
       // Get user's account with personal link
-      const { data: accounts, error: accountError } = await this.supabase
+      const { data: accountsData, error: accountError } = await this.supabase
         .from('accounts')
         .select('*')
         .eq('user_id', this.currentUser.id)
-        .single();
+        .limit(1);
 
+      let accounts = null;
       if (accountError && accountError.code !== 'PGRST116') {
         console.error('Kontofel:', accountError);
         // Don't throw error, just continue without account
+      } else if (accountsData && accountsData.length > 0) {
+        accounts = accountsData[0];
       }
 
       if (applications && applications.length > 0) {
@@ -299,32 +302,50 @@ class AuthManager {
       }
 
       // Show dashboard content
-      loadingState.style.display = 'none';
-      dashboardContent.style.display = 'block';
+      if (loadingState) loadingState.style.display = 'none';
+      if (dashboardContent) dashboardContent.style.display = 'block';
 
     } catch (error) {
       console.error('Fel vid ladda instrumentpaneldata:', error);
       
-      loadingState.style.display = 'none';
-      dashboardContent.style.display = 'none';
-      errorState.style.display = 'block';
+      if (loadingState) loadingState.style.display = 'none';
+      if (dashboardContent) dashboardContent.style.display = 'none';
+      if (errorState) errorState.style.display = 'block';
       
       const errorMessage = document.getElementById('error-message');
-      errorMessage.textContent = 'Kunde inte ladda din information. Försök igen senare eller kontakta support.';
+      if (errorMessage) {
+        errorMessage.textContent = 'Kunde inte ladda din information. Försök igen senare eller kontakta support.';
+      } else {
+        // Fallback to notification if error message element doesn't exist
+        if (typeof showNotification === 'function') {
+          showNotification('Kunde inte ladda din information. Försök igen senare eller kontakta support.', 'error');
+        }
+      }
     }
   }
 
   displayApplicationData(application) {
+    if (!application) {
+      console.error('No application data provided');
+      return;
+    }
+
     // Update status
     const statusBadge = document.getElementById('status-badge');
     const statusMessage = document.getElementById('status-message');
     
-    statusBadge.textContent = this.getStatusText(application.status);
-    statusBadge.className = `status-badge status-${application.status}`;
-    statusMessage.textContent = this.getStatusMessage(application.status);
+    if (statusBadge && statusMessage) {
+      statusBadge.textContent = this.getStatusText(application.status);
+      statusBadge.className = `status-badge status-${application.status}`;
+      statusMessage.textContent = this.getStatusMessage(application.status);
+    }
 
     // Update application details
     const applicationDetails = document.getElementById('application-details');
+    if (!applicationDetails) {
+      console.error('Application details element not found');
+      return;
+    }
     applicationDetails.innerHTML = `
       <div class="detail-row">
         <span class="detail-label">Organisation:</span>
