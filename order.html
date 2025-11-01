@@ -22,7 +22,7 @@
 
         <nav id="site-nav" class="site-nav" aria-label="Huvudmeny">
           <ul class="nav-list">
-            <li class="nav-item"><a href="index.html#produkter">Produkter</a></li>
+            <li class="nav-item"><a href="produkter.html">Produkter</a></li>
             <li class="nav-item"><a href="sa-funkar-det.html">Så funkar det</a></li>
             <li class="nav-item"><a href="om-oss.html">Om oss</a></li>
             <li class="nav-item"><a href="login.html" class="btn btn--sm btn--ghost">Min förening</a></li>
@@ -92,6 +92,18 @@
                   <textarea id="special-requests" name="specialRequests" rows="4" placeholder="T.ex. allergier, leveransdatum, etc."></textarea>
                 </div>
 
+                <div class="form-group checkbox-group">
+                  <label class="checkbox-label">
+                    <input type="checkbox" id="order-terms" name="orderTerms" required>
+                    <span class="checkmark"></span>
+                    <span class="checkbox-text">
+                      Jag accepterar <a href="villkor.html" target="_blank">köpvillkor</a> 
+                      och <a href="integritet.html" target="_blank">sekretesspolicy</a> 
+                      och förbinder mig att betala för beställningen. *
+                    </span>
+                  </label>
+                </div>
+
                 <button type="submit" class="btn btn--primary btn--lg order-submit">
                   Skicka beställning
                 </button>
@@ -114,7 +126,7 @@
     <footer id="om-oss" class="site-footer">
       <div class="container footer-inner">
         <div class="footer-brand">
-          <a href="#" class="logo">Kakservice</a>
+          <a href="index.html" class="logo">KLASSKRAFT UF</a>
           <p>Vi hjälper lag och klasser att nå sina mål genom god försäljning. Enkelt, säkert och framgångsrikt.</p>
           <div class="footer-cta">
             <a href="#kontakt" class="btn btn--primary">Börja sälja</a>
@@ -124,24 +136,21 @@
         <nav class="footer-nav" aria-label="Footer">
           <div class="footer-section">
             <h4>Produkter</h4>
-            <a href="#produkter">Kakburkar</a>
-            <a href="#produkter">Choklad</a>
-            <a href="#produkter">Knäck & kola</a>
-            <a href="#produkter">Småkakor</a>
+            <a href="produkter.html">KASTEBERG SENAP</a>
+            <a href="produkter.html">ALPACKA STRUMPOR</a>
+            <a href="produkter.html">BENESTA LÄSK</a>
+            <a href="produkter.html">KASTEBERG RAPSOLJA</a>
           </div>
           <div class="footer-section">
             <h4>Support</h4>
             <a href="sa-funkar-det.html">Så funkar det</a>
-            <a href="#kontakt">Kontakt</a>
-            <a href="#faq">Vanliga frågor</a>
-            <a href="#privacy">Integritet</a>
+            <a href="om-oss.html">Om oss</a>
+            <a href="index.html">Hem</a>
           </div>
           <div class="footer-section">
-            <h4>Företag</h4>
-            <a href="om-oss.html">Om oss</a>
-            <a href="#careers">Karriär</a>
-            <a href="#press">Press</a>
-            <a href="#partners">Partners</a>
+            <h4>Kontakta oss</h4>
+            <a href="mailto:info@klasskraftuf.se">info@klasskraftuf.se</a>
+            <a href="tel:+46703000000">070-300 00 00</a>
           </div>
         </nav>
       </div>

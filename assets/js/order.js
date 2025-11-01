@@ -203,6 +203,7 @@ class OrderManager {
     const customerPhone = formData.get('customerPhone');
     const sellerName = formData.get('sellerName');
     const specialRequests = formData.get('specialRequests');
+    const termsAccepted = formData.get('orderTerms') === 'on';
 
     // Collect product quantities
     const orderDetails = {};
@@ -250,6 +251,21 @@ class OrderManager {
       return;
     }
 
+    if (!termsAccepted) {
+      this.showMessage('Du måste godkänna köpvillkor och sekretesspolicy för att göra en beställning.', 'error');
+      return;
+    }
+
+    // Generate or retrieve session ID
+    let sessionId = sessionStorage.getItem('order_session_id');
+    if (!sessionId) {
+      sessionId = Date.now().toString(36) + Math.random().toString(36).substring(2);
+      sessionStorage.setItem('order_session_id', sessionId);
+    }
+
+    // Set terms version (matches date in villkor.html)
+    const termsVersion = 'v1.0-2025-01-01';
+
     const submitBtn = e.target.querySelector('.order-submit');
     const originalText = submitBtn.textContent;
 
@@ -272,7 +288,10 @@ class OrderManager {
           sellerName,
           orderDetails,
           totalAmount,
-          specialRequests
+          specialRequests,
+          termsAccepted,
+          termsVersion,
+          sessionId
         })
       });
 

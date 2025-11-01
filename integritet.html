@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="sv">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Sekretesspolicy - Klass Kraft UF</title>
+    <meta name="description" content="Sekretesspolicy för Klass Kraft UF. Läs hur vi behandlar och skyddar dina personuppgifter i enlighet med GDPR." />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/styles.css" />
+    <style>
+      /* Additional styles for privacy page */
+      .privacy-hero {
+        background: linear-gradient(135deg, #203f30 0%, #3f624a 100%);
+        color: white;
+        padding: 2.5rem 0;
+        text-align: center;
+      }
+      
+      .privacy-hero h1 {
+        font-size: 3rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        line-height: 1.2;
+      }
+      
+      .privacy-hero p {
+        font-size: 1.25rem;
+        opacity: 0.9;
+        max-width: 600px;
+        margin: 0 auto;
+      }
+      
+      .privacy-content {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 4rem 1rem;
+        line-height: 1.8;
+      }
+      
+      .privacy-content h2 {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: #1f2937;
+        margin-top: 3rem;
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid #e5e7eb;
+      }
+      
+      .privacy-content h2:first-child {
+        margin-top: 0;
+      }
+      
+      .privacy-content h3 {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #374151;
+        margin-top: 2rem;
+        margin-bottom: 1rem;
+      }
+      
+      .privacy-content p {
+        font-size: 1rem;
+        color: #4b5563;
+        margin-bottom: 1.25rem;
+      }
+      
+      .privacy-content ul {
+        margin-bottom: 1.5rem;
+        padding-left: 1.5rem;
+      }
+      
+      .privacy-content li {
+        font-size: 1rem;
+        color: #4b5563;
+        margin-bottom: 0.75rem;
+        line-height: 1.7;
+      }
+      
+      .privacy-content strong {
+        color: #1f2937;
+        font-weight: 600;
+      }
+      
+      .privacy-content table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 1.5rem 0;
+        font-size: 0.95rem;
+      }
+      
+      .privacy-content table th,
+      .privacy-content table td {
+        padding: 0.75rem;
+        text-align: left;
+        border-bottom: 1px solid #e5e7eb;
+      }
+      
+      .privacy-content table th {
+        background: #f8fafc;
+        font-weight: 600;
+        color: #1f2937;
+      }
+      
+      .privacy-meta {
+        background: #f8fafc;
+        padding: 1.5rem;
+        border-radius: 8px;
+        margin-top: 3rem;
+        border-left: 4px solid #203f30;
+      }
+      
+      .privacy-meta p {
+        margin-bottom: 0.5rem;
+        font-size: 0.95rem;
+      }
+      
+      .privacy-meta p:last-child {
+        margin-bottom: 0;
+      }
+      
+      /* Mobile responsiveness */
+      @media (max-width: 768px) {
+        .privacy-hero h1 {
+          font-size: 2rem;
+        }
+        
+        .privacy-hero p {
+          font-size: 1.125rem;
+        }
+        
+        .privacy-content {
+          padding: 2rem 1rem;
+        }
+        
+        .privacy-content h2 {
+          font-size: 1.5rem;
+          margin-top: 2rem;
+        }
+        
+        .privacy-content h3 {
+          font-size: 1.125rem;
+        }
+        
+        .privacy-content table {
+          font-size: 0.85rem;
+        }
+        
+        .privacy-content table th,
+        .privacy-content table td {
+          padding: 0.5rem;
+        }
+      }
+      
+      @media (max-width: 480px) {
+        .privacy-hero {
+          padding: 1.5rem 0;
+        }
+        
+        .privacy-hero h1 {
+          font-size: 1.75rem;
+        }
+        
+        .privacy-hero p {
+          font-size: 1rem;
+          padding: 0 1rem;
+        }
+        
+        .privacy-content {
+          padding: 1.5rem 1rem;
+        }
+        
+        .privacy-content h2 {
+          font-size: 1.25rem;
+        }
+        
+        .privacy-content p,
+        .privacy-content li {
+          font-size: 0.95rem;
+        }
+        
+        .privacy-content table {
+          font-size: 0.8rem;
+          display: block;
+          overflow-x: auto;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="site-header" data-header>
+      <div class="container header-inner">
+        <a href="index.html" class="logo" aria-label="Hem">Klass Kraft UF</a>
+
+        <button class="nav-toggle" aria-expanded="false" aria-controls="site-nav" aria-label="Öppna meny">
+          <span class="nav-toggle__bar" aria-hidden="true"></span>
+          <span class="nav-toggle__bar" aria-hidden="true"></span>
+          <span class="nav-toggle__bar" aria-hidden="true"></span>
+        </button>
+
+        <nav id="site-nav" class="site-nav" aria-label="Huvudmeny">
+          <ul class="nav-list">
+            <li class="nav-item"><a href="produkter.html">Produkter</a></li>
+            <li class="nav-item"><a href="sa-funkar-det.html">Så funkar det</a></li>
+            <li class="nav-item"><a href="om-oss.html">Om oss</a></li>
+            <li class="nav-item"><a href="login.html" class="btn btn--sm btn--ghost">Min förening</a></li>
+            <li class="nav-item"><a href="börja-sälja.html" class="btn btn--sm btn--primary">Börja sälja</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="privacy-hero">
+        <div class="container">
+          <h1>Sekretesspolicy</h1>
+          <p>Vi tar ditt dataskydd på allvar. Här kan du läsa hur vi samlar in, använder och skyddar dina personuppgifter.</p>
+          <p style="font-size: 0.9rem; opacity: 0.8; margin-top: 1rem;">Senast uppdaterad: 2025-01-01</p>
+        </div>
+      </section>
+
+      <section class="privacy-content">
+        <div class="container">
+          <h2>1. Personuppgiftsansvarig</h2>
+          
+          <p>Klass Kraft UF är personuppgiftsansvarig för behandlingen av dina personuppgifter enligt Dataskyddsförordningen (GDPR) och svensk dataskyddslagstiftning.</p>
+          
+          <div class="privacy-meta">
+            <p><strong>Klass Kraft UF</strong></p>
+            <p>Organisationsnummer: [SKALL FYLLAS I]</p>
+            <p>Adress: [SKALL FYLLAS I]</p>
+            <p>E-post: <a href="mailto:info@klasskraftuf.se" style="color: #203f30; text-decoration: underline;">info@klasskraftuf.se</a></p>
+            <p>Telefon: <a href="tel:+46703000000" style="color: #203f30; text-decoration: underline;">070-300 00 00</a></p>
+            <p>Dataskyddsombud: [SKALL FYLLAS I OM TILLÄMPLIGT]</p>
+          </div>
+
+          <h2>2. Vilka Personuppgifter Samlar Vi In?</h2>
+          
+          <h3>2.1 Vid Beställning</h3>
+          <p>När du gör en beställning via vår webbplats samlar vi in följande personuppgifter:</p>
+          <ul>
+            <li><strong>Namn:</strong> Ditt fullständiga namn för leverans- och faktureringsändamål</li>
+            <li><strong>E-postadress:</strong> För orderbekräftelse och kommunikation angående din beställning</li>
+            <li><strong>Telefonnummer:</strong> För kontakt vid problem med leverans eller beställning (frivilligt)</li>
+            <li><strong>Beställningsinformation:</strong> Vilka produkter du beställt, kvantiteter och totalbelopp</li>
+            <li><strong>IP-adress:</strong> För säkerhet och för att skydda mot bedrägerier och bedrägliga beställningar</li>
+            <li><strong>Webbläsarinformation (User Agent):</strong> Teknisk information för säkerhet och felsökning</li>
+            <li><strong>Godkännande av villkor:</strong> Tidsstämpel för när du godkände köpvillkor</li>
+            <li><strong>Information om vem du köper från:</strong> Namn på säljare/elev från föreningen</li>
+          </ul>
+          
+          <h3>2.2 Vid Registrering (Föreningar/Organisationer)</h3>
+          <p>När du registrerar dig som förening eller organisation samlar vi in:</p>
+          <ul>
+            <li><strong>Kontaktpersonens namn och e-post:</strong> För kommunikation och kontohantering</li>
+            <li><strong>Organisationsnamn:</strong> För fakturering och identifiering</li>
+            <li><strong>Telefonnummer:</strong> För kontakt (frivilligt)</li>
+            <li><strong>Organisationstyp:</strong> Idrottslag, skolklass, förening, etc.</li>
+            <li><strong>Antal deltagare:</strong> För planering och statistik (frivilligt)</li>
+            <li><strong>Mål och syfte:</strong> Information om vad ni vill uppnå (frivilligt)</li>
+            <li><strong>Lösenord:</strong> Krypterat för säker inloggning</li>
+            <li><strong>IP-adress och webbläsarinformation:</strong> För säkerhet och bedrägeriidentifiering</li>
+          </ul>
+          
+          <h3>2.3 Automatisk Insamling</h3>
+          <p>Vi samlar automatiskt in teknisk information när du besöker vår webbplats:</p>
+          <ul>
+            <li><strong>Teknisk information:</strong> För säkerhet och felsökning</li>
+            <li><strong>Loggdata:</strong> IP-adress, webbläsartyp, operativsystem, sidvisningar och tidpunkt för besök</li>
+            <li><strong>Enhetstyp:</strong> Mobil, surfplatta eller dator</li>
+          </ul>
+
+          <h2>3. Syfte med Behandling</h2>
+          
+          <p>Vi behandlar dina personuppgifter för följande syften:</p>
+          
+          <table>
+            <thead>
+              <tr>
+                <th>Syfte</th>
+                <th>Rättslig Grund</th>
+                <th>Lagringstid</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Hantera och fullgöra beställningar</td>
+                <td>Avtalsuppfyllelse (Art. 6.1 b GDPR)</td>
+                <td>Tills avtalet är slutfört + 7 år (bokföringslagen)</td>
+              </tr>
+              <tr>
+                <td>Fakturering och betalning</td>
+                <td>Avtalsuppfyllelse + Laglig skyldighet (Art. 6.1 b och c GDPR)</td>
+                <td>7 år från faktureringsdatum (bokföringslagen)</td>
+              </tr>
+              <tr>
+                <td>Leverans och distribution</td>
+                <td>Avtalsuppfyllelse (Art. 6.1 b GDPR)</td>
+                <td>Tills leveransen är klar + 2 år</td>
+              </tr>
+              <tr>
+                <td>Kundservice och support</td>
+                <td>Berättigat intresse (Art. 6.1 f GDPR)</td>
+                <td>Tills ärendet är avslutat + 2 år</td>
+              </tr>
+              <tr>
+                <td>Skydd mot bedrägerier och säkerhet</td>
+                <td>Berättigat intresse (Art. 6.1 f GDPR)</td>
+                <td>2 år från senaste aktivitet</td>
+              </tr>
+              <tr>
+                <td>Rättsliga krav och tvister</td>
+                <td>Laglig skyldighet (Art. 6.1 c GDPR)</td>
+                <td>Tills tvisten är avslutad + 10 år (preskriptionstid)</td>
+              </tr>
+              <tr>
+                <td>Marknadsföring (endast med ditt samtycke)</td>
+                <td>Samtycke (Art. 6.1 a GDPR)</td>
+                <td>Tills du säger upp ditt samtycke</td>
+              </tr>
+              <tr>
+                <td>Statistik och analys</td>
+                <td>Berättigat intresse (Art. 6.1 f GDPR)</td>
+                <td>Aggregerad, anonymiserad data lagras obegränsat</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h2>4. Rättslig Grund för Behandling</h2>
+          
+          <h3>4.1 Avtalsuppfyllelse</h3>
+          <p>Vi behandlar dina personuppgifter när det är nödvändigt för att fullgöra köpavtalet mellan dig och Klass Kraft UF. Detta inkluderar beställningshantering, fakturering och leverans.</p>
+          
+          <h3>4.2 Laglig Skyldighet</h3>
+          <p>Vi behandlar personuppgifter för att uppfylla lagliga skyldigheter, såsom bokföringslagen som kräver att vi sparar fakturor och betalningsinformation i 7 år.</p>
+          
+          <h3>4.3 Berättigat Intresse</h3>
+          <p>Vi behandlar personuppgifter baserat på vårt berättigade intresse att:</p>
+          <ul>
+            <li>Skydda vår webbplats och verksamhet mot bedrägerier och cyberattacker</li>
+            <li>Förbättra vår webbplats och användarupplevelse</li>
+            <li>Hantera kundservice och support</li>
+            <li>Analysera användning och trafik för att förbättra vår tjänst</li>
+          </ul>
+          
+          <h3>4.4 Samtycke</h3>
+          <p>Vid vissa typer av behandling kräver vi ditt uttryckliga samtycke, till exempel för marknadsföring via e-post. Du kan när som helst återkalla ditt samtycke.</p>
+
+          <h2>5. Delning av Personuppgifter</h2>
+          
+          <h3>5.1 Tredjepartsleverantörer</h3>
+          <p>Vi delar personuppgifter med följande typer av leverantörer som hjälper oss att driva verksamheten:</p>
+          <ul>
+            <li><strong>Hosting- och molnleverantörer:</strong> Supabase (databas och hosting) - Data lagras i EU/EEA</li>
+            <li><strong>E-posttjänster:</strong> SendGrid (för att skicka orderbekräftelser och meddelanden) - Data kan överföras till USA med standardavtalsklausuler</li>
+            <li><strong>Betalningshantering:</strong> Vid behov kan vi dela information med betalningsleverantörer för fakturering</li>
+            <li><strong>Analysverktyg:</strong> För att analysera webbplatsanvändning (endast om tillämpligt)</li>
+          </ul>
+          
+          <h3>5.2 Myndigheter</h3>
+          <p>Vi kan vara skyldiga att dela personuppgifter med myndigheter om så krävs enligt lag, till exempel vid skattegranskning eller polisutredning.</p>
+          
+          <h3>5.3 Föreningar och Organisationer</h3>
+          <p>Vi delar begränsad information om beställningar med den förening eller organisation som äger beställningslänken. Detta inkluderar:</p>
+          <ul>
+            <li>Ditt namn (för leverans till rätt person)</li>
+            <li>Vilka produkter du beställt</li>
+            <li>Totalbelopp för din beställning</li>
+            <li>Information om vem du köper från (säljare/elev)</li>
+          </ul>
+          <p><strong>Vi delar INTE:</strong> Din e-postadress, telefonnummer eller andra kontaktuppgifter med föreningen utan ditt samtycke.</p>
+          
+          <h3>5.4 Internationella Överföringar</h3>
+          <p>Personuppgifter kan överföras till och lagras i länder utanför EU/EEA. Vid sådana överföringar säkerställer vi att lämpliga skyddsåtgärder finns på plats, såsom standardavtalsklausuler godkända av EU-kommissionen eller andra lagliga mekanismer.</p>
+
+          <h2>6. Lagringstid</h2>
+          
+          <p>Vi lagrar dina personuppgifter endast så länge som det är nödvändigt för syftet med behandlingen:</p>
+          <ul>
+            <li><strong>Beställnings- och kunddata:</strong> 7 år från beställningsdatum (enligt bokföringslagen)</li>
+            <li><strong>Faktureringsinformation:</strong> 7 år från fakturadatum (laglig skyldighet)</li>
+            <li><strong>Kundservicekommunikation:</strong> 2 år från avslutat ärende</li>
+            <li><strong>Säkerhetsdata (IP-adress, user agent):</strong> 2 år från senaste aktivitet</li>
+            <li><strong>Registreringsdata (föreningar):</strong> Så länge kontot är aktivt + 1 år efter avslut</li>
+            <li><strong>Marknadsföringsdata:</strong> Tills du säger upp ditt samtycke eller avregistrerar dig</li>
+          </ul>
+          <p>Efter lagringsperioden raderas eller anonymiseras personuppgifterna automatiskt.</p>
+
+          <h2>7. Dina Rättigheter</h2>
+          
+          <p>Enligt GDPR har du följande rättigheter:</p>
+          
+          <h3>7.1 Rätt till Tillgång (Art. 15 GDPR)</h3>
+          <p>Du har rätt att få en kopia av alla personuppgifter vi behandlar om dig. Begäran görs skriftligt till <a href="mailto:info@klasskraftuf.se" style="color: #203f30; text-decoration: underline;">info@klasskraftuf.se</a>.</p>
+          
+          <h3>7.2 Rätt till Rättelse (Art. 16 GDPR)</h3>
+          <p>Du har rätt att få felaktiga personuppgifter rättade. Kontakta oss om du upptäcker fel i din information.</p>
+          
+          <h3>7.3 Rätt till Radering (Art. 17 GDPR) - "Rätten att bli bortglömd"</h3>
+          <p>Du har rätt att begära radering av dina personuppgifter om:</p>
+          <ul>
+            <li>Uppgifterna inte längre behövs för syftet</li>
+            <li>Du återkallar ditt samtycke och det inte finns annan rättslig grund</li>
+            <li>Uppgifterna behandlas olagligt</li>
+            <li>Radering krävs för att uppfylla en laglig skyldighet</li>
+          </ul>
+          <p><strong>OBS:</strong> Vi kan inte radera uppgifter om vi är juridiskt skyldiga att behålla dem (t.ex. faktureringsdata i 7 år enligt bokföringslagen).</p>
+          
+          <h3>7.4 Rätt till Begränsning (Art. 18 GDPR)</h3>
+          <p>Du har rätt att begära att behandlingen av dina personuppgifter begränsas om du bestrider uppgifternas riktighet eller behandlingen är olaglig.</p>
+          
+          <h3>7.5 Rätt till Dataportabilitet (Art. 20 GDPR)</h3>
+          <p>Du har rätt att få dina personuppgifter i ett strukturerat, allmänt använt och maskinläsbart format, förutsatt att behandlingen baseras på samtycke eller avtal.</p>
+          
+          <h3>7.6 Rätt att Invända (Art. 21 GDPR)</h3>
+          <p>Du har rätt att invända mot behandling som baseras på berättigat intresse. Vi kommer att sluta behandla dina uppgifter om inte vi kan visa tvingande berättigade skäl för behandlingen.</p>
+          
+          <h3>7.7 Rätt att Återkalla Samtycke</h3>
+          <p>Om behandlingen baseras på ditt samtycke kan du när som helst återkalla det. Återkallelsen påverkar inte lagligheten av behandlingen före återkallelsen.</p>
+          
+          <h3>7.8 Rätt att Inlämna Klagomål</h3>
+          <p>Du har rätt att inlämna klagomål till tillsynsmyndigheten (Datainspektionen) om du anser att behandlingen av dina personuppgifter strider mot GDPR. Kontaktinformation: <a href="https://www.imy.se" target="_blank" style="color: #203f30; text-decoration: underline;">www.imy.se</a></p>
+
+          <h2>8. Säkerhet och Skydd av Data</h2>
+          
+          <h3>8.1 Tekniska Säkerhetsåtgärder</h3>
+          <p>Vi har implementerat tekniska och organisatoriska säkerhetsåtgärder för att skydda dina personuppgifter mot obehörig åtkomst, förlust, förstörelse eller ändring:</p>
+          <ul>
+            <li><strong>Kryptering:</strong> Alla data överföras via HTTPS (SSL/TLS-kryptering)</li>
+            <li><strong>Databas:</strong> Personuppgifter lagras i säkra databaser med åtkomstkontroll</li>
+            <li><strong>Lösenord:</strong> Lösenord krypteras med säkra algoritmer (hashing)</li>
+            <li><strong>Åtkomstkontroll:</strong> Endast auktoriserad personal har åtkomst till personuppgifter</li>
+            <li><strong>Backup och återställning:</strong> Regelbundna säkerhetskopior för att skydda mot dataförlust</li>
+            <li><strong>Säkerhetsuppdateringar:</strong> Regelbundna uppdateringar av system och programvara</li>
+            <li><strong>Firewall och skydd:</strong> Nätverksskydd mot cyberattacker och intrång</li>
+          </ul>
+          
+          <h3>8.2 Organisatoriska Åtgärder</h3>
+          <p>Vi har implementerat:</p>
+          <ul>
+            <li>Sekretessklausuler för alla anställda och medarbetare</li>
+            <li>Utbildning i dataskydd och säkerhet för personal</li>
+            <li>Regelbundna säkerhetsgranskningar och riskbedömningar</li>
+            <li>Incidenthanteringsrutiner vid dataintrång eller säkerhetsincidenter</li>
+          </ul>
+          
+          <h3>8.3 Dataintrång och Incidenthantering</h3>
+          <p>Om vi upptäcker ett dataintrång eller säkerhetsincident som kan påverka dina personuppgifter kommer vi att:</p>
+          <ul>
+            <li>Omedelbart inleda åtgärder för att stoppa intrånget</li>
+            <li>Utvärdera omfattningen och konsekvenserna</li>
+            <li>Meddela Datainspektionen inom 72 timmar om det är ett allvarligt intrång</li>
+            <li>Meddela berörda personer om intrånget utgör en hög risk för deras rättigheter och friheter</li>
+            <li>Dokumentera intrånget och vidtagna åtgärder</li>
+          </ul>
+
+          <h2>9. Barn och Minderåriga</h2>
+          
+          <p>Vår webbplats är inte avsedd för personer under 18 år utan förmyndares samtycke. Vi samlar inte medvetet in personuppgifter från barn utan föräldrars eller förmyndares godkännande. Om vi upptäcker att vi har samlat in personuppgifter från ett barn utan tillstånd kommer vi att omedelbart radera uppgifterna.</p>
+          
+          <p>Vid beställningar via föreningar och skolklasser ansvarar föreningen för att säkerställa att alla beställningar görs med tillstånd från föräldrar/förmyndare där det krävs.</p>
+
+          <h2>10. Ändringar av Sekretesspolicy</h2>
+          
+          <p>Vi kan uppdatera denna sekretesspolicy när som helst för att återspegla ändringar i vår verksamhet eller lagkrav. Uppdaterade versioner publiceras på denna sida med angivet datum. Vi rekommenderar att du regelbundet läser igenom policyn för att hålla dig informerad om hur vi behandlar dina personuppgifter.</p>
+          
+          <p>Om vi gör betydande ändringar kommer vi att meddela dig via e-post eller via en tydlig notis på vår webbplats innan ändringarna träder i kraft.</p>
+
+          <h2>11. Kontakt för Dataskydd</h2>
+          
+          <p>Om du har frågor om denna sekretesspolicy, vill utöva dina rättigheter, eller vill lämna klagomål angående behandling av personuppgifter, kontakta oss:</p>
+          
+          <div class="privacy-meta">
+            <p><strong>Klass Kraft UF</strong></p>
+            <p>E-post: <a href="mailto:info@klasskraftuf.se" style="color: #203f30; text-decoration: underline;">info@klasskraftuf.se</a></p>
+            <p>Telefon: <a href="tel:+46703000000" style="color: #203f30; text-decoration: underline;">070-300 00 00</a></p>
+            <p>Adress: [SKALL FYLLAS I]</p>
+            <p style="margin-top: 1rem;"><strong>Dataskyddsombud:</strong> [SKALL FYLLAS I OM TILLÄMPLIGT]</p>
+            <p><strong>Datainspektionen:</strong> <a href="https://www.imy.se" target="_blank" style="color: #203f30; text-decoration: underline;">www.imy.se</a></p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-inner">
+        <div class="footer-brand">
+          <a href="index.html" class="logo">KLASSKRAFT UF</a>
+          <p>Vi hjälper lag och klasser att nå sina mål genom god försäljning. Enkelt, säkert och framgångsrikt.</p>
+          <div class="footer-cta">
+            <a href="börja-sälja.html" class="btn btn--primary">Börja sälja</a>
+            <a href="sa-funkar-det.html" class="btn btn--ghost">Läs mer</a>
+          </div>
+        </div>
+        <nav class="footer-nav" aria-label="Footer">
+          <div class="footer-section">
+            <h4>Produkter</h4>
+            <a href="produkter.html">KASTEBERG SENAP</a>
+            <a href="produkter.html">ALPACKA STRUMPOR</a>
+            <a href="produkter.html">BENESTA LÄSK</a>
+            <a href="produkter.html">KASTEBERG RAPSOLJA</a>
+          </div>
+          <div class="footer-section">
+            <h4>Support</h4>
+            <a href="sa-funkar-det.html">Så funkar det</a>
+            <a href="om-oss.html">Om oss</a>
+            <a href="index.html">Hem</a>
+          </div>
+          <div class="footer-section">
+            <h4>Kontakta oss</h4>
+            <a href="mailto:info@klasskraftuf.se">info@klasskraftuf.se</a>
+            <a href="tel:+46703000000">070-300 00 00</a>
+          </div>
+        </nav>
+      </div>
+      <div class="container footer-bottom">
+        <small>© <span id="year"></span> Klass Kraft UF - Hemsida designad & producerad av <a style="text-decoration: underline; color: #a1a1aa;" href="https://www.linkedin.com/in/martin-pranjic-99a278310/">Martin Pranjic</a></small>
+      </div>
+    </footer>
+
+    <script src="assets/js/main.js" defer></script>
+  </body>
+</html>
+

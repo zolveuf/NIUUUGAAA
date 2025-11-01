@@ -25,7 +25,10 @@ exports.handler = async (event, context) => {
       sellerName,
       orderDetails,
       totalAmount,
-      specialRequests
+      specialRequests,
+      termsAccepted,
+      termsVersion,
+      sessionId
     } = data;
 
     // Validate required fields
@@ -36,6 +39,17 @@ exports.handler = async (event, context) => {
         body: JSON.stringify({ 
           error: 'Missing required fields',
           required: ['accountCode', 'customerName', 'sellerName', 'orderDetails']
+        })
+      };
+    }
+
+    // Validate terms acceptance
+    if (!termsAccepted || termsAccepted !== true) {
+      console.log('Terms not accepted');
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ 
+          error: 'Du måste godkänna köpvillkor och sekretesspolicy för att göra en beställning.'
         })
       };
     }
@@ -90,6 +104,26 @@ exports.handler = async (event, context) => {
 
     console.log('Application found:', applicationData.organization);
 
+    // Extract IP address and user agent
+    const ipAddress = event.headers['x-forwarded-for']?.split(',')[0]?.trim() || 
+                     event.headers['x-real-ip'] || 
+                     event.connection?.remoteAddress || 
+                     'Unknown';
+    
+    const userAgent = event.headers['user-agent'] || 'Unknown';
+    
+    const acceptedTermsVersion = termsVersion || 'v1.0-2025-01-01';
+    const termsAcceptedAt = new Date().toISOString();
+
+    console.log('Terms acceptance data:', {
+      termsAccepted,
+      termsVersion: acceptedTermsVersion,
+      termsAcceptedAt,
+      ipAddress: ipAddress.substring(0, 20) + '...', // Log only first 20 chars for privacy
+      userAgent: userAgent.substring(0, 50) + '...', // Log only first 50 chars
+      sessionId
+    });
+
     // Insert order into database
     console.log('Inserting order...');
     const { data: orderData, error: orderError } = await supabase
@@ -103,7 +137,13 @@ exports.handler = async (event, context) => {
           seller_name: sellerName,
           order_details: orderDetails,
           total_amount: totalAmount,
-          status: 'pending'
+          status: 'pending',
+          terms_accepted: termsAccepted,
+          terms_accepted_at: termsAcceptedAt,
+          terms_version: acceptedTermsVersion,
+          ip_address: ipAddress,
+          user_agent: userAgent,
+          session_id: sessionId
         }
       ])
       .select();
