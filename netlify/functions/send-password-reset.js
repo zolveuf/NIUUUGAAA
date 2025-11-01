@@ -112,6 +112,12 @@ exports.handler = async (event, context) => {
               <p><strong>Obs:</strong> Denna länk är giltig i 24 timmar.</p>
               <p>Om du inte begärde denna återställning kan du ignorera detta e-post.</p>
               <p>Med vänliga hälsningar,<br>Kakservice-teamet</p>
+              
+              <div style="background: #fef3c7; padding: 15px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #f59e0b;">
+                <p style="margin: 0; font-size: 12px; color: #78350f;">
+                  <strong>Tips:</strong> Om du inte ser detta e-postmeddelande, kontrollera din skräppost.
+                </p>
+              </div>
             </div>
             <div class="footer">
               <p>Detta e-post skickades automatiskt från Kakservice</p>

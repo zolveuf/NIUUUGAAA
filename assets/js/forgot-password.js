@@ -117,7 +117,7 @@ class ForgotPasswordManager {
         throw new Error(result.error || 'Kunde inte skicka återställningslänk');
       }
 
-      this.showMessage('Återställningslänk har skickats till din e-postadress!', 'success');
+      this.showMessage('Återställningslänk har skickats till din e-postadress! Om du inte ser mailet, kontrollera din skräppost.', 'success');
       
       // Clear form
       document.getElementById('email').value = '';

@@ -310,6 +310,9 @@ exports.handler = async (event, context) => {
                   Detta är en automatisk bekräftelse. Svara inte på detta e-postmeddelande.<br>
                   Order-ID: ${order.id} | Session-ID: ${sessionId || 'N/A'}
                 </p>
+                <p style="margin: 10px 0 0; font-size: 11px; color: #9ca3af;">
+                  <strong>Tips:</strong> Om du inte ser detta e-postmeddelande, kontrollera din skräppost.
+                </p>
               </div>
             </div>
           `
