@@ -27,8 +27,6 @@ exports.handler = async (event, context) => {
       orderDetails,
       totalAmount,
       specialRequests,
-      termsAccepted,
-      termsVersion,
       sessionId
     } = data;
 
@@ -40,17 +38,6 @@ exports.handler = async (event, context) => {
         body: JSON.stringify({ 
           error: 'Missing required fields',
           required: ['accountCode', 'customerName', 'sellerName', 'orderDetails']
-        })
-      };
-    }
-
-    // Validate terms acceptance
-    if (!termsAccepted || termsAccepted !== true) {
-      console.log('Terms not accepted');
-      return {
-        statusCode: 400,
-        body: JSON.stringify({ 
-          error: 'Du måste godkänna köpvillkor och sekretesspolicy för att göra en beställning.'
         })
       };
     }
@@ -112,18 +99,6 @@ exports.handler = async (event, context) => {
                      'Unknown';
     
     const userAgent = event.headers['user-agent'] || 'Unknown';
-    
-    const acceptedTermsVersion = termsVersion || 'v1.0-2025-01-01';
-    const termsAcceptedAt = new Date().toISOString();
-
-    console.log('Terms acceptance data:', {
-      termsAccepted,
-      termsVersion: acceptedTermsVersion,
-      termsAcceptedAt,
-      ipAddress: ipAddress.substring(0, 20) + '...', // Log only first 20 chars for privacy
-      userAgent: userAgent.substring(0, 50) + '...', // Log only first 50 chars
-      sessionId
-    });
 
     // Insert order into database
     console.log('Inserting order...');
@@ -138,13 +113,7 @@ exports.handler = async (event, context) => {
           seller_name: sellerName,
           order_details: orderDetails,
           total_amount: totalAmount,
-          status: 'pending',
-          terms_accepted: termsAccepted,
-          terms_accepted_at: termsAcceptedAt,
-          terms_version: acceptedTermsVersion,
-          ip_address: ipAddress,
-          user_agent: userAgent,
-          session_id: sessionId
+          status: 'pending'
         }
       ])
       .select();
@@ -181,15 +150,6 @@ exports.handler = async (event, context) => {
 
         // Format order date
         const orderDate = new Date(order.created_at).toLocaleString('sv-SE', {
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric',
-          hour: '2-digit',
-          minute: '2-digit'
-        });
-
-        // Format terms accepted date
-        const termsAcceptedDate = new Date(termsAcceptedAt).toLocaleString('sv-SE', {
           year: 'numeric',
           month: 'long',
           day: 'numeric',
@@ -251,34 +211,6 @@ exports.handler = async (event, context) => {
                     <p style="margin: 0; color: #78350f;">${specialRequests}</p>
                   </div>
                 ` : ''}
-
-                <div style="background: #eff6ff; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #3b82f6;">
-                  <h3 style="color: #1e40af; margin-top: 0;">Juridisk Bekräftelse</h3>
-                  <p style="margin: 5px 0;"><strong>✓ Du har godkänt köpvillkor och sekretesspolicy</strong></p>
-                  <p style="margin: 5px 0;"><strong>Villkorsversion:</strong> ${acceptedTermsVersion}</p>
-                  <p style="margin: 5px 0;"><strong>Godkänt datum:</strong> ${termsAcceptedDate}</p>
-                  <p style="margin: 10px 0 0; font-size: 14px; color: #374151;">
-                    Genom att godkänna villkoren bekräftar du att beställningen är bindande och att du är förbunden att betala för beställda produkter enligt köpvillkoren.
-                  </p>
-                </div>
-
-                <div style="background: #f8fafc; padding: 20px; border-radius: 8px; margin: 20px 0;">
-                  <h3 style="color: #1f2937; margin-top: 0;">Godkända Villkor och Sekretesspolicy</h3>
-                  <p style="margin: 10px 0;">Du kan läsa de villkor och sekretesspolicy som du godkänt vid beställningstillfället:</p>
-                  <div style="margin: 15px 0;">
-                    <a href="${siteUrl}/villkor.html" 
-                       style="background: #203f30; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; display: inline-block; margin: 5px 5px 5px 0;">
-                      Läs Köpvillkor
-                    </a>
-                    <a href="${siteUrl}/integritet.html" 
-                       style="background: #6b7280; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; display: inline-block; margin: 5px 0;">
-                      Läs Sekretesspolicy
-                    </a>
-                  </div>
-                  <p style="margin: 10px 0 0; font-size: 12px; color: #6b7280;">
-                    Version: ${acceptedTermsVersion} | Godkänt: ${termsAcceptedDate}
-                  </p>
-                </div>
 
                 <div style="background: #fef2f2; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #ef4444;">
                   <h3 style="color: #991b1b; margin-top: 0;">⚠️ Viktig Information om Betalning</h3>
