@@ -125,20 +125,12 @@ class OrderManager {
   loadProducts() {
     const productSelection = document.getElementById('product-selection');
     
-    // Sample products - you can make this dynamic later
+    // Products matching the website
     const products = [
-      { id: 'kakburkar', name: 'Kakburkar Mix', price: 25, description: 'Mixade kakburkar med olika smaker' },
-      { id: 'choklad', name: 'Premium Choklad', price: 30, description: 'Högkvalitativ choklad från Belgien' },
-      { id: 'knack', name: 'Knäck & Kola', price: 20, description: 'Hemlagad knäck och kola' },
-      { id: 'smakakor', name: 'Småkakor Mix', price: 15, description: 'Olika småkakor i praktisk förpackning' },
-      { id: 'pepparkakor', name: 'Pepparkakor', price: 18, description: 'Klassiska pepparkakor med kanel' },
-      { id: 'mazariner', name: 'Mazariner', price: 22, description: 'Svenska mazariner med mandelmassa' },
-      { id: 'prinsesstårta', name: 'Prinsesstårta', price: 45, description: 'Klassisk prinsesstårta med grädde' },
-      { id: 'kanelbullar', name: 'Kanelbullar', price: 12, description: 'Hemlagade kanelbullar med socker' },
-      { id: 'semlor', name: 'Semlor', price: 28, description: 'Traditionella semlor med mandelmassa' },
-      { id: 'kladdkaka', name: 'Kladdkaka', price: 35, description: 'Chokladkladdkaka med vispgrädde' },
-      { id: 'dammsugare', name: 'Dammsugare', price: 16, description: 'Klassiska dammsugare med kokos' },
-      { id: 'napoleonbakelse', name: 'Napoleonbakelse', price: 38, description: 'Elegant napoleonbakelse med vaniljkräm' }
+      { id: 'kasteberg-senap', name: 'KASTEBERG SENAP', price: 25, description: '200 gram otroligt god senap tillverkad med egenodlad raps från Kastebergs Gård' },
+      { id: 'alpacka-strumpor', name: 'ALPACKA STRUMPOR', price: 35, description: 'Mjuka och varma strumpor i alpackaull från Alpackagården i Kråkshult' },
+      { id: 'benesta-lask', name: 'BENESTA LÄSK', price: 18, description: '33 cl ren dryckesglädje tillverkad med omsorg. Småländsk kvalitet' },
+      { id: 'kasteberg-rapsolja', name: 'KASTEBERG RAPSOLJA', price: 45, description: 'Två kallpressade rapsoljor på 250 ml i unika smaker: citron och ramslök' }
     ];
 
     productSelection.innerHTML = products.map(product => `
@@ -209,18 +201,10 @@ class OrderManager {
     const orderDetails = {};
     let totalAmount = 0;
     const products = [
-      { id: 'kakburkar', name: 'Kakburkar Mix', price: 25 },
-      { id: 'choklad', name: 'Premium Choklad', price: 30 },
-      { id: 'knack', name: 'Knäck & Kola', price: 20 },
-      { id: 'smakakor', name: 'Småkakor Mix', price: 15 },
-      { id: 'pepparkakor', name: 'Pepparkakor', price: 18 },
-      { id: 'mazariner', name: 'Mazariner', price: 22 },
-      { id: 'prinsesstårta', name: 'Prinsesstårta', price: 45 },
-      { id: 'kanelbullar', name: 'Kanelbullar', price: 12 },
-      { id: 'semlor', name: 'Semlor', price: 28 },
-      { id: 'kladdkaka', name: 'Kladdkaka', price: 35 },
-      { id: 'dammsugare', name: 'Dammsugare', price: 16 },
-      { id: 'napoleonbakelse', name: 'Napoleonbakelse', price: 38 }
+      { id: 'kasteberg-senap', name: 'KASTEBERG SENAP', price: 25 },
+      { id: 'alpacka-strumpor', name: 'ALPACKA STRUMPOR', price: 35 },
+      { id: 'benesta-lask', name: 'BENESTA LÄSK', price: 18 },
+      { id: 'kasteberg-rapsolja', name: 'KASTEBERG RAPSOLJA', price: 45 }
     ];
 
     products.forEach(product => {
