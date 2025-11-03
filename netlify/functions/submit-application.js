@@ -210,7 +210,7 @@ exports.handler = async (event, context) => {
           
           <div style="background: #fef3c7; padding: 15px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #f59e0b;">
             <p style="margin: 0; font-size: 12px; color: #78350f;">
-              <strong>Tips:</strong> Om du inte ser detta e-postmeddelande, kontrollera din skräppost.
+              <strong>Hittar du inte mailet?</strong> Kontrollera din skräppost/spam-mapp.
             </p>
           </div>
         </div>
@@ -282,7 +282,7 @@ exports.handler = async (event, context) => {
           
           <div style="background: #fef3c7; padding: 15px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #f59e0b;">
             <p style="margin: 0; font-size: 12px; color: #78350f;">
-              <strong>Tips:</strong> Om du inte ser detta e-postmeddelande, kontrollera din skräppost.
+              <strong>Hittar du inte mailet?</strong> Kontrollera din skräppost/spam-mapp.
             </p>
           </div>
         </div>
@@ -496,7 +496,7 @@ Beställningslänk: ${process.env.SITE_URL || 'https://klasskraft.se'}/order.htm
                 <strong>Beställningslänk:</strong> <a href="${process.env.SITE_URL || 'https://klasskraft.se'}/order.html?code=${accountCode}">${process.env.SITE_URL || 'https://klasskraft.se'}/order.html?code=${accountCode}</a>
             </p>
             <p style="margin-top: 15px; font-size: 12px; color: #9ca3af;">
-              <strong>Tips:</strong> Om du inte ser detta e-postmeddelande, kontrollera din skräppost.
+              <strong>Hittar du inte mailet?</strong> Kontrollera din skräppost/spam-mapp.
             </p>
           </div>
         </div>
@@ -699,7 +699,7 @@ Beställningslänk: ${process.env.SITE_URL || 'https://klasskraft.se'}/order.htm
               <strong>Beställningslänk:</strong> <a href="${process.env.SITE_URL || 'https://klasskraft.se'}/order.html?code=${account.personal_link_code}">${process.env.SITE_URL || 'https://klasskraft.se'}/order.html?code=${account.personal_link_code}</a>
             </p>
             <p style="margin-top: 15px; font-size: 12px; color: #9ca3af;">
-              <strong>Tips:</strong> Om du inte ser detta e-postmeddelande, kontrollera din skräppost.
+              <strong>Hittar du inte mailet?</strong> Kontrollera din skräppost/spam-mapp.
             </p>
           </div>
         </div>

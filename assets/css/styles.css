@@ -3277,16 +3277,17 @@ body.no-scroll { overflow: hidden; }
 }
 
 .confirm-content {
-  padding: var(--space-7) var(--space-6) var(--space-6);
+  padding: var(--space-8) var(--space-8) var(--space-7);
 }
 
 .confirm-message {
   margin: 0;
-  font-size: 16px;
-  line-height: 1.6;
+  font-size: 18px;
+  line-height: 1.7;
   color: #1f2937;
   font-weight: 500;
   letter-spacing: -0.01em;
+  text-align: center;
 }
 
 .confirm-actions {
@@ -3490,11 +3491,11 @@ body.no-scroll { overflow: hidden; }
   }
 
   .confirm-content {
-    padding: var(--space-5);
+    padding: var(--space-6);
   }
 
   .confirm-message {
-    font-size: var(--text-base);
+    font-size: 16px;
   }
 
   .confirm-actions {
@@ -3523,7 +3524,11 @@ body.no-scroll { overflow: hidden; }
   }
 
   .confirm-content {
-    padding: var(--space-4);
+    padding: var(--space-5);
+  }
+
+  .confirm-message {
+    font-size: 15px;
   }
 }
 
