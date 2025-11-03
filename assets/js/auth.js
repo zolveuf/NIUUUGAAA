@@ -539,7 +539,8 @@ class AuthManager {
       'kasteberg-senap': 20,
       'annerstad-smakkit': 45,
       'alpacka-strumpor': 40,
-      'benesta-lask': 8,
+      'benesta-lemonad': 8,
+      'benesta-svartvinbar': 8,
       'kasteberg-gardskit': 34,
       'kasteberg-rapsolja': 20,
       'annerstad-myskit': 35
