@@ -1,7 +1,7 @@
 {
-  "name": "klasskraft-website",
+  "name": "kakservice-website",
   "version": "1.0.0",
-  "description": "Responsive KlassKraft UF website with Supabase and SendGrid integration",
+  "description": "Responsive Kakservice-inspired website with Supabase and SendGrid integration",
   "main": "index.html",
   "scripts": {
     "dev": "netlify dev",
@@ -16,7 +16,7 @@
     "netlify-cli": "^17.0.0"
   },
   "keywords": [
-    "klasskraft",
+    "kakservice",
     "responsive",
     "website",
     "supabase",

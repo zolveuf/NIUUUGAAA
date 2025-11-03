@@ -716,10 +716,10 @@ class AuthManager {
     return typeMap[groupType] || groupType;
   }
 
-  // Send all orders to KlassKraft UF
+  // Send all orders to Kakservice
   async sendAllOrdersToKakservice() {
     try {
-      console.log('Skickar alla beställningar till KlassKraft UF');
+      console.log('Skickar alla beställningar till Kakservice');
       
       // Show confirmation dialog
       const confirmed = await showConfirmDialog('Är du säker att du vill skicka beställningen? Då är eran försäljningsperiod över.', 'Ja, skicka', 'Avbryt');
@@ -761,7 +761,7 @@ class AuthManager {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          action: 'send-all-orders-to-klasskraft',
+          action: 'send-all-orders-to-kakservice',
           orders: orders
         })
       });
@@ -802,7 +802,7 @@ class AuthManager {
       }
 
     } catch (error) {
-      console.error('Error sending all orders to KlassKraft UF:', error);
+      console.error('Error sending all orders to Kakservice:', error);
       this.showMessage('Ett fel uppstod vid skickandet: ' + error.message, 'error');
       
       // Reset button
@@ -1027,13 +1027,13 @@ class AuthManager {
     }
   }
 
-  // Send order to KlassKraft UF
+  // Send order to Kakservice
   async sendOrderToKakservice(orderId, buttonElement = null) {
     // Show loading state
     const button = buttonElement || document.querySelector(`[onclick*="${orderId}"]`);
     
     try {
-      console.log('Sending order to KlassKraft UF:', orderId);
+      console.log('Sending order to Kakservice:', orderId);
       
       if (button) {
         const originalText = button.textContent;
@@ -1048,7 +1048,7 @@ class AuthManager {
         },
         body: JSON.stringify({
           orderId: orderId,
-          action: 'send-to-klasskraft'
+          action: 'send-to-kakservice'
         })
       });
 
@@ -1081,7 +1081,7 @@ class AuthManager {
       }
 
     } catch (error) {
-      console.error('Error sending order to KlassKraft UF:', error);
+      console.error('Error sending order to Kakservice:', error);
       this.showMessage('Ett fel uppstod vid skickandet: ' + error.message, 'error');
       
       // Reset button

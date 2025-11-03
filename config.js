@@ -13,7 +13,7 @@ const CONFIG = {
   ADMIN_EMAIL: 'klasskraftuf@gmail.com', // Where to send notifications
   
   // Application Settings
-  APP_NAME: 'KlassKraft UF',
+  APP_NAME: 'Kakservice',
   COMPANY_NAME: 'Klass Kraft UF'
 };
 

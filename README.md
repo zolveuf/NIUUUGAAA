@@ -1,6 +1,6 @@
-# KlassKraft UF Website
+# Kakservice Website
 
-En responsiv, mobilanpassad webbplats för KlassKraft UF med Supabase och SendGrid-integration.
+En responsiv, mobilanpassad webbplats inspirerad av Kakservice med Supabase och SendGrid-integration.
 
 ## 🚀 Funktioner
 
@@ -32,7 +32,7 @@ En responsiv, mobilanpassad webbplats för KlassKraft UF med Supabase och SendGr
 ### 1. Klona repot
 ```bash
 git clone <your-repo-url>
-cd klasskraft-website
+cd kakservice-website
 ```
 
 ### 2. Installera dependencies
@@ -57,7 +57,7 @@ const CONFIG = {
   ADMIN_EMAIL: 'klasskraftuf@gmail.com',
   
   // Application Settings
-  APP_NAME: 'KlassKraft UF',
+  APP_NAME: 'Kakservice',
   COMPANY_NAME: 'Klass Kraft UF'
 };
 ```
@@ -149,15 +149,15 @@ Systemet skickar automatiskt:
 - **Beställningsbekräftelse** - Till kund när beställning görs
 - **Beställning till Klass Kraft UF** - Komplett beställningssammanfattning skickas till klasskraftuf@gmail.com
 
-## 🍪 KlassKraft UF Integration
+## 🍪 Kakservice Integration
 
 ### Beställningsfunktion
-- **Skicka till KlassKraft UF** - Knapp på varje beställning i dashboard
+- **Skicka till Kakservice** - Knapp på varje beställning i dashboard
 - **Komplett sammanfattning** - All beställningsdata skickas via e-post
 - **Professionell mall** - HTML-formaterad e-post med all information
-- **Automatisk notifiering** - KlassKraft UF får omedelbar notifiering om nya beställningar
+- **Automatisk notifiering** - Kakservice får omedelbar notifiering om nya beställningar
 
-### E-postinnehåll till KlassKraft UF
+### E-postinnehåll till Kakservice
 Varje e-post innehåller:
 - Föreningsinformation (namn, organisation, kontakt)
 - Beställningsdetaljer (ID, datum, produkter)
