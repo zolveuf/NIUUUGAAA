@@ -157,7 +157,7 @@ exports.handler = async (event, context) => {
           minute: '2-digit'
         });
 
-        const siteUrl = process.env.SITE_URL || 'https://rad-speculoos-252665.netlify.app';
+        const siteUrl = process.env.SITE_URL || 'https://klasskraft.se';
         const companyName = process.env.COMPANY_NAME || 'Klass Kraft UF';
 
         // Create email template
@@ -227,7 +227,7 @@ exports.handler = async (event, context) => {
                 <div style="border-top: 1px solid #e5e7eb; padding-top: 20px; margin-top: 30px;">
                   <h3 style="color: #1f2937; margin-top: 0;">Kontaktinformation</h3>
                   <p style="margin: 5px 0;">Om du har frågor om din beställning, kontakta oss:</p>
-                  <p style="margin: 5px 0;"><strong>E-post:</strong> <a href="mailto:info@klasskraftuf.se" style="color: #203f30; text-decoration: underline;">info@klasskraftuf.se</a></p>
+                  <p style="margin: 5px 0;"><strong>E-post:</strong> <a href="mailto:info@klasskraft.se" style="color: #203f30; text-decoration: underline;">info@klasskraft.se</a></p>
                   <p style="margin: 5px 0;"><strong>Telefon:</strong> <a href="tel:+46705600287" style="color: #203f30; text-decoration: underline;">070-560 02 87</a></p>
                 </div>
 

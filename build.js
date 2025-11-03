@@ -8,8 +8,8 @@ const path = require('path');
 const SUPABASE_URL = process.env.SUPABASE_URL || 'YOUR_SUPABASE_URL_HERE';
 const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY || 'YOUR_SUPABASE_ANON_KEY_HERE';
 const SENDGRID_API_KEY = process.env.SENDGRID_API_KEY || 'YOUR_SENDGRID_API_KEY_HERE';
-const FROM_EMAIL = process.env.FROM_EMAIL || 'noreply@yourdomain.com';
-const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'admin@yourdomain.com';
+const FROM_EMAIL = process.env.FROM_EMAIL || 'noreply@klasskraft.se';
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'info@klasskraft.se';
 const APP_NAME = process.env.APP_NAME || 'Kakservice';
 const COMPANY_NAME = process.env.COMPANY_NAME || 'Klass Kraft UF';
 

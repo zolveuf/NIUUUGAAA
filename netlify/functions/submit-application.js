@@ -195,7 +195,7 @@ exports.handler = async (event, context) => {
           <div style="background: #e3f2fd; padding: 20px; border-radius: 8px; margin: 20px 0;">
             <p><strong>Dela denna länk för att låta andra beställa från din organisation:</strong></p>
             <p style="font-size: 18px; font-weight: bold; color: #1976d2;">
-              ${process.env.SITE_URL || 'https://rad-speculoos-252665.netlify.app'}/order.html?code=${linkCode}
+              ${process.env.SITE_URL || 'https://klasskraft.se'}/order.html?code=${linkCode}
             </p>
             <p><small>Du kan logga in på din dashboard för att se alla beställningar som kommer via denna länk (efter godkännande).</small></p>
           </div>
@@ -203,7 +203,7 @@ exports.handler = async (event, context) => {
           <h3>Logga in på din dashboard:</h3>
           <p><strong>E-post:</strong> ${email}</p>
           <p><strong>Lösenord:</strong> [Det lösenord du angav]</p>
-          <p><a href="${process.env.SITE_URL || 'https://rad-speculoos-252665.netlify.app'}/login.html" style="background: #0ea5e9; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; display: inline-block;">Logga in här</a></p>
+          <p><a href="${process.env.SITE_URL || 'https://klasskraft.se'}/login.html" style="background: #0ea5e9; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; display: inline-block;">Logga in här</a></p>
           
           <p>Vi kommer att kontakta dig för att diskutera nästa steg när ditt konto är godkänt.</p>
           <p>Med vänliga hälsningar,<br>${process.env.COMPANY_NAME || 'Klass Kraft UF'}</p>
@@ -247,7 +247,7 @@ exports.handler = async (event, context) => {
             ${experience ? `<p><strong>Erfarenhet:</strong> ${experience}</p>` : ''}
             ${additionalInfo ? `<p><strong>Ytterligare information:</strong> ${additionalInfo}</p>` : ''}
             <p><strong>IP-adress:</strong> ${ipAddress}</p>
-            <p><strong>Personlig länk:</strong> ${process.env.SITE_URL || 'https://rad-speculoos-252665.netlify.app'}/order.html?code=${linkCode}</p>
+            <p><strong>Personlig länk:</strong> ${process.env.SITE_URL || 'https://klasskraft.se'}/order.html?code=${linkCode}</p>
             <p><strong>Konto-ID:</strong> ${accountData[0].id}</p>
           </div>
           
@@ -262,12 +262,12 @@ exports.handler = async (event, context) => {
             <p>Klicka på länkarna nedan för att godkänna eller avvisa detta konto:</p>
             
             <div style="margin: 20px 0; text-align: center;">
-              <a href="${process.env.SITE_URL || 'https://rad-speculoos-252665.netlify.app'}/admin-approve.html?action=approve&accountId=${accountData[0].id}&key=${process.env.ADMIN_APPROVAL_KEY}" 
+              <a href="${process.env.SITE_URL || 'https://klasskraft.se'}/admin-approve.html?action=approve&accountId=${accountData[0].id}&key=${process.env.ADMIN_APPROVAL_KEY}" 
                  style="background: #16a34a; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; display: inline-block; margin: 0 10px;">
                 ✅ Godkänn konto
               </a>
               
-              <a href="${process.env.SITE_URL || 'https://rad-speculoos-252665.netlify.app'}/admin-approve.html?action=reject&accountId=${accountData[0].id}&key=${process.env.ADMIN_APPROVAL_KEY}" 
+              <a href="${process.env.SITE_URL || 'https://klasskraft.se'}/admin-approve.html?action=reject&accountId=${accountData[0].id}&key=${process.env.ADMIN_APPROVAL_KEY}" 
                  style="background: #dc2626; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; display: inline-block; margin: 0 10px;">
                 ❌ Avvis konto
               </a>
@@ -438,13 +438,13 @@ STATUS: ${getOrderStatusText(order.status)}
 ---
 Detta är en automatisk beställning från Kakservice-plattformen.
 Föreningen: ${application.organization}
-Beställningslänk: ${process.env.SITE_URL || 'https://rad-speculoos-252665.netlify.app'}/order.html?code=${accountCode}
+Beställningslänk: ${process.env.SITE_URL || 'https://klasskraft.se'}/order.html?code=${accountCode}
     `.trim();
 
     // Send email to Kakservice
     const msg = {
       to: process.env.ADMIN_EMAIL || 'martinpranjic32@gmail.com',
-      from: process.env.FROM_EMAIL || 'noreply@yourdomain.com',
+      from: process.env.FROM_EMAIL || 'noreply@klasskraft.se',
       subject: `🍪 Ny beställning från ${application.organization} - ${order.total_amount} kr`,
       text: orderSummary,
       html: `
@@ -493,7 +493,7 @@ Beställningslänk: ${process.env.SITE_URL || 'https://rad-speculoos-252665.netl
             <p style="color: #6b7280; font-size: 14px;">
               Detta är en automatisk beställning från Kakservice-plattformen<br>
               <strong>Förening:</strong> ${application.organization}<br>
-              <strong>Beställningslänk:</strong> <a href="${process.env.SITE_URL || 'https://rad-speculoos-252665.netlify.app'}/order.html?code=${accountCode}">${process.env.SITE_URL || 'https://rad-speculoos-252665.netlify.app'}/order.html?code=${accountCode}</a>
+                <strong>Beställningslänk:</strong> <a href="${process.env.SITE_URL || 'https://klasskraft.se'}/order.html?code=${accountCode}">${process.env.SITE_URL || 'https://klasskraft.se'}/order.html?code=${accountCode}</a>
             </p>
             <p style="margin-top: 15px; font-size: 12px; color: #9ca3af;">
               <strong>Tips:</strong> Om du inte ser detta e-postmeddelande, kontrollera din skräppost.
@@ -658,13 +658,13 @@ DETALJERADE BESTÄLLNINGAR:${allOrderItems}
 ---
 Detta är en automatisk sammanfattning av alla beställningar från Kakservice-plattformen.
 Föreningen: ${application.organization}
-Beställningslänk: ${process.env.SITE_URL || 'https://rad-speculoos-252665.netlify.app'}/order.html?code=${account.personal_link_code}
+Beställningslänk: ${process.env.SITE_URL || 'https://klasskraft.se'}/order.html?code=${account.personal_link_code}
     `.trim();
 
     // Send email to Kakservice
     const msg = {
       to: process.env.ADMIN_EMAIL || 'martinpranjic32@gmail.com',
-      from: process.env.FROM_EMAIL || 'noreply@yourdomain.com',
+      from: process.env.FROM_EMAIL || 'noreply@klasskraft.se',
       subject: `🍪 ${orderCount} beställningar från ${application.organization} - ${totalSum} kr`,
       text: orderSummary,
       html: `
@@ -696,7 +696,7 @@ Beställningslänk: ${process.env.SITE_URL || 'https://rad-speculoos-252665.netl
             <p style="color: #6b7280; font-size: 14px;">
               Detta är en automatisk sammanfattning av alla beställningar från Kakservice-plattformen<br>
               <strong>Förening:</strong> ${application.organization}<br>
-              <strong>Beställningslänk:</strong> <a href="${process.env.SITE_URL || 'https://rad-speculoos-252665.netlify.app'}/order.html?code=${account.personal_link_code}">${process.env.SITE_URL || 'https://rad-speculoos-252665.netlify.app'}/order.html?code=${account.personal_link_code}</a>
+              <strong>Beställningslänk:</strong> <a href="${process.env.SITE_URL || 'https://klasskraft.se'}/order.html?code=${account.personal_link_code}">${process.env.SITE_URL || 'https://klasskraft.se'}/order.html?code=${account.personal_link_code}</a>
             </p>
             <p style="margin-top: 15px; font-size: 12px; color: #9ca3af;">
               <strong>Tips:</strong> Om du inte ser detta e-postmeddelande, kontrollera din skräppost.

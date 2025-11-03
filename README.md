@@ -53,8 +53,8 @@ const CONFIG = {
   
   // SendGrid Configuration
   SENDGRID_API_KEY: 'your-sendgrid-api-key',
-  FROM_EMAIL: 'noreply@yourdomain.com',
-  ADMIN_EMAIL: 'admin@yourdomain.com',
+  FROM_EMAIL: 'noreply@klasskraft.se',
+  ADMIN_EMAIL: 'info@klasskraft.se',
   
   // Application Settings
   APP_NAME: 'Kakservice',

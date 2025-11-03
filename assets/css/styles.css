@@ -1772,7 +1772,7 @@ body.no-scroll { overflow: hidden; }
 
 /* Dashboard Hero */
 .dashboard-hero {
-  background: linear-gradient(135deg, #0ea5e9 0%, #3b82f6 100%);
+  background: linear-gradient(135deg, #203f30 0%, #3f624a 100%);
   color: white;
   padding: var(--space-12) 0;
 }
@@ -1865,8 +1865,8 @@ body.no-scroll { overflow: hidden; }
 }
 
 .action-card.primary {
-  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
-  border-color: #0ea5e9;
+  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+  border-color: #203f30;
 }
 
 .action-card .action-icon {
