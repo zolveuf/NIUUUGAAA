@@ -167,12 +167,12 @@ exports.handler = async (event, context) => {
     const emailTemplate = {
       to: email,
       from: process.env.FROM_EMAIL,
-      subject: `Tack för din ansökan - ${process.env.APP_NAME || 'Kakservice'}`,
+      subject: `Tack för din ansökan - ${process.env.APP_NAME || 'KlassKraft UF'}`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
           <h2>Tack för din ansökan!</h2>
           <p>Hej ${name},</p>
-          <p>Tack för din ansökan till ${process.env.APP_NAME || 'Kakservice'}. Vi har mottagit din ansökan och kommer att kontakta dig inom kort.</p>
+          <p>Tack för din ansökan till ${process.env.APP_NAME || 'KlassKraft UF'}. Vi har mottagit din ansökan och kommer att kontakta dig inom kort.</p>
           
           <h3>Din ansökan:</h3>
           <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
@@ -229,7 +229,7 @@ exports.handler = async (event, context) => {
     const adminEmailTemplate = {
       to: process.env.ADMIN_EMAIL,
       from: process.env.FROM_EMAIL,
-      subject: `🔔 Ny ansökan väntar på godkännande - ${process.env.APP_NAME || 'Kakservice'}`,
+      subject: `🔔 Ny ansökan väntar på godkännande - ${process.env.APP_NAME || 'KlassKraft UF'}`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
           <h2 style="color: #dc2626;">🔔 Ny ansökan väntar på godkännande!</h2>
@@ -436,7 +436,7 @@ ${order.special_requests || 'Inga speciella önskemål'}
 STATUS: ${getOrderStatusText(order.status)}
 
 ---
-Detta är en automatisk beställning från Kakservice-plattformen.
+Detta är en automatisk beställning från KlassKraft UF-plattformen.
 Föreningen: ${application.organization}
 Beställningslänk: ${process.env.SITE_URL || 'https://klasskraft.se'}/order.html?code=${accountCode}
     `.trim();
@@ -445,11 +445,11 @@ Beställningslänk: ${process.env.SITE_URL || 'https://klasskraft.se'}/order.htm
     const msg = {
       to: process.env.ADMIN_EMAIL || 'klasskraftuf@gmail.com',
       from: process.env.FROM_EMAIL || 'klasskraftuf@gmail.com',
-      subject: `🍪 Ny beställning från ${application.organization} - ${order.total_amount} kr`,
+      subject: `Ny beställning från ${application.organization} - ${order.total_amount} kr`,
       text: orderSummary,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-          <h2 style="color: #d97706;">🍪 Ny beställning från Kakservice-plattformen</h2>
+          <h2 style="color: #d97706;">Ny beställning från KlassKraft UF-plattformen</h2>
           
           <div style="background: #f3f4f6; padding: 20px; border-radius: 8px; margin: 20px 0;">
             <h3 style="color: #374151; margin-top: 0;">Förening/Organisation</h3>
@@ -491,7 +491,7 @@ Beställningslänk: ${process.env.SITE_URL || 'https://klasskraft.se'}/order.htm
 
           <div style="background: #f9fafb; padding: 20px; border-radius: 8px; margin: 20px 0; text-align: center;">
             <p style="color: #6b7280; font-size: 14px;">
-              Detta är en automatisk beställning från Kakservice-plattformen<br>
+              Detta är en automatisk beställning från KlassKraft UF-plattformen<br>
               <strong>Förening:</strong> ${application.organization}<br>
                 <strong>Beställningslänk:</strong> <a href="${process.env.SITE_URL || 'https://klasskraft.se'}/order.html?code=${accountCode}">${process.env.SITE_URL || 'https://klasskraft.se'}/order.html?code=${accountCode}</a>
             </p>
@@ -656,7 +656,7 @@ SAMMANFATTNING:
 DETALJERADE BESTÄLLNINGAR:${allOrderItems}
 
 ---
-Detta är en automatisk sammanfattning av alla beställningar från Kakservice-plattformen.
+Detta är en automatisk sammanfattning av alla beställningar från KlassKraft UF-plattformen.
 Föreningen: ${application.organization}
 Beställningslänk: ${process.env.SITE_URL || 'https://klasskraft.se'}/order.html?code=${account.personal_link_code}
     `.trim();
@@ -665,11 +665,11 @@ Beställningslänk: ${process.env.SITE_URL || 'https://klasskraft.se'}/order.htm
     const msg = {
       to: process.env.ADMIN_EMAIL || 'klasskraftuf@gmail.com',
       from: process.env.FROM_EMAIL || 'klasskraftuf@gmail.com',
-      subject: `🍪 ${orderCount} beställningar från ${application.organization} - ${totalSum} kr`,
+      subject: `${orderCount} beställningar från ${application.organization} - ${totalSum} kr`,
       text: orderSummary,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-          <h2 style="color: #d97706;">🍪 ${orderCount} beställningar från Kakservice-plattformen</h2>
+          <h2 style="color: #d97706;">${orderCount} beställningar från KlassKraft UF-plattformen</h2>
           
           <div style="background: #f3f4f6; padding: 20px; border-radius: 8px; margin: 20px 0;">
             <h3 style="color: #374151; margin-top: 0;">Förening/Organisation</h3>
@@ -694,7 +694,7 @@ Beställningslänk: ${process.env.SITE_URL || 'https://klasskraft.se'}/order.htm
 
           <div style="background: #f9fafb; padding: 20px; border-radius: 8px; margin: 20px 0; text-align: center;">
             <p style="color: #6b7280; font-size: 14px;">
-              Detta är en automatisk sammanfattning av alla beställningar från Kakservice-plattformen<br>
+              Detta är en automatisk sammanfattning av alla beställningar från KlassKraft UF-plattformen<br>
               <strong>Förening:</strong> ${application.organization}<br>
               <strong>Beställningslänk:</strong> <a href="${process.env.SITE_URL || 'https://klasskraft.se'}/order.html?code=${account.personal_link_code}">${process.env.SITE_URL || 'https://klasskraft.se'}/order.html?code=${account.personal_link_code}</a>
             </p>

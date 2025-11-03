@@ -292,11 +292,11 @@ exports.handler = async (event, context) => {
       const contactEmailTemplate = {
         to: applicationData.email,
         from: process.env.FROM_EMAIL || 'klasskraftuf@gmail.com',
-        subject: `🍪 Ny beställning mottagen - ${applicationData.organization}`,
+        subject: `Ny beställning mottagen - ${applicationData.organization}`,
         html: `
           <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
             <div style="background: linear-gradient(135deg, #203f30 0%, #3f624a 100%); color: white; padding: 30px; border-radius: 8px 8px 0 0; text-align: center;">
-              <h1 style="margin: 0; font-size: 28px;">🍪 Ny Beställning!</h1>
+              <h1 style="margin: 0; font-size: 28px;">Ny Beställning!</h1>
               <p style="margin: 10px 0 0; opacity: 0.9; font-size: 16px;">En ny beställning har mottagits</p>
             </div>
 

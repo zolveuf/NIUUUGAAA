@@ -445,7 +445,7 @@ class AuthManager {
     } else {
       // Has pending orders - enable button
       sendButton.disabled = false;
-      sendButton.textContent = '📧 Skicka alla beställningar till KlassKraft UF';
+      sendButton.textContent = 'Skicka alla beställningar till KlassKraft UF';
       sendButton.style.background = '';
       sendButton.style.cursor = 'pointer';
     }
@@ -619,7 +619,7 @@ class AuthManager {
       'shipped': 'Skickad',
       'delivered': 'Levererad',
       'cancelled': 'Avbruten',
-      'sent': 'Skickad till KlassKraft UF'
+      'sent': 'Skickad'
     };
     return statusMap[status] || status;
   }
@@ -746,7 +746,7 @@ class AuthManager {
       if (!orders || orders.length === 0) {
         this.showMessage('Inga beställningar att skicka till KlassKraft UF', 'info');
         if (button) {
-          button.textContent = '📧 Skicka alla beställningar till KlassKraft UF';
+          button.textContent = 'Skicka alla beställningar till KlassKraft UF';
           button.disabled = false;
         }
         return;
@@ -785,7 +785,7 @@ class AuthManager {
           await this.loadStats(this.currentAccountId);
           
           if (button) {
-            button.textContent = '✅ Försäljningsperiod avslutad';
+            button.textContent = 'Försäljningsperiod avslutad';
             button.style.background = '#10b981';
             button.disabled = true;
             button.style.cursor = 'not-allowed';
@@ -808,7 +808,7 @@ class AuthManager {
       // Reset button
       const button = document.getElementById('send-all-orders-btn');
       if (button) {
-        button.textContent = '📧 Skicka alla beställningar till KlassKraft UF';
+        button.textContent = 'Skicka alla beställningar till KlassKraft UF';
         button.disabled = false;
       }
     }
@@ -1073,7 +1073,7 @@ class AuthManager {
       if (response.ok && result.success) {
         this.showMessage('Beställningen har skickats till KlassKraft UF!', 'success');
         if (button) {
-          button.textContent = '✅ Skickad';
+          button.textContent = 'Skickad';
           button.style.background = '#10b981';
         }
       } else {
@@ -1086,7 +1086,7 @@ class AuthManager {
       
       // Reset button
       if (button) {
-        button.textContent = '📧 Skicka till KlassKraft UF';
+        button.textContent = 'Skicka till KlassKraft UF';
         button.disabled = false;
       }
     }

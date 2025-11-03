@@ -771,7 +771,7 @@ body.index-page .products-section {
   background: linear-gradient(135deg, #fef3c7 0%, #fed7aa 100%);
 }
 .product-visual--1::before {
-  content: "🍪 Kakburkar";
+  content: "Kakburkar";
   position: absolute;
   top: 50%;
   left: 50%;
@@ -786,7 +786,7 @@ body.index-page .products-section {
   background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
 }
 .product-visual--2::before {
-  content: "📱 Online försäljning";
+  content: "Online försäljning";
   position: absolute;
   top: 50%;
   left: 50%;
@@ -801,7 +801,7 @@ body.index-page .products-section {
   background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
 }
 .product-visual--3::before {
-  content: "🎉 Leverans & framgång";
+  content: "Leverans & framgång";
   position: absolute;
   top: 50%;
   left: 50%;

@@ -80,7 +80,7 @@ exports.handler = async (event, context) => {
     const msg = {
       to: email,
       from: process.env.FROM_EMAIL,
-      subject: 'Återställ ditt lösenord - Kakservice',
+      subject: 'Återställ ditt lösenord - KlassKraft UF',
       html: `
         <!DOCTYPE html>
         <html>
@@ -104,14 +104,14 @@ exports.handler = async (event, context) => {
             </div>
             <div class="content">
               <p>Hej!</p>
-              <p>Du har begärt att återställa ditt lösenord för ditt Kakservice-konto.</p>
+              <p>Du har begärt att återställa ditt lösenord för ditt KlassKraft UF-konto.</p>
               <p>Klicka på knappen nedan för att skapa ett nytt lösenord:</p>
               <p style="text-align: center;">
                 <a href="${resetLink}" class="button">Återställ lösenord</a>
               </p>
               <p><strong>Obs:</strong> Denna länk är giltig i 24 timmar.</p>
               <p>Om du inte begärde denna återställning kan du ignorera detta e-post.</p>
-              <p>Med vänliga hälsningar,<br>Kakservice-teamet</p>
+              <p>Med vänliga hälsningar,<br>KlassKraft UF-teamet</p>
               
               <div style="background: #fef3c7; padding: 15px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #f59e0b;">
                 <p style="margin: 0; font-size: 12px; color: #78350f;">
@@ -120,7 +120,7 @@ exports.handler = async (event, context) => {
               </div>
             </div>
             <div class="footer">
-              <p>Detta e-post skickades automatiskt från Kakservice</p>
+              <p>Detta e-post skickades automatiskt från KlassKraft UF</p>
             </div>
           </div>
         </body>
