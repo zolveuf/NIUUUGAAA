@@ -9,8 +9,8 @@ const CONFIG = {
   
   // SendGrid Configuration
   SENDGRID_API_KEY: 'YOUR_SENDGRID_API_KEY_HERE',
-  FROM_EMAIL: 'noreply@klasskraft.se', // Your verified sender email
-  ADMIN_EMAIL: 'info@klasskraft.se', // Where to send notifications
+  FROM_EMAIL: 'klasskraftuf@gmail.com', // Your verified sender email
+  ADMIN_EMAIL: 'klasskraftuf@gmail.com', // Where to send notifications
   
   // Application Settings
   APP_NAME: 'Kakservice',

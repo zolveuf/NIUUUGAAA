@@ -443,8 +443,8 @@ Beställningslänk: ${process.env.SITE_URL || 'https://klasskraft.se'}/order.htm
 
     // Send email to Kakservice
     const msg = {
-      to: process.env.ADMIN_EMAIL || 'martinpranjic32@gmail.com',
-      from: process.env.FROM_EMAIL || 'noreply@klasskraft.se',
+      to: process.env.ADMIN_EMAIL || 'klasskraftuf@gmail.com',
+      from: process.env.FROM_EMAIL || 'klasskraftuf@gmail.com',
       subject: `🍪 Ny beställning från ${application.organization} - ${order.total_amount} kr`,
       text: orderSummary,
       html: `
@@ -663,8 +663,8 @@ Beställningslänk: ${process.env.SITE_URL || 'https://klasskraft.se'}/order.htm
 
     // Send email to Kakservice
     const msg = {
-      to: process.env.ADMIN_EMAIL || 'martinpranjic32@gmail.com',
-      from: process.env.FROM_EMAIL || 'noreply@klasskraft.se',
+      to: process.env.ADMIN_EMAIL || 'klasskraftuf@gmail.com',
+      from: process.env.FROM_EMAIL || 'klasskraftuf@gmail.com',
       subject: `🍪 ${orderCount} beställningar från ${application.organization} - ${totalSum} kr`,
       text: orderSummary,
       html: `

@@ -474,6 +474,9 @@ class AuthManager {
   }
 
   displayStats(orders) {
+    // Calculate total profit across all orders
+    const totalProfit = this.calculateTotalProfit(orders);
+    
     // Update hero stats
     const heroStats = document.getElementById('hero-stats');
     if (heroStats) {
@@ -487,8 +490,12 @@ class AuthManager {
           <span class="stat-label">Beställningar</span>
         </div>
         <div class="stat-item">
-          <span class="stat-number">${totalRevenue} kr</span>
+          <span class="stat-number">${totalRevenue.toLocaleString('sv-SE')} kr</span>
           <span class="stat-label">Total försäljning</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number">${totalProfit.toLocaleString('sv-SE')} kr</span>
+          <span class="stat-label">Era pengar</span>
         </div>
         <div class="stat-item">
           <span class="stat-number">${pendingOrders}</span>
@@ -519,11 +526,38 @@ class AuthManager {
           <span class="label">Levererade</span>
         </div>
         <div class="stat-card">
-          <span class="number">${totalRevenue} kr</span>
+          <span class="number">${totalRevenue.toLocaleString('sv-SE')} kr</span>
           <span class="label">Total summa</span>
         </div>
       `;
     }
+  }
+  
+  calculateTotalProfit(orders) {
+    // Product profit margins matching produkter.html
+    const profitMargins = {
+      'kasteberg-senap': 20,
+      'annerstad-smakkit': 45,
+      'alpacka-strumpor': 40,
+      'benesta-lask': 8,
+      'kasteberg-gardskit': 34,
+      'kasteberg-rapsolja': 20,
+      'annerstad-myskit': 35
+    };
+    
+    let totalProfit = 0;
+    
+    orders.forEach(order => {
+      if (order.order_details && typeof order.order_details === 'object') {
+        Object.entries(order.order_details).forEach(([productId, item]) => {
+          const profitPerUnit = profitMargins[productId] || 0;
+          const quantity = item.quantity || 0;
+          totalProfit += profitPerUnit * quantity;
+        });
+      }
+    });
+    
+    return totalProfit;
   }
 
   createOrderCard(order) {

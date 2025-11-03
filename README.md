@@ -53,8 +53,8 @@ const CONFIG = {
   
   // SendGrid Configuration
   SENDGRID_API_KEY: 'your-sendgrid-api-key',
-  FROM_EMAIL: 'noreply@klasskraft.se',
-  ADMIN_EMAIL: 'info@klasskraft.se',
+  FROM_EMAIL: 'klasskraftuf@gmail.com',
+  ADMIN_EMAIL: 'klasskraftuf@gmail.com',
   
   // Application Settings
   APP_NAME: 'Kakservice',
@@ -147,7 +147,7 @@ Systemet skickar automatiskt:
 - **Bekräftelse till användare** - Bekräftar att ansökan mottagits
 - **Notifiering till admin** - Med all ansökningsdata
 - **Beställningsbekräftelse** - Till kund när beställning görs
-- **Beställning till Kakservice** - Komplett beställningssammanfattning skickas till martinpranjic32@gmail.com
+- **Beställning till Klass Kraft UF** - Komplett beställningssammanfattning skickas till klasskraftuf@gmail.com
 
 ## 🍪 Kakservice Integration
 

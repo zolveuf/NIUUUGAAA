@@ -227,8 +227,7 @@ exports.handler = async (event, context) => {
                 <div style="border-top: 1px solid #e5e7eb; padding-top: 20px; margin-top: 30px;">
                   <h3 style="color: #1f2937; margin-top: 0;">Kontaktinformation</h3>
                   <p style="margin: 5px 0;">Om du har frågor om din beställning, kontakta oss:</p>
-                  <p style="margin: 5px 0;"><strong>E-post:</strong> <a href="mailto:info@klasskraft.se" style="color: #203f30; text-decoration: underline;">info@klasskraft.se</a></p>
-                  <p style="margin: 5px 0;"><strong>Telefon:</strong> <a href="tel:+46705600287" style="color: #203f30; text-decoration: underline;">070-560 02 87</a></p>
+                  <p style="margin: 5px 0;"><strong>E-post:</strong> <a href="mailto:klasskraftuf@gmail.com" style="color: #203f30; text-decoration: underline;">klasskraftuf@gmail.com</a></p>
                 </div>
 
                 <p style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e5e7eb; font-size: 14px; color: #6b7280;">

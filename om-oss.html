@@ -151,16 +151,19 @@
     }
     
     .member-avatar {
-      width: 100px;
-      height: 100px;
-      background: linear-gradient(135deg, #203f30 0%, #3f624a 100%);
+      width: 150px;
+      height: 150px;
       border-radius: 50%;
-      margin: 0 auto 1rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 2.5rem;
-      color: white;
+      margin: 0 auto 1.5rem;
+      overflow: hidden;
+      border: 3px solid #203f30;
+    }
+    
+    .member-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
     }
     
     .member-name {
@@ -354,9 +357,8 @@
       }
       
       .member-avatar {
-        width: 80px;
-        height: 80px;
-        font-size: 2rem;
+        width: 120px;
+        height: 120px;
       }
       
       .member-name {
@@ -605,7 +607,7 @@
     <section class="about-hero">
       <div class="container">
         <h1>Om oss</h1>
-        <p>Vi hjälper lag och klasser att nå sina mål genom enkel och framgångsrik försäljning av godsaker.</p>
+        <p>KlassKraft UF ger klasser och föreningar möjlighet att tjäna pengar genom att sälja lokalproducerade produkter</p>
       </div>
     </section>
 
@@ -613,10 +615,10 @@
       <div class="story-content">
         <div class="story-text">
           <h2>Vår historia</h2>
-          <p>Klass Kraft UF föddes ur en enkel idé: att göra försäljning enkelt och framgångsrikt för lag, klasser och föreningar. Vi förstår att ni vill fokusera på det som verkligen räknas – att nå era mål och skapa minnen tillsammans.</p>
-          <p>Genom åren har vi hjälpt hundratals grupper att samla in pengar till resor, utrustning och andra viktiga projekt. Vår plattform gör det möjligt för er att enkelt dela er försäljning, samla beställningar och hantera allt från betalningar till leveranser.</p>
-          <p>Idag är vi stolta över att vara Sveriges ledande plattform för gruppförsäljning av godsaker, med över 10 000 nöjda kunder och miljontals sålda produkter.</p>
-        </div>
+          <p>KlassKraft UF föddes ur en vilja att förändra hur förening- och klassförsäljning ser ut idag. Vi såg att marknaden domineras av massproducerade produkter utan lokal förankring samtidigt som många små producenter i vårt närområde skapar fantastiska varor som förtjänar större synlighet.
+
+            Genom att koppla samman ungdomars försäljning med lokala företag vill vi stärka det lokala näringslivet och bidra till ett mer hållbart samhälle, samtidigt som vi vill ge alla unga en möjlighet att tjäna pengar för aktiviteter, resor och andra mål. Varje försäljning blir en möjlighet. En möjlighet för barn och unga att nå sina mål, en möjlighet för små företag att växa och en möjlighet för samhället att utvecklas på ett hållbart sätt.</p>
+          </div>
         <div class="story-visual">
           <img src="assets/images/alpacka.jpeg" alt="Klass Kraft UF" style="width: 100%; height: auto; border-radius: 1rem; object-fit: cover;">
         </div>
@@ -630,16 +632,22 @@
   
         <div class="team-grid">
           <div class="team-member">
-            <div class="member-avatar">👩</div>
+            <div class="member-avatar">
+              <img src="assets/images/leticia.jpeg" alt="Leticia Boboc">
+            </div>
             <div class="member-name">Leticia Boboc</div>
-            <div class="member-role">Grundare</div>
-            <div class="member-bio">Leticia är en av grundarna av Klass Kraft UF och driver företagets utveckling framåt med passion och engagemang.</div>
+            <div class="member-role">VD & Grundare</div>
+            <div class="member-bio">Leticia fungerar som företagets ledare. Hon driver företaget framåt med en tydlig vision och stort engagemang.</div>
           </div>
           <div class="team-member">
-            <div class="member-avatar">👩</div>
+            <div class="member-avatar">
+              <img src="assets/images/filippa.jpeg" alt="Filippa Carlsson">
+            </div>
             <div class="member-name">Filippa Carlsson</div>
-            <div class="member-role">Grundare</div>
-            <div class="member-bio">Filippa är en av grundarna av Klass Kraft UF och arbetar för att göra gruppförsäljning enkelt och framgångsrikt för alla våra kunder.</div>
+            <div class="member-role">Ekonomiansvarig & Grundare</div>
+            <div class="member-bio">Filippa ansvarar för företagets ekonomi och marknadsföring. Hon ser till att verksamheten har en stabil grund.
+
+            </div>
           </div>
         </div>
       </div>
@@ -712,8 +720,7 @@
         </div>
         <div class="footer-section">
           <h4>Kontakta oss</h4>
-          <a href="mailto:info@klasskraft.se">info@klasskraft.se</a>
-          <a href="tel:+46705600287">070-560 02 87</a>
+          <a href="mailto:klasskraftuf@gmail.com">klasskraftuf@gmail.com</a>
         </div>
         <div class="footer-section">
           <h4>Rättsligt</h4>

@@ -127,17 +127,23 @@ class OrderManager {
     
     // Products matching the website
     const products = [
-      { id: 'kasteberg-senap', name: 'KASTEBERG SENAP', price: 25, description: '200 gram otroligt god senap tillverkad med egenodlad raps från Kastebergs Gård' },
-      { id: 'alpacka-strumpor', name: 'ALPACKA STRUMPOR', price: 35, description: 'Mjuka och varma strumpor i alpackaull från Alpackagården i Kråkshult' },
-      { id: 'benesta-lask', name: 'BENESTA LÄSK', price: 18, description: '33 cl ren dryckesglädje tillverkad med omsorg. Småländsk kvalitet' },
-      { id: 'kasteberg-rapsolja', name: 'KASTEBERG RAPSOLJA', price: 45, description: 'Två kallpressade rapsoljor på 250 ml i unika smaker: citron och ramslök' }
+      { id: 'kasteberg-senap', name: 'KASTEBERG SENAP', price: 89, image: 'assets/images/Produkt-senap.webp', description: '200 gram otroligt god senap tillverkad med egenodlad raps från Kastebergs Gård', profit: 20 },
+      { id: 'annerstad-smakkit', name: 'ANNERSTAD SMAKKIT', price: 279, image: 'assets/images/annerstad smakkit.webp', description: 'Ett smakfullt kit där lokalproducerad balsamico möter en kryddblandning', profit: 45 },
+      { id: 'alpacka-strumpor', name: 'ALPACKA STRUMPOR', price: 225, image: 'assets/images/Produkt-alpacka-strumpor.webp', description: 'Mjuka och varma strumpor i alpackaull från Alpackagården i Kråkshult', profit: 40 },
+      { id: 'benesta-lask', name: 'BENESTA LÄSK', price: 29, image: 'assets/images/Produkt-läsk.webp', description: '33 cl ren dryckesglädje tillverkad med omsorg. Småländsk kvalitet', profit: 8 },
+      { id: 'kasteberg-gardskit', name: 'KASTEBERG GÅRDSKIT', price: 189, image: 'assets/images/Produkt-kit.webp', description: 'Två kallpressade rapsoljor på 250 ml i unika smaker: citron och ramslök', profit: 34 },
+      { id: 'kasteberg-rapsolja', name: 'KASTEBERG RAPSOLJA', price: 95, image: 'assets/images/Produkt-olja.webp', description: 'Kallpressad rapsolja på 500 ml', profit: 20 },
+      { id: 'annerstad-myskit', name: 'ANNERSTAD MYSKIT', price: 249, image: 'assets/images/myskit.jpeg', description: 'Myskit med lokalproducerda honung och smakrikt te', profit: 35 }
     ];
 
     productSelection.innerHTML = products.map(product => `
       <div class="product-card">
         <div class="product-header">
-          <h4 class="product-name">${product.name}</h4>
-          <span class="product-price">${product.price} kr</span>
+          <img src="${product.image}" alt="${product.name}" class="product-image" loading="lazy">
+          <div class="product-header-text">
+            <h4 class="product-name">${product.name}</h4>
+            <span class="product-price">${product.price} kr</span>
+          </div>
         </div>
         <p class="product-description">${product.description}</p>
         <div class="product-quantity">
@@ -150,6 +156,9 @@ class OrderManager {
         </div>
       </div>
     `).join('');
+    
+    // Store products globally for profit calculations
+    window.productsList = products;
   }
 
   setupEventListeners() {
@@ -200,10 +209,13 @@ class OrderManager {
     const orderDetails = {};
     let totalAmount = 0;
     const products = [
-      { id: 'kasteberg-senap', name: 'KASTEBERG SENAP', price: 25 },
-      { id: 'alpacka-strumpor', name: 'ALPACKA STRUMPOR', price: 35 },
-      { id: 'benesta-lask', name: 'BENESTA LÄSK', price: 18 },
-      { id: 'kasteberg-rapsolja', name: 'KASTEBERG RAPSOLJA', price: 45 }
+      { id: 'kasteberg-senap', name: 'KASTEBERG SENAP', price: 89, profit: 20 },
+      { id: 'annerstad-smakkit', name: 'ANNERSTAD SMAKKIT', price: 279, profit: 45 },
+      { id: 'alpacka-strumpor', name: 'ALPACKA STRUMPOR', price: 225, profit: 40 },
+      { id: 'benesta-lask', name: 'BENESTA LÄSK', price: 29, profit: 8 },
+      { id: 'kasteberg-gardskit', name: 'KASTEBERG GÅRDSKIT', price: 189, profit: 34 },
+      { id: 'kasteberg-rapsolja', name: 'KASTEBERG RAPSOLJA', price: 95, profit: 20 },
+      { id: 'annerstad-myskit', name: 'ANNERSTAD MYSKIT', price: 249, profit: 35 }
     ];
 
     products.forEach(product => {
