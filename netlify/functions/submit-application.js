@@ -26,13 +26,13 @@ exports.handler = async (event, context) => {
     const data = JSON.parse(event.body);
     
     // Check if this is a send-order request
-    if (data.orderId && data.action === 'send-to-kakservice') {
-      return await handleSendOrderToKakservice(data);
+    if (data.orderId && data.action === 'send-to-klasskraft') {
+      return await handleSendOrderToKlassKraft UF(data);
     }
     
     // Check if this is a send-all-orders request
-    if (data.action === 'send-all-orders-to-kakservice') {
-      return await handleSendAllOrdersToKakservice(data);
+    if (data.action === 'send-all-orders-to-klasskraft') {
+      return await handleSendAllOrdersToKlassKraft UF(data);
     }
     const {
       name,
@@ -167,12 +167,12 @@ exports.handler = async (event, context) => {
     const emailTemplate = {
       to: email,
       from: process.env.FROM_EMAIL,
-      subject: `Tack för din ansökan - ${process.env.APP_NAME || 'Kakservice'}`,
+      subject: `Tack för din ansökan - ${process.env.APP_NAME || 'KlassKraft UF'}`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
           <h2>Tack för din ansökan!</h2>
           <p>Hej ${name},</p>
-          <p>Tack för din ansökan till ${process.env.APP_NAME || 'Kakservice'}. Vi har mottagit din ansökan och kommer att kontakta dig inom kort.</p>
+          <p>Tack för din ansökan till ${process.env.APP_NAME || 'KlassKraft UF'}. Vi har mottagit din ansökan och kommer att kontakta dig inom kort.</p>
           
           <h3>Din ansökan:</h3>
           <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
@@ -229,7 +229,7 @@ exports.handler = async (event, context) => {
     const adminEmailTemplate = {
       to: process.env.ADMIN_EMAIL,
       from: process.env.FROM_EMAIL,
-      subject: `🔔 Ny ansökan väntar på godkännande - ${process.env.APP_NAME || 'Kakservice'}`,
+      subject: `🔔 Ny ansökan väntar på godkännande - ${process.env.APP_NAME || 'KlassKraft UF'}`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
           <h2 style="color: #dc2626;">🔔 Ny ansökan väntar på godkännande!</h2>
@@ -316,12 +316,12 @@ exports.handler = async (event, context) => {
   }
 };
 
-// Function to handle sending orders to Kakservice
-async function handleSendOrderToKakservice(data) {
+// Function to handle sending orders to KlassKraft UF
+async function handleSendOrderToKlassKraft UF(data) {
   try {
     const { orderId } = data;
     
-    console.log('Sending order to Kakservice:', orderId);
+    console.log('Sending order to KlassKraft UF:', orderId);
 
     // Initialize Supabase client with service role key
     const supabaseUrl = process.env.SUPABASE_URL;
@@ -405,7 +405,7 @@ async function handleSendOrderToKakservice(data) {
 
     // Create comprehensive order summary
     const orderSummary = `
-BESTÄLLNING TILL KAKSERVICE
+BESTÄLLNING TILL KLASSKRAFT UF
 ============================
 
 FÖRENING/ORGANISATION:
@@ -436,12 +436,12 @@ ${order.special_requests || 'Inga speciella önskemål'}
 STATUS: ${getOrderStatusText(order.status)}
 
 ---
-Detta är en automatisk beställning från Kakservice-plattformen.
+Detta är en automatisk beställning från KlassKraft UF-plattformen.
 Föreningen: ${application.organization}
 Beställningslänk: ${process.env.SITE_URL || 'https://klasskraft.se'}/order.html?code=${accountCode}
     `.trim();
 
-    // Send email to Kakservice
+    // Send email to KlassKraft UF
     const msg = {
       to: process.env.ADMIN_EMAIL || 'klasskraftuf@gmail.com',
       from: process.env.FROM_EMAIL || 'klasskraftuf@gmail.com',
@@ -449,7 +449,7 @@ Beställningslänk: ${process.env.SITE_URL || 'https://klasskraft.se'}/order.htm
       text: orderSummary,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-          <h2 style="color: #d97706;">🍪 Ny beställning från Kakservice-plattformen</h2>
+          <h2 style="color: #d97706;">🍪 Ny beställning från KlassKraft UF-plattformen</h2>
           
           <div style="background: #f3f4f6; padding: 20px; border-radius: 8px; margin: 20px 0;">
             <h3 style="color: #374151; margin-top: 0;">Förening/Organisation</h3>
@@ -491,7 +491,7 @@ Beställningslänk: ${process.env.SITE_URL || 'https://klasskraft.se'}/order.htm
 
           <div style="background: #f9fafb; padding: 20px; border-radius: 8px; margin: 20px 0; text-align: center;">
             <p style="color: #6b7280; font-size: 14px;">
-              Detta är en automatisk beställning från Kakservice-plattformen<br>
+              Detta är en automatisk beställning från KlassKraft UF-plattformen<br>
               <strong>Förening:</strong> ${application.organization}<br>
                 <strong>Beställningslänk:</strong> <a href="${process.env.SITE_URL || 'https://klasskraft.se'}/order.html?code=${accountCode}">${process.env.SITE_URL || 'https://klasskraft.se'}/order.html?code=${accountCode}</a>
             </p>
@@ -503,7 +503,7 @@ Beställningslänk: ${process.env.SITE_URL || 'https://klasskraft.se'}/order.htm
       `
     };
 
-    console.log('Sending email to Kakservice...');
+    console.log('Sending email to KlassKraft UF...');
     await sgMail.send(msg);
     console.log('Email sent successfully');
 
@@ -511,12 +511,12 @@ Beställningslänk: ${process.env.SITE_URL || 'https://klasskraft.se'}/order.htm
       statusCode: 200,
       body: JSON.stringify({ 
         success: true,
-        message: 'Beställningen har skickats till Kakservice'
+        message: 'Beställningen har skickats till KlassKraft UF'
       })
     };
 
   } catch (error) {
-    console.error('Error sending order to Kakservice:', error);
+    console.error('Error sending order to KlassKraft UF:', error);
     return {
       statusCode: 500,
       body: JSON.stringify({ error: 'Ett fel uppstod vid skickandet av beställningen' })
@@ -546,12 +546,12 @@ function getOrderStatusText(status) {
   return statusMap[status] || status;
 }
 
-// Function to handle sending all orders to Kakservice
-async function handleSendAllOrdersToKakservice(data) {
+// Function to handle sending all orders to KlassKraft UF
+async function handleSendAllOrdersToKlassKraft UF(data) {
   try {
     const { orders } = data;
     
-    console.log('Sending all orders to Kakservice:', orders.length);
+    console.log('Sending all orders to KlassKraft UF:', orders.length);
 
     if (!orders || orders.length === 0) {
       return {
@@ -638,7 +638,7 @@ async function handleSendAllOrdersToKakservice(data) {
     });
 
     const orderSummary = `
-ALLA BESTÄLLNINGAR TILL KAKSERVICE
+ALLA BESTÄLLNINGAR TILL KLASSKRAFT UF
 ==================================
 
 FÖRENING/ORGANISATION:
@@ -656,12 +656,12 @@ SAMMANFATTNING:
 DETALJERADE BESTÄLLNINGAR:${allOrderItems}
 
 ---
-Detta är en automatisk sammanfattning av alla beställningar från Kakservice-plattformen.
+Detta är en automatisk sammanfattning av alla beställningar från KlassKraft UF-plattformen.
 Föreningen: ${application.organization}
 Beställningslänk: ${process.env.SITE_URL || 'https://klasskraft.se'}/order.html?code=${account.personal_link_code}
     `.trim();
 
-    // Send email to Kakservice
+    // Send email to KlassKraft UF
     const msg = {
       to: process.env.ADMIN_EMAIL || 'klasskraftuf@gmail.com',
       from: process.env.FROM_EMAIL || 'klasskraftuf@gmail.com',
@@ -669,7 +669,7 @@ Beställningslänk: ${process.env.SITE_URL || 'https://klasskraft.se'}/order.htm
       text: orderSummary,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-          <h2 style="color: #d97706;">🍪 ${orderCount} beställningar från Kakservice-plattformen</h2>
+          <h2 style="color: #d97706;">🍪 ${orderCount} beställningar från KlassKraft UF-plattformen</h2>
           
           <div style="background: #f3f4f6; padding: 20px; border-radius: 8px; margin: 20px 0;">
             <h3 style="color: #374151; margin-top: 0;">Förening/Organisation</h3>
@@ -694,7 +694,7 @@ Beställningslänk: ${process.env.SITE_URL || 'https://klasskraft.se'}/order.htm
 
           <div style="background: #f9fafb; padding: 20px; border-radius: 8px; margin: 20px 0; text-align: center;">
             <p style="color: #6b7280; font-size: 14px;">
-              Detta är en automatisk sammanfattning av alla beställningar från Kakservice-plattformen<br>
+              Detta är en automatisk sammanfattning av alla beställningar från KlassKraft UF-plattformen<br>
               <strong>Förening:</strong> ${application.organization}<br>
               <strong>Beställningslänk:</strong> <a href="${process.env.SITE_URL || 'https://klasskraft.se'}/order.html?code=${account.personal_link_code}">${process.env.SITE_URL || 'https://klasskraft.se'}/order.html?code=${account.personal_link_code}</a>
             </p>
@@ -706,7 +706,7 @@ Beställningslänk: ${process.env.SITE_URL || 'https://klasskraft.se'}/order.htm
       `
     };
 
-    console.log('Sending bulk email to Kakservice...');
+    console.log('Sending bulk email to KlassKraft UF...');
     await sgMail.send(msg);
     console.log('Bulk email sent successfully');
 
@@ -714,14 +714,14 @@ Beställningslänk: ${process.env.SITE_URL || 'https://klasskraft.se'}/order.htm
       statusCode: 200,
       body: JSON.stringify({ 
         success: true,
-        message: `Alla ${orderCount} beställningar har skickats till Kakservice`,
+        message: `Alla ${orderCount} beställningar har skickats till KlassKraft UF`,
         orderCount: orderCount,
         totalSum: totalSum
       })
     };
 
   } catch (error) {
-    console.error('Error sending all orders to Kakservice:', error);
+    console.error('Error sending all orders to KlassKraft UF:', error);
     return {
       statusCode: 500,
       body: JSON.stringify({ error: 'Ett fel uppstod vid skickandet av beställningarna' })

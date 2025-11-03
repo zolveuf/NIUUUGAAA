@@ -445,7 +445,7 @@ class AuthManager {
     } else {
       // Has pending orders - enable button
       sendButton.disabled = false;
-      sendButton.textContent = '📧 Skicka alla beställningar till Kakservice';
+      sendButton.textContent = '📧 Skicka alla beställningar till KlassKraft UF';
       sendButton.style.background = '';
       sendButton.style.cursor = 'pointer';
     }
@@ -619,7 +619,7 @@ class AuthManager {
       'shipped': 'Skickad',
       'delivered': 'Levererad',
       'cancelled': 'Avbruten',
-      'sent': 'Skickad till Kakservice'
+      'sent': 'Skickad till KlassKraft UF'
     };
     return statusMap[status] || status;
   }
@@ -716,10 +716,10 @@ class AuthManager {
     return typeMap[groupType] || groupType;
   }
 
-  // Send all orders to Kakservice
+  // Send all orders to KlassKraft UF
   async sendAllOrdersToKakservice() {
     try {
-      console.log('Skickar alla beställningar till Kakservice');
+      console.log('Skickar alla beställningar till KlassKraft UF');
       
       // Show confirmation dialog
       const confirmed = await showConfirmDialog('Är du säker att du vill skicka beställningen? Då är eran försäljningsperiod över.', 'Ja, skicka', 'Avbryt');
@@ -744,9 +744,9 @@ class AuthManager {
       }
 
       if (!orders || orders.length === 0) {
-        this.showMessage('Inga beställningar att skicka till Kakservice', 'info');
+        this.showMessage('Inga beställningar att skicka till KlassKraft UF', 'info');
         if (button) {
-          button.textContent = '📧 Skicka alla beställningar till Kakservice';
+          button.textContent = '📧 Skicka alla beställningar till KlassKraft UF';
           button.disabled = false;
         }
         return;
@@ -761,7 +761,7 @@ class AuthManager {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          action: 'send-all-orders-to-kakservice',
+          action: 'send-all-orders-to-klasskraft',
           orders: orders
         })
       });
@@ -769,7 +769,7 @@ class AuthManager {
       const result = await response.json();
 
       if (response.ok && result.success) {
-        this.showMessage(`Alla ${orders.length} beställningar har skickats till Kakservice! Försäljningsperioden är nu avslutad.`, 'success');
+        this.showMessage(`Alla ${orders.length} beställningar har skickats till KlassKraft UF! Försäljningsperioden är nu avslutad.`, 'success');
         
         try {
           // Update orders status to "sent" instead of deleting
@@ -802,13 +802,13 @@ class AuthManager {
       }
 
     } catch (error) {
-      console.error('Error sending all orders to Kakservice:', error);
+      console.error('Error sending all orders to KlassKraft UF:', error);
       this.showMessage('Ett fel uppstod vid skickandet: ' + error.message, 'error');
       
       // Reset button
       const button = document.getElementById('send-all-orders-btn');
       if (button) {
-        button.textContent = '📧 Skicka alla beställningar till Kakservice';
+        button.textContent = '📧 Skicka alla beställningar till KlassKraft UF';
         button.disabled = false;
       }
     }
@@ -1027,13 +1027,13 @@ class AuthManager {
     }
   }
 
-  // Send order to Kakservice
+  // Send order to KlassKraft UF
   async sendOrderToKakservice(orderId, buttonElement = null) {
     // Show loading state
     const button = buttonElement || document.querySelector(`[onclick*="${orderId}"]`);
     
     try {
-      console.log('Sending order to Kakservice:', orderId);
+      console.log('Sending order to KlassKraft UF:', orderId);
       
       if (button) {
         const originalText = button.textContent;
@@ -1048,7 +1048,7 @@ class AuthManager {
         },
         body: JSON.stringify({
           orderId: orderId,
-          action: 'send-to-kakservice'
+          action: 'send-to-klasskraft'
         })
       });
 
@@ -1071,7 +1071,7 @@ class AuthManager {
       }
 
       if (response.ok && result.success) {
-        this.showMessage('Beställningen har skickats till Kakservice!', 'success');
+        this.showMessage('Beställningen har skickats till KlassKraft UF!', 'success');
         if (button) {
           button.textContent = '✅ Skickad';
           button.style.background = '#10b981';
@@ -1081,12 +1081,12 @@ class AuthManager {
       }
 
     } catch (error) {
-      console.error('Error sending order to Kakservice:', error);
+      console.error('Error sending order to KlassKraft UF:', error);
       this.showMessage('Ett fel uppstod vid skickandet: ' + error.message, 'error');
       
       // Reset button
       if (button) {
-        button.textContent = '📧 Skicka till Kakservice';
+        button.textContent = '📧 Skicka till KlassKraft UF';
         button.disabled = false;
       }
     }

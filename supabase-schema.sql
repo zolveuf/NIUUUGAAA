@@ -1,4 +1,4 @@
--- Supabase Database Schema for Kakservice Website
+-- Supabase Database Schema for KlassKraft UF Website
 -- Run this SQL in your Supabase SQL Editor
 
 -- Create accounts table for personal links
