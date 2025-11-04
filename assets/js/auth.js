@@ -586,11 +586,15 @@ class AuthManager {
     }
     
     if (orderDetails && typeof orderDetails === 'object') {
+      // Debug: Log order details to see what we're working with
+      console.log('Order details for display:', JSON.stringify(orderDetails, null, 2));
+      
       orderItems = Object.values(orderDetails)
         .map(item => {
           let itemText = `${item.name} x${item.quantity} - ${item.subtotal} kr`;
+          // Always show size if it exists, make it more prominent
           if (item.size && item.size.trim() !== '') {
-            itemText += ` (Storlek: ${item.size})`;
+            itemText += ` <strong style="color: #d97706;">(Storlek: ${item.size})</strong>`;
           }
           return `<li>${itemText}</li>`;
         })

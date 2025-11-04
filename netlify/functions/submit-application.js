@@ -431,16 +431,32 @@ async function handleSendOrderToKakservice(data) {
       }
     }
     
-    const orderItems = Object.values(orderDetails)
+    // Debug: Log order details to see what we're working with
+    console.log('Order details for email:', JSON.stringify(orderDetails, null, 2));
+    
+    // Format order items for text and HTML
+    const orderItemsText = Object.values(orderDetails)
       .filter(item => item.quantity > 0)
       .map(item => {
         let itemText = `• ${item.name} x${item.quantity} - ${item.subtotal} kr`;
+        // Always show size prominently if it exists
         if (item.size && item.size.trim() !== '') {
-          itemText += ` (Storlek: ${item.size})`;
+          itemText += ` [STORLEK: ${item.size}]`;
         }
         return itemText;
       })
       .join('\n');
+    
+    const orderItemsHtml = Object.values(orderDetails)
+      .filter(item => item.quantity > 0)
+      .map(item => {
+        let sizeInfo = '';
+        if (item.size && item.size.trim() !== '') {
+          sizeInfo = ` <span style="background: #fef3c7; color: #92400e; padding: 2px 8px; border-radius: 4px; font-weight: bold; margin-left: 8px;">STORLEK: ${item.size}</span>`;
+        }
+        return `<div style="margin: 8px 0; padding: 8px; background: #f9fafb; border-radius: 4px;">• ${item.name} x${item.quantity} - ${item.subtotal} kr${sizeInfo}</div>`;
+      })
+      .join('');
 
     // Get application info
     const accountCode = account.personal_link_code;
@@ -468,7 +484,7 @@ KUNDINFORMATION:
 • Telefon: ${order.customer_phone || 'Ej angiven'}
 
 PRODUKTER:
-${orderItems}
+${orderItemsText}
 
 TOTAL SUMMA: ${order.total_amount} kr
 
@@ -518,7 +534,9 @@ Beställningslänk: ${process.env.SITE_URL || 'https://klasskraft.se'}/order.htm
 
           <div style="background: #f0fdf4; padding: 20px; border-radius: 8px; margin: 20px 0;">
             <h3 style="color: #166534; margin-top: 0;">Produkter</h3>
-            <div style="white-space: pre-line;">${orderItems}</div>
+            <div style="margin: 10px 0;">
+              ${orderItemsHtml}
+            </div>
             <p style="font-size: 18px; font-weight: bold; color: #166534; margin-top: 15px;">
               TOTAL SUMMA: ${order.total_amount} kr
             </p>
@@ -673,6 +691,7 @@ async function handleSendAllOrdersToKakservice(data) {
 
     // Create comprehensive order summary for all orders
     let allOrderItems = '';
+    let allOrderItemsHtml = '';
     let totalSum = 0;
     let orderCount = 0;
 
@@ -689,16 +708,33 @@ async function handleSendAllOrdersToKakservice(data) {
         }
       }
       
-      const orderItems = Object.values(orderDetails)
+      // Debug: Log order details to see what we're working with
+      console.log(`Order ${index + 1} details:`, JSON.stringify(orderDetails, null, 2));
+      
+      // Text version for plain text email
+      const orderItemsText = Object.values(orderDetails)
         .filter(item => item.quantity > 0)
         .map(item => {
           let itemText = `• ${item.name} x${item.quantity} - ${item.subtotal} kr`;
+          // Always show size prominently if it exists
           if (item.size && item.size.trim() !== '') {
-            itemText += ` (Storlek: ${item.size})`;
+            itemText += ` [STORLEK: ${item.size}]`;
           }
           return itemText;
         })
         .join('\n');
+      
+      // HTML version for HTML email
+      const orderItemsHtml = Object.values(orderDetails)
+        .filter(item => item.quantity > 0)
+        .map(item => {
+          let sizeInfo = '';
+          if (item.size && item.size.trim() !== '') {
+            sizeInfo = ` <span style="background: #fef3c7; color: #92400e; padding: 4px 10px; border-radius: 4px; font-weight: bold; margin-left: 10px; font-size: 14px;">STORLEK: ${item.size}</span>`;
+          }
+          return `<div style="margin: 8px 0; padding: 10px; background: #f9fafb; border-radius: 4px; border-left: 3px solid #10b981;">• ${item.name} x${item.quantity} - ${item.subtotal} kr${sizeInfo}</div>`;
+        })
+        .join('');
 
       allOrderItems += `\n\nBESTÄLLNING ${index + 1}:\n`;
       allOrderItems += `• Beställnings-ID: ${order.id}\n`;
@@ -706,11 +742,29 @@ async function handleSendAllOrdersToKakservice(data) {
       allOrderItems += `• E-post: ${order.customer_email || 'Ej angiven'}\n`;
       allOrderItems += `• Telefon: ${order.customer_phone || 'Ej angiven'}\n`;
       allOrderItems += `• Datum: ${new Date(order.created_at).toLocaleDateString('sv-SE')} kl ${new Date(order.created_at).toLocaleTimeString('sv-SE')}\n`;
-      allOrderItems += `• Produkter:\n${orderItems}\n`;
+      allOrderItems += `• Produkter:\n${orderItemsText}\n`;
       allOrderItems += `• Summa: ${order.total_amount} kr\n`;
       if (order.special_requests) {
         allOrderItems += `• Speciella önskemål: ${order.special_requests}\n`;
       }
+      
+      // HTML version
+      allOrderItemsHtml += `
+        <div style="background: #f3f4f6; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #10b981;">
+          <h4 style="color: #166534; margin-top: 0; margin-bottom: 15px;">BESTÄLLNING ${index + 1}</h4>
+          <p><strong>Beställnings-ID:</strong> ${order.id}</p>
+          <p><strong>Kund:</strong> ${order.customer_name}</p>
+          <p><strong>E-post:</strong> ${order.customer_email || 'Ej angiven'}</p>
+          <p><strong>Telefon:</strong> ${order.customer_phone || 'Ej angiven'}</p>
+          <p><strong>Datum:</strong> ${new Date(order.created_at).toLocaleDateString('sv-SE')} kl ${new Date(order.created_at).toLocaleTimeString('sv-SE')}</p>
+          <div style="margin: 15px 0;">
+            <strong>Produkter:</strong>
+            ${orderItemsHtml}
+          </div>
+          <p style="font-weight: bold; font-size: 16px; color: #166534; margin-top: 10px;">Summa: ${order.total_amount} kr</p>
+          ${order.special_requests ? `<p style="margin-top: 10px;"><strong>Speciella önskemål:</strong> ${order.special_requests}</p>` : ''}
+        </div>
+      `;
 
       totalSum += order.total_amount || 0;
       orderCount++;
@@ -768,7 +822,7 @@ Beställningslänk: ${process.env.SITE_URL || 'https://klasskraft.se'}/order.htm
 
           <div style="background: #f0fdf4; padding: 20px; border-radius: 8px; margin: 20px 0;">
             <h3 style="color: #166534; margin-top: 0;">Detaljerade beställningar</h3>
-            <div style="white-space: pre-line; font-family: monospace; font-size: 14px;">${allOrderItems}</div>
+            ${allOrderItemsHtml}
           </div>
 
           <div style="background: #f9fafb; padding: 20px; border-radius: 8px; margin: 20px 0; text-align: center;">
@@ -835,7 +889,7 @@ Beställningslänk: ${process.env.SITE_URL || 'https://klasskraft.se'}/order.htm
 
           <div style="background: #f3f4f6; padding: 20px; border-radius: 8px; margin: 20px 0;">
             <h3 style="color: #374151; margin-top: 0;">Beställningssammanfattning</h3>
-            <div style="white-space: pre-line; font-family: monospace; font-size: 14px;">${allOrderItems}</div>
+            ${allOrderItemsHtml}
           </div>
           
           <p>Vi kommer att kontakta dig när beställningarna är redo att levereras.</p>

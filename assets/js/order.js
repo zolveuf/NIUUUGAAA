@@ -309,6 +309,9 @@ class OrderManager {
       submitBtn.textContent = 'Skickar beställning...';
       submitBtn.disabled = true;
 
+      // Debug: Log order details to see if size is included
+      console.log('Order details being sent:', JSON.stringify(orderDetails, null, 2));
+      
       // Submit order to Netlify Function
       const response = await fetch('/.netlify/functions/submit-order', {
         method: 'POST',

@@ -100,6 +100,9 @@ exports.handler = async (event, context) => {
     
     const userAgent = event.headers['user-agent'] || 'Unknown';
 
+    // Debug: Log order details to see what we're saving
+    console.log('Order details being saved to database:', JSON.stringify(orderDetails, null, 2));
+    
     // Insert order into database
     console.log('Inserting order...');
     const { data: orderData, error: orderError } = await supabase
