@@ -395,6 +395,17 @@ class AuthManager {
       }
 
       console.log('Beställningar laddade:', orders);
+      // Debug: Log order_details for each order to see if size is present
+      if (orders && orders.length > 0) {
+        orders.forEach((order, index) => {
+          console.log(`Order ${index + 1} order_details:`, JSON.stringify(order.order_details, null, 2));
+          if (order.order_details && typeof order.order_details === 'object') {
+            Object.values(order.order_details).forEach(item => {
+              console.log(`  Item: ${item.name}, Size: ${item.size || 'NO SIZE FOUND'}`);
+            });
+          }
+        });
+      }
       this.displayOrders(orders || []);
       
     } catch (error) {
@@ -588,17 +599,45 @@ class AuthManager {
     if (orderDetails && typeof orderDetails === 'object') {
       // Debug: Log order details to see what we're working with
       console.log('Order details for display:', JSON.stringify(orderDetails, null, 2));
+      console.log('Order details keys:', Object.keys(orderDetails));
+      console.log('Order details type:', typeof orderDetails);
       
-      orderItems = Object.values(orderDetails)
+      // Get all items from order_details
+      const items = Object.values(orderDetails);
+      console.log('Items array:', items);
+      
+      orderItems = items
         .map(item => {
-          let itemText = `${item.name} x${item.quantity} - ${item.subtotal} kr`;
-          // Always show size if it exists, make it more prominent
-          if (item.size && item.size.trim() !== '') {
-            itemText += ` <strong style="color: #d97706;">(Storlek: ${item.size})</strong>`;
+          console.log('Processing item:', item);
+          console.log('Item type:', typeof item);
+          console.log('Item keys:', Object.keys(item || {}));
+          console.log('Item size:', item?.size);
+          console.log('Item size type:', typeof item?.size);
+          
+          if (!item || !item.name) {
+            console.warn('Invalid item:', item);
+            return '';
           }
-          return `<li>${itemText}</li>`;
+          
+          let itemText = `${item.name} x${item.quantity} - ${item.subtotal} kr`;
+          
+          // Always show size if it exists, make it VERY prominent
+          // Check for size in multiple ways to be sure
+          const size = item.size || item.Size || item.STORLEK || item.storlek;
+          if (size && String(size).trim() !== '') {
+            const sizeStr = String(size).trim();
+            itemText += ` <span style="background: #fef3c7; color: #92400e; padding: 6px 12px; border-radius: 6px; font-weight: bold; margin-left: 12px; font-size: 16px; border: 2px solid #f59e0b;">STORLEK: ${sizeStr}</span>`;
+            console.log('Added size to item:', itemText);
+          } else {
+            console.log('No size found for item:', item.name, 'Item:', item);
+          }
+          
+          return `<li style="margin-bottom: 12px; padding: 8px; background: #f9fafb; border-radius: 4px;">${itemText}</li>`;
         })
+        .filter(item => item !== '') // Remove empty items
         .join('');
+    } else {
+      console.warn('Order details is not an object:', orderDetails, 'Type:', typeof orderDetails);
     }
 
     return `

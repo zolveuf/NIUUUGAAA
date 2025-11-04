@@ -311,6 +311,10 @@ class OrderManager {
 
       // Debug: Log order details to see if size is included
       console.log('Order details being sent:', JSON.stringify(orderDetails, null, 2));
+      // Log each item to verify size is included
+      Object.values(orderDetails).forEach(item => {
+        console.log(`Item: ${item.name}, Size: ${item.size || 'NO SIZE'}`);
+      });
       
       // Submit order to Netlify Function
       const response = await fetch('/.netlify/functions/submit-order', {

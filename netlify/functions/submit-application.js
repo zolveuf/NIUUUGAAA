@@ -433,11 +433,15 @@ async function handleSendOrderToKakservice(data) {
     
     // Debug: Log order details to see what we're working with
     console.log('Order details for email:', JSON.stringify(orderDetails, null, 2));
+    console.log('Order details keys:', Object.keys(orderDetails));
     
     // Format order items for text and HTML
     const orderItemsText = Object.values(orderDetails)
       .filter(item => item.quantity > 0)
       .map(item => {
+        console.log('Processing item for email:', item);
+        console.log('Item size:', item.size);
+        
         let itemText = `• ${item.name} x${item.quantity} - ${item.subtotal} kr`;
         // Always show size prominently if it exists
         if (item.size && item.size.trim() !== '') {
@@ -450,11 +454,24 @@ async function handleSendOrderToKakservice(data) {
     const orderItemsHtml = Object.values(orderDetails)
       .filter(item => item.quantity > 0)
       .map(item => {
+        console.log('Processing item for HTML email:', item);
+        console.log('Item keys:', Object.keys(item || {}));
+        console.log('Item size:', item.size);
+        console.log('Item size type:', typeof item.size);
+        
+        // Check for size in multiple ways to be sure
+        const size = item.size || item.Size || item.STORLEK || item.storlek;
         let sizeInfo = '';
-        if (item.size && item.size.trim() !== '') {
-          sizeInfo = ` <span style="background: #fef3c7; color: #92400e; padding: 2px 8px; border-radius: 4px; font-weight: bold; margin-left: 8px;">STORLEK: ${item.size}</span>`;
+        if (size && String(size).trim() !== '') {
+          const sizeStr = String(size).trim();
+          sizeInfo = ` <span style="background: #fef3c7; color: #92400e; padding: 8px 14px; border-radius: 6px; font-weight: bold; margin-left: 12px; font-size: 16px; border: 2px solid #f59e0b; display: inline-block;">STORLEK: ${sizeStr}</span>`;
+          console.log('Added size to HTML item:', sizeStr);
+        } else {
+          console.log('No size found for HTML item:', item.name);
         }
-        return `<div style="margin: 8px 0; padding: 8px; background: #f9fafb; border-radius: 4px;">• ${item.name} x${item.quantity} - ${item.subtotal} kr${sizeInfo}</div>`;
+        return `<div style="margin: 12px 0; padding: 14px; background: #f9fafb; border-radius: 6px; border-left: 4px solid #10b981;">
+          <span style="font-weight: 600; font-size: 16px;">${item.name}</span> x${item.quantity} - ${item.subtotal} kr${sizeInfo}
+        </div>`;
       })
       .join('');
 
@@ -715,10 +732,18 @@ async function handleSendAllOrdersToKakservice(data) {
       const orderItemsText = Object.values(orderDetails)
         .filter(item => item.quantity > 0)
         .map(item => {
+          console.log('Processing item for all orders text:', item);
+          console.log('Item keys:', Object.keys(item || {}));
+          
+          // Check for size in multiple ways to be sure
+          const size = item.size || item.Size || item.STORLEK || item.storlek;
           let itemText = `• ${item.name} x${item.quantity} - ${item.subtotal} kr`;
           // Always show size prominently if it exists
-          if (item.size && item.size.trim() !== '') {
-            itemText += ` [STORLEK: ${item.size}]`;
+          if (size && String(size).trim() !== '') {
+            itemText += ` [STORLEK: ${String(size).trim()}]`;
+            console.log('Added size to text item:', String(size).trim());
+          } else {
+            console.log('No size found for text item:', item.name);
           }
           return itemText;
         })
@@ -728,11 +753,22 @@ async function handleSendAllOrdersToKakservice(data) {
       const orderItemsHtml = Object.values(orderDetails)
         .filter(item => item.quantity > 0)
         .map(item => {
+          console.log('Processing item for all orders HTML:', item);
+          console.log('Item keys:', Object.keys(item || {}));
+          
+          // Check for size in multiple ways to be sure
+          const size = item.size || item.Size || item.STORLEK || item.storlek;
           let sizeInfo = '';
-          if (item.size && item.size.trim() !== '') {
-            sizeInfo = ` <span style="background: #fef3c7; color: #92400e; padding: 4px 10px; border-radius: 4px; font-weight: bold; margin-left: 10px; font-size: 14px;">STORLEK: ${item.size}</span>`;
+          if (size && String(size).trim() !== '') {
+            const sizeStr = String(size).trim();
+            sizeInfo = ` <span style="background: #fef3c7; color: #92400e; padding: 8px 14px; border-radius: 6px; font-weight: bold; margin-left: 12px; font-size: 16px; border: 2px solid #f59e0b; display: inline-block;">STORLEK: ${sizeStr}</span>`;
+            console.log('Added size to all orders HTML item:', sizeStr);
+          } else {
+            console.log('No size found for all orders HTML item:', item.name);
           }
-          return `<div style="margin: 8px 0; padding: 10px; background: #f9fafb; border-radius: 4px; border-left: 3px solid #10b981;">• ${item.name} x${item.quantity} - ${item.subtotal} kr${sizeInfo}</div>`;
+          return `<div style="margin: 10px 0; padding: 12px; background: #f9fafb; border-radius: 6px; border-left: 4px solid #10b981;">
+            <span style="font-weight: 600; font-size: 16px;">${item.name}</span> x${item.quantity} - ${item.subtotal} kr${sizeInfo}
+          </div>`;
         })
         .join('');
 

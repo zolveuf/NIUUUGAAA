@@ -102,6 +102,10 @@ exports.handler = async (event, context) => {
 
     // Debug: Log order details to see what we're saving
     console.log('Order details being saved to database:', JSON.stringify(orderDetails, null, 2));
+    // Log each item to verify size is included
+    Object.values(orderDetails).forEach(item => {
+      console.log(`Saving item: ${item.name}, Size: ${item.size || 'NO SIZE'}`);
+    });
     
     // Insert order into database
     console.log('Inserting order...');
@@ -132,6 +136,13 @@ exports.handler = async (event, context) => {
 
     const order = orderData[0];
     console.log('Order created successfully:', order.id);
+    // Debug: Verify order_details was saved correctly
+    console.log('Order details in saved order:', JSON.stringify(order.order_details, null, 2));
+    if (order.order_details && typeof order.order_details === 'object') {
+      Object.values(order.order_details).forEach(item => {
+        console.log(`Saved item: ${item.name}, Size in DB: ${item.size || 'NO SIZE IN DATABASE'}`);
+      });
+    }
 
     // Send confirmation email to customer if email is provided
     if (customerEmail && customerEmail.trim() !== '') {
@@ -143,9 +154,19 @@ exports.handler = async (event, context) => {
         const productList = Object.values(orderDetails)
           .filter(item => item.quantity > 0)
           .map(item => {
+            console.log('Processing item for customer email:', item);
+            console.log('Item keys:', Object.keys(item || {}));
+            console.log('Item size:', item.size);
+            
+            // Check for size in multiple ways to be sure
+            const size = item.size || item.Size || item.STORLEK || item.storlek;
             let productName = item.name;
-            if (item.size) {
-              productName += ` (Storlek: ${item.size})`;
+            if (size && String(size).trim() !== '') {
+              const sizeStr = String(size).trim();
+              productName += ` <span style="background: #fef3c7; color: #92400e; padding: 4px 8px; border-radius: 4px; font-weight: bold; margin-left: 8px;">STORLEK: ${sizeStr}</span>`;
+              console.log('Added size to customer email item:', sizeStr);
+            } else {
+              console.log('No size found for customer email item:', item.name);
             }
             return `
             <tr>
@@ -278,9 +299,19 @@ exports.handler = async (event, context) => {
       const productList = Object.values(orderDetails)
         .filter(item => item.quantity > 0)
         .map(item => {
+          console.log('Processing item for contact person email:', item);
+          console.log('Item keys:', Object.keys(item || {}));
+          console.log('Item size:', item.size);
+          
+          // Check for size in multiple ways to be sure
+          const size = item.size || item.Size || item.STORLEK || item.storlek;
           let productName = item.name;
-          if (item.size) {
-            productName += ` (Storlek: ${item.size})`;
+          if (size && String(size).trim() !== '') {
+            const sizeStr = String(size).trim();
+            productName += ` <span style="background: #fef3c7; color: #92400e; padding: 4px 8px; border-radius: 4px; font-weight: bold; margin-left: 8px;">STORLEK: ${sizeStr}</span>`;
+            console.log('Added size to contact person email item:', sizeStr);
+          } else {
+            console.log('No size found for contact person email item:', item.name);
           }
           return `
           <tr>
