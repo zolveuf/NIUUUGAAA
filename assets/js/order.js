@@ -241,7 +241,7 @@ class OrderManager {
     const products = [
       { id: 'kasteberg-senap', name: 'KASTEBERG SENAP', price: 89, profit: 20 },
       { id: 'annerstad-smakkit', name: 'ANNERSTAD SMAKKIT', price: 279, profit: 45 },
-      { id: 'alpacka-strumpor', name: 'ALPACKA STRUMPOR', price: 225, profit: 40 },
+      { id: 'alpacka-strumpor', name: 'ALPACKA STRUMPOR', price: 225, profit: 40, hasSize: true },
       { id: 'benesta-lemonad', name: 'BENESTA LÄSK - Lemonad', price: 29, profit: 8 },
       { id: 'benesta-svartvinbar', name: 'BENESTA LÄSK - Svartvinbär', price: 29, profit: 8 },
       { id: 'kasteberg-gardskit', name: 'KASTEBERG GÅRDSKIT', price: 189, profit: 34 },
@@ -252,13 +252,15 @@ class OrderManager {
     products.forEach(product => {
       const quantity = parseInt(formData.get(`qty-${product.id}`)) || 0;
       if (quantity > 0) {
-        // Validate size selection for products that require it (socks)
+        // Get size if product has size selection (socks)
+        let size = null;
         if (product.hasSize) {
-          const size = formData.get(`size-${product.id}`);
-          if (!size) {
+          size = formData.get(`size-${product.id}`);
+          if (!size || size.trim() === '') {
             this.showMessage(`Välj storlek för ${product.name}.`, 'error');
             return;
           }
+          size = size.trim(); // Ensure size is trimmed
         }
         
         const orderItem = {
@@ -268,12 +270,13 @@ class OrderManager {
           subtotal: product.price * quantity
         };
         
-        // Add size if product has size selection (socks)
-        if (product.hasSize) {
-          const size = formData.get(`size-${product.id}`);
+        // ALWAYS add size if product has size selection (socks)
+        if (product.hasSize && size) {
           orderItem.size = size;
+          console.log(`Adding size "${size}" to ${product.name}`);
         }
         
+        console.log(`Created orderItem for ${product.name}:`, orderItem);
         orderDetails[product.id] = orderItem;
         totalAmount += product.price * quantity;
       }

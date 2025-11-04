@@ -104,8 +104,28 @@ exports.handler = async (event, context) => {
     console.log('Order details being saved to database:', JSON.stringify(orderDetails, null, 2));
     // Log each item to verify size is included
     Object.values(orderDetails).forEach(item => {
-      console.log(`Saving item: ${item.name}, Size: ${item.size || 'NO SIZE'}`);
+      console.log(`Saving item: ${item.name}, Size: ${item.size || 'NO SIZE'}, Item keys:`, Object.keys(item));
     });
+    
+    // Ensure order_details is properly formatted and size is preserved
+    // Convert orderDetails to ensure all properties are preserved
+    const formattedOrderDetails = {};
+    Object.keys(orderDetails).forEach(key => {
+      const item = orderDetails[key];
+      formattedOrderDetails[key] = {
+        name: item.name,
+        price: item.price,
+        quantity: item.quantity,
+        subtotal: item.subtotal
+      };
+      // Explicitly preserve size if it exists
+      if (item.size !== undefined && item.size !== null && String(item.size).trim() !== '') {
+        formattedOrderDetails[key].size = String(item.size).trim();
+        console.log(`Preserving size "${formattedOrderDetails[key].size}" for ${item.name}`);
+      }
+    });
+    
+    console.log('Formatted order details:', JSON.stringify(formattedOrderDetails, null, 2));
     
     // Insert order into database
     console.log('Inserting order...');
@@ -118,7 +138,7 @@ exports.handler = async (event, context) => {
           customer_email: customerEmail || null,
           customer_phone: customerPhone || null,
           seller_name: sellerName,
-          order_details: orderDetails,
+          order_details: formattedOrderDetails, // Use formatted version
           total_amount: totalAmount,
           special_requests: specialRequests || null,
           status: 'pending'
