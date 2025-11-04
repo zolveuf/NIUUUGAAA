@@ -78,6 +78,40 @@ exports.handler = async (event, context) => {
     }
     const existingUser = users.users.find(user => user.email === email);
 
+    // Check if email exists in applications table with an active account
+    const { data: existingApplications, error: appError } = await supabase
+      .from('applications')
+      .select('user_id')
+      .eq('email', email)
+      .limit(1);
+    
+    if (!appError && existingApplications && existingApplications.length > 0) {
+      const appUserId = existingApplications[0].user_id;
+      
+      // Check if there's an active account for this user (not scheduled for deletion or deletion is in the future)
+      const { data: userAccounts, error: userAccountsError } = await supabase
+        .from('accounts')
+        .select('id, deletion_scheduled_at')
+        .eq('user_id', appUserId);
+      
+      if (!userAccountsError && userAccounts && userAccounts.length > 0) {
+        const activeAccount = userAccounts.find(acc => 
+          !acc.deletion_scheduled_at || new Date(acc.deletion_scheduled_at) > new Date()
+        );
+        
+        if (activeAccount) {
+          console.log('Active account found for email, preventing new account creation');
+          return {
+            statusCode: 400,
+            body: JSON.stringify({ 
+              error: 'Det finns redan ett aktivt konto med denna e-postadress. Kontot kommer att raderas automatiskt 7 dagar efter att beställningen har skickats.',
+              details: 'Ett nytt konto kan endast skapas när det befintliga kontot har raderats.'
+            })
+          };
+        }
+      }
+    }
+
     let userId;
     if (existingUser) {
       console.log('User already exists, using existing user ID');
@@ -189,15 +223,6 @@ exports.handler = async (event, context) => {
             <p><strong>Status:</strong> Väntar på godkännande</p>
             <p>Vi kommer att granska din ansökan och godkänna ditt konto inom 24 timmar. Du kommer att få ett e-post när ditt konto är godkänt.</p>
             <p><strong>Du kan INTE logga in förrän vi har godkänt ditt konto.</strong></p>
-          </div>
-          
-          <h3>Din personliga länk:</h3>
-          <div style="background: #e3f2fd; padding: 20px; border-radius: 8px; margin: 20px 0;">
-            <p><strong>Dela denna länk för att låta andra beställa från din organisation:</strong></p>
-            <p style="font-size: 18px; font-weight: bold; color: #1976d2;">
-              ${process.env.SITE_URL || 'https://klasskraft.se'}/order.html?code=${linkCode}
-            </p>
-            <p><small>Du kan logga in på din dashboard för att se alla beställningar som kommer via denna länk (efter godkännande).</small></p>
           </div>
           
           <h3>Logga in på din dashboard:</h3>
@@ -507,11 +532,31 @@ Beställningslänk: ${process.env.SITE_URL || 'https://klasskraft.se'}/order.htm
     await sgMail.send(msg);
     console.log('Email sent successfully');
 
+    // Schedule account for deletion 7 days from now
+    const deletionDate = new Date();
+    deletionDate.setDate(deletionDate.getDate() + 7);
+    
+    console.log('Scheduling account for deletion:', deletionDate);
+    const { error: updateError } = await supabase
+      .from('accounts')
+      .update({ 
+        deletion_scheduled_at: deletionDate.toISOString(),
+        updated_at: new Date().toISOString()
+      })
+      .eq('id', account.id);
+
+    if (updateError) {
+      console.error('Error scheduling account deletion:', updateError);
+      // Don't fail the request, just log the error
+    } else {
+      console.log('Account scheduled for deletion on:', deletionDate.toISOString());
+    }
+
     return {
       statusCode: 200,
       body: JSON.stringify({ 
         success: true,
-        message: 'Beställningen har skickats till Kakservice'
+        message: 'Beställningen har skickats till KlassKraft UF. Kontot kommer automatiskt raderas inom 7 dagar.'
       })
     };
 
@@ -710,11 +755,31 @@ Beställningslänk: ${process.env.SITE_URL || 'https://klasskraft.se'}/order.htm
     await sgMail.send(msg);
     console.log('Bulk email sent successfully');
 
+    // Schedule account for deletion 7 days from now
+    const deletionDate = new Date();
+    deletionDate.setDate(deletionDate.getDate() + 7);
+    
+    console.log('Scheduling account for deletion:', deletionDate);
+    const { error: updateError } = await supabase
+      .from('accounts')
+      .update({ 
+        deletion_scheduled_at: deletionDate.toISOString(),
+        updated_at: new Date().toISOString()
+      })
+      .eq('id', account.id);
+
+    if (updateError) {
+      console.error('Error scheduling account deletion:', updateError);
+      // Don't fail the request, just log the error
+    } else {
+      console.log('Account scheduled for deletion on:', deletionDate.toISOString());
+    }
+
     return {
       statusCode: 200,
       body: JSON.stringify({ 
         success: true,
-        message: `Alla ${orderCount} beställningar har skickats till Kakservice`,
+        message: `Alla ${orderCount} beställningar har skickats till KlassKraft UF. Kontot kommer automatiskt raderas inom 7 dagar.`,
         orderCount: orderCount,
         totalSum: totalSum
       })

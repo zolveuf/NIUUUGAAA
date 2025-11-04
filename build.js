@@ -10,7 +10,7 @@ const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY || 'YOUR_SUPABASE_ANON_K
 const SENDGRID_API_KEY = process.env.SENDGRID_API_KEY || 'YOUR_SENDGRID_API_KEY_HERE';
 const FROM_EMAIL = process.env.FROM_EMAIL || 'klasskraftuf@gmail.com';
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'klasskraftuf@gmail.com';
-const APP_NAME = process.env.APP_NAME || 'Kakservice';
+const APP_NAME = process.env.APP_NAME || 'KlassKraft UF';
 const COMPANY_NAME = process.env.COMPANY_NAME || 'Klass Kraft UF';
 
 // Files to process

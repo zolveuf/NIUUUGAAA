@@ -129,7 +129,7 @@ class OrderManager {
     const products = [
       { id: 'kasteberg-senap', name: 'KASTEBERG SENAP', price: 89, image: 'assets/images/Produkt-senap.webp', description: '200 gram otroligt god senap tillverkad med egenodlad raps från Kastebergs Gård', profit: 20 },
       { id: 'annerstad-smakkit', name: 'ANNERSTAD SMAKKIT', price: 279, image: 'assets/images/annerstad smakkit.webp', description: 'Ett smakfullt kit där lokalproducerad balsamico möter en kryddblandning', profit: 45 },
-      { id: 'alpacka-strumpor', name: 'ALPACKA STRUMPOR', price: 225, image: 'assets/images/Produkt-alpacka-strumpor.webp', description: 'Mjuka och varma strumpor i alpackaull från Alpackagården i Kråkshult', profit: 40 },
+      { id: 'alpacka-strumpor', name: 'ALPACKA STRUMPOR', price: 225, image: 'assets/images/Produkt-alpacka-strumpor.webp', description: 'Mjuka och varma strumpor i alpackaull från Alpackagården i Kråkshult', profit: 40, hasSize: true },
       { id: 'benesta-lemonad', name: 'BENESTA LÄSK - Lemonad', price: 29, image: 'assets/images/Produkt-läsk.webp', description: '33 cl ren dryckesglädje i smaken Lemonad. Tillverkad med omsorg. Småländsk kvalitet', profit: 8 },
       { id: 'benesta-svartvinbar', name: 'BENESTA LÄSK - Svartvinbär', price: 29, image: 'assets/images/Produkt-läsk.webp', description: '33 cl ren dryckesglädje i smaken Svartvinbär. Tillverkad med omsorg. Småländsk kvalitet', profit: 8 },
       { id: 'kasteberg-gardskit', name: 'KASTEBERG GÅRDSKIT', price: 189, image: 'assets/images/Produkt-kit.webp', description: 'Två kallpressade rapsoljor på 250 ml i unika smaker: citron och ramslök', profit: 34 },
@@ -151,15 +151,41 @@ class OrderManager {
           <label for="qty-${product.id}" class="quantity-label">Antal:</label>
           <div class="quantity-controls">
             <button type="button" class="quantity-btn quantity-decrease" data-product="${product.id}">-</button>
-            <input type="number" id="qty-${product.id}" name="qty-${product.id}" min="0" max="100" value="0" class="quantity-input">
+            <input type="number" id="qty-${product.id}" name="qty-${product.id}" min="0" max="100" value="0" class="quantity-input" data-product="${product.id}">
             <button type="button" class="quantity-btn quantity-increase" data-product="${product.id}">+</button>
           </div>
         </div>
+        ${product.hasSize ? `
+        <div class="product-size" id="size-${product.id}" style="display: none; margin-top: 1rem;">
+          <label for="size-select-${product.id}" class="quantity-label">Storlek:</label>
+          <select id="size-select-${product.id}" name="size-${product.id}" class="size-select" style="width: 100%; padding: 0.5rem; border: 1px solid var(--color-border); border-radius: var(--radius); font-size: 1rem;">
+            <option value="">Välj storlek</option>
+            <option value="S">S</option>
+            <option value="M">M</option>
+            <option value="L">L</option>
+            <option value="XL">XL</option>
+          </select>
+        </div>
+        ` : ''}
       </div>
     `).join('');
     
     // Store products globally for profit calculations
     window.productsList = products;
+    
+    // Add event listeners to show/hide size selector when quantity changes
+    products.forEach(product => {
+      if (product.hasSize) {
+        const quantityInput = document.getElementById(`qty-${product.id}`);
+        const sizeContainer = document.getElementById(`size-${product.id}`);
+        if (quantityInput && sizeContainer) {
+          quantityInput.addEventListener('change', () => {
+            const quantity = parseInt(quantityInput.value) || 0;
+            sizeContainer.style.display = quantity > 0 ? 'block' : 'none';
+          });
+        }
+      }
+    });
   }
 
   setupEventListeners() {
@@ -181,6 +207,8 @@ class OrderManager {
         const currentValue = parseInt(input.value) || 0;
         if (currentValue > 0) {
           input.value = currentValue - 1;
+          // Trigger change event to update size selector visibility
+          input.dispatchEvent(new Event('change'));
         }
       }
       
@@ -190,6 +218,8 @@ class OrderManager {
         const currentValue = parseInt(input.value) || 0;
         if (currentValue < 100) {
           input.value = currentValue + 1;
+          // Trigger change event to update size selector visibility
+          input.dispatchEvent(new Event('change'));
         }
       }
     });
@@ -223,12 +253,29 @@ class OrderManager {
     products.forEach(product => {
       const quantity = parseInt(formData.get(`qty-${product.id}`)) || 0;
       if (quantity > 0) {
-        orderDetails[product.id] = {
+        // Validate size selection for products that require it (socks)
+        if (product.hasSize) {
+          const size = formData.get(`size-${product.id}`);
+          if (!size) {
+            this.showMessage(`Välj storlek för ${product.name}.`, 'error');
+            return;
+          }
+        }
+        
+        const orderItem = {
           name: product.name,
           price: product.price,
           quantity: quantity,
           subtotal: product.price * quantity
         };
+        
+        // Add size if product has size selection (socks)
+        if (product.hasSize) {
+          const size = formData.get(`size-${product.id}`);
+          orderItem.size = size;
+        }
+        
+        orderDetails[product.id] = orderItem;
         totalAmount += product.price * quantity;
       }
     });
@@ -294,9 +341,21 @@ class OrderManager {
       // Clear form
       e.target.reset();
       
-      // Reset product quantities
+      // Reset product quantities and size selectors
       document.querySelectorAll('.quantity-input').forEach(input => {
         input.value = 0;
+        // Hide size selector if it exists for this product
+        const productId = input.dataset.product;
+        if (productId) {
+          const sizeContainer = document.getElementById(`size-${productId}`);
+          if (sizeContainer) {
+            sizeContainer.style.display = 'none';
+          }
+          const sizeSelect = document.getElementById(`size-select-${productId}`);
+          if (sizeSelect) {
+            sizeSelect.value = '';
+          }
+        }
       });
 
     } catch (error) {

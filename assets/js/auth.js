@@ -776,7 +776,8 @@ class AuthManager {
       const result = await response.json();
 
       if (response.ok && result.success) {
-        this.showMessage(`Alla ${orders.length} beställningar har skickats till KlassKraft UF! Försäljningsperioden är nu avslutad.`, 'success');
+        const message = result.message || `Alla ${orders.length} beställningar har skickats till KlassKraft UF! Försäljningsperioden är nu avslutad.`;
+        this.showMessage(message, 'success');
         
         try {
           // Update orders status to "sent" instead of deleting
@@ -1078,7 +1079,8 @@ class AuthManager {
       }
 
       if (response.ok && result.success) {
-        this.showMessage('Beställningen har skickats till KlassKraft UF!', 'success');
+        const message = result.message || 'Beställningen har skickats till KlassKraft UF!';
+        this.showMessage(message, 'success');
         if (button) {
           button.textContent = 'Skickad';
           button.style.background = '#10b981';

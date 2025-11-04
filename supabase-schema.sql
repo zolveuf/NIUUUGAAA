@@ -1,4 +1,4 @@
--- Supabase Database Schema for Kakservice Website
+-- Supabase Database Schema for KlassKraft UF Website
 -- Run this SQL in your Supabase SQL Editor
 
 -- Create accounts table for personal links
@@ -6,6 +6,7 @@ CREATE TABLE accounts (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
   personal_link_code VARCHAR(20) UNIQUE NOT NULL,
+  deletion_scheduled_at TIMESTAMP WITH TIME ZONE,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -70,6 +71,7 @@ CREATE INDEX idx_applications_status ON applications(status);
 CREATE INDEX idx_accounts_user_id ON accounts(user_id);
 CREATE INDEX idx_accounts_link_code ON accounts(personal_link_code);
 CREATE INDEX idx_accounts_created_at ON accounts(created_at);
+CREATE INDEX idx_accounts_deletion_scheduled_at ON accounts(deletion_scheduled_at);
 
 -- Indexes for orders table
 CREATE INDEX idx_orders_account_id ON orders(account_id);
