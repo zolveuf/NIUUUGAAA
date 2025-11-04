@@ -113,6 +113,7 @@ exports.handler = async (event, context) => {
           seller_name: sellerName,
           order_details: orderDetails,
           total_amount: totalAmount,
+          special_requests: specialRequests || null,
           status: 'pending'
         }
       ])

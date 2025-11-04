@@ -607,6 +607,13 @@ class AuthManager {
             </div>
           </div>
           
+          ${order.special_requests ? `
+            <div class="order-special-requests">
+              <h5>Särskilda önskemål:</h5>
+              <p>${order.special_requests}</p>
+            </div>
+          ` : ''}
+          
         </div>
       </div>
     `;

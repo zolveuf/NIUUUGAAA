@@ -2244,6 +2244,31 @@ body.no-scroll { overflow: hidden; }
   font-weight: 600;
 }
 
+.order-special-requests {
+  margin-top: var(--space-4);
+  padding: var(--space-4);
+  background: #fef3c7;
+  border-radius: var(--radius);
+  border-left: 4px solid #f59e0b;
+  grid-column: 1 / -1;
+}
+
+.order-special-requests h5 {
+  margin: 0 0 var(--space-2) 0;
+  color: #92400e;
+  font-size: var(--text-base);
+  font-weight: 600;
+}
+
+.order-special-requests p {
+  margin: 0;
+  color: #78350f;
+  font-size: var(--text-sm);
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
 .no-orders {
   text-align: center;
   padding: var(--space-8);
