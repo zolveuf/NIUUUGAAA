@@ -575,7 +575,13 @@ class AuthManager {
     let orderItems = '';
     if (order.order_details && typeof order.order_details === 'object') {
       orderItems = Object.values(order.order_details)
-        .map(item => `<li>${item.name} x${item.quantity} - ${item.subtotal} kr</li>`)
+        .map(item => {
+          let itemText = `${item.name} x${item.quantity} - ${item.subtotal} kr`;
+          if (item.size) {
+            itemText += ` (Storlek: ${item.size})`;
+          }
+          return `<li>${itemText}</li>`;
+        })
         .join('');
     }
 

@@ -422,7 +422,13 @@ async function handleSendOrderToKakservice(data) {
     const orderDetails = order.order_details || {};
     const orderItems = Object.values(orderDetails)
       .filter(item => item.quantity > 0)
-      .map(item => `• ${item.name} x${item.quantity} - ${item.subtotal} kr`)
+      .map(item => {
+        let itemText = `• ${item.name} x${item.quantity} - ${item.subtotal} kr`;
+        if (item.size) {
+          itemText += ` (Storlek: ${item.size})`;
+        }
+        return itemText;
+      })
       .join('\n');
 
     // Get application info
@@ -663,7 +669,13 @@ async function handleSendAllOrdersToKakservice(data) {
       const orderDetails = order.order_details || {};
       const orderItems = Object.values(orderDetails)
         .filter(item => item.quantity > 0)
-        .map(item => `• ${item.name} x${item.quantity} - ${item.subtotal} kr`)
+        .map(item => {
+          let itemText = `• ${item.name} x${item.quantity} - ${item.subtotal} kr`;
+          if (item.size) {
+            itemText += ` (Storlek: ${item.size})`;
+          }
+          return itemText;
+        })
         .join('\n');
 
       allOrderItems += `\n\nBESTÄLLNING ${index + 1}:\n`;
@@ -773,6 +785,55 @@ Beställningslänk: ${process.env.SITE_URL || 'https://klasskraft.se'}/order.htm
       // Don't fail the request, just log the error
     } else {
       console.log('Account scheduled for deletion on:', deletionDate.toISOString());
+    }
+
+    // Send confirmation email to account owner
+    const confirmationEmailTemplate = {
+      to: application.email,
+      from: process.env.FROM_EMAIL,
+      subject: `Beställningar skickade - ${process.env.APP_NAME || 'KlassKraft UF'}`,
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+          <h2>Beställningar skickade!</h2>
+          <p>Hej ${application.name},</p>
+          <p>Alla dina beställningar har nu skickats till KlassKraft UF. Tack för din försäljning!</p>
+          
+          <div style="background: #f0fdf4; padding: 20px; border-radius: 8px; margin: 20px 0; border: 2px solid #10b981;">
+            <h3 style="color: #166534; margin-top: 0;">✅ Beställningar skickade</h3>
+            <p><strong>Antal beställningar:</strong> ${orderCount}</p>
+            <p><strong>Total summa:</strong> ${totalSum} kr</p>
+            <p><strong>Organisation:</strong> ${application.organization}</p>
+          </div>
+
+          <div style="background: #fef3c7; padding: 20px; border-radius: 8px; margin: 20px 0; border: 2px solid #f59e0b;">
+            <h3 style="color: #92400e; margin-top: 0;">⏰ Viktig information</h3>
+            <p><strong>Ditt konto kommer automatiskt raderas inom 7 dagar.</strong></p>
+            <p>Efter att kontot har raderats kan du skapa ett nytt konto med samma e-postadress om du vill starta en ny försäljning.</p>
+          </div>
+
+          <div style="background: #f3f4f6; padding: 20px; border-radius: 8px; margin: 20px 0;">
+            <h3 style="color: #374151; margin-top: 0;">Beställningssammanfattning</h3>
+            <div style="white-space: pre-line; font-family: monospace; font-size: 14px;">${allOrderItems}</div>
+          </div>
+          
+          <p>Vi kommer att kontakta dig när beställningarna är redo att levereras.</p>
+          <p>Med vänliga hälsningar,<br>${process.env.COMPANY_NAME || 'Klass Kraft UF'}</p>
+          
+          <div style="background: #fef3c7; padding: 15px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #f59e0b;">
+            <p style="margin: 0; font-size: 12px; color: #78350f;">
+              <strong>Hittar du inte mailet?</strong> Kontrollera din skräppost/spam-mapp.
+            </p>
+          </div>
+        </div>
+      `
+    };
+
+    try {
+      await sgMail.send(confirmationEmailTemplate);
+      console.log('Confirmation email sent to account owner');
+    } catch (emailError) {
+      console.error('Error sending confirmation email to account owner:', emailError);
+      // Don't fail the request if email fails
     }
 
     return {

@@ -160,10 +160,9 @@ class OrderManager {
           <label for="size-select-${product.id}" class="quantity-label">Storlek:</label>
           <select id="size-select-${product.id}" name="size-${product.id}" class="size-select" style="width: 100%; padding: 0.5rem; border: 1px solid var(--color-border); border-radius: var(--radius); font-size: 1rem;">
             <option value="">Välj storlek</option>
-            <option value="S">S</option>
-            <option value="M">M</option>
-            <option value="L">L</option>
-            <option value="XL">XL</option>
+            <option value="35-38">35-38</option>
+            <option value="39-42">39-42</option>
+            <option value="43-46">43-46</option>
           </select>
         </div>
         ` : ''}
