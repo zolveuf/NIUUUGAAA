@@ -573,11 +573,23 @@ class AuthManager {
     
     // Parse order details
     let orderItems = '';
-    if (order.order_details && typeof order.order_details === 'object') {
-      orderItems = Object.values(order.order_details)
+    let orderDetails = order.order_details;
+    
+    // Handle case where order_details might be a string (JSONB)
+    if (typeof orderDetails === 'string') {
+      try {
+        orderDetails = JSON.parse(orderDetails);
+      } catch (e) {
+        console.error('Error parsing order_details:', e);
+        orderDetails = {};
+      }
+    }
+    
+    if (orderDetails && typeof orderDetails === 'object') {
+      orderItems = Object.values(orderDetails)
         .map(item => {
           let itemText = `${item.name} x${item.quantity} - ${item.subtotal} kr`;
-          if (item.size) {
+          if (item.size && item.size.trim() !== '') {
             itemText += ` (Storlek: ${item.size})`;
           }
           return `<li>${itemText}</li>`;

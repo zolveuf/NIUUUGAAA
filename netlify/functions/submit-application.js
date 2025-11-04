@@ -419,12 +419,23 @@ async function handleSendOrderToKakservice(data) {
     console.log('Application found:', application);
 
     // Parse order details
-    const orderDetails = order.order_details || {};
+    let orderDetails = order.order_details || {};
+    
+    // Handle case where order_details might be a string (JSONB)
+    if (typeof orderDetails === 'string') {
+      try {
+        orderDetails = JSON.parse(orderDetails);
+      } catch (e) {
+        console.error('Error parsing order_details:', e);
+        orderDetails = {};
+      }
+    }
+    
     const orderItems = Object.values(orderDetails)
       .filter(item => item.quantity > 0)
       .map(item => {
         let itemText = `• ${item.name} x${item.quantity} - ${item.subtotal} kr`;
-        if (item.size) {
+        if (item.size && item.size.trim() !== '') {
           itemText += ` (Storlek: ${item.size})`;
         }
         return itemText;
@@ -666,12 +677,23 @@ async function handleSendAllOrdersToKakservice(data) {
     let orderCount = 0;
 
     orders.forEach((order, index) => {
-      const orderDetails = order.order_details || {};
+      let orderDetails = order.order_details || {};
+      
+      // Handle case where order_details might be a string (JSONB)
+      if (typeof orderDetails === 'string') {
+        try {
+          orderDetails = JSON.parse(orderDetails);
+        } catch (e) {
+          console.error('Error parsing order_details:', e);
+          orderDetails = {};
+        }
+      }
+      
       const orderItems = Object.values(orderDetails)
         .filter(item => item.quantity > 0)
         .map(item => {
           let itemText = `• ${item.name} x${item.quantity} - ${item.subtotal} kr`;
-          if (item.size) {
+          if (item.size && item.size.trim() !== '') {
             itemText += ` (Storlek: ${item.size})`;
           }
           return itemText;

@@ -139,14 +139,20 @@ exports.handler = async (event, context) => {
         // Format product list from order_details
         const productList = Object.values(orderDetails)
           .filter(item => item.quantity > 0)
-          .map(item => `
+          .map(item => {
+            let productName = item.name;
+            if (item.size) {
+              productName += ` (Storlek: ${item.size})`;
+            }
+            return `
             <tr>
-              <td style="padding: 8px; border-bottom: 1px solid #e5e7eb;">${item.name}</td>
+              <td style="padding: 8px; border-bottom: 1px solid #e5e7eb;">${productName}</td>
               <td style="padding: 8px; border-bottom: 1px solid #e5e7eb; text-align: center;">${item.quantity}</td>
               <td style="padding: 8px; border-bottom: 1px solid #e5e7eb; text-align: right;">${item.price} kr</td>
               <td style="padding: 8px; border-bottom: 1px solid #e5e7eb; text-align: right;">${item.subtotal} kr</td>
             </tr>
-          `)
+          `;
+          })
           .join('');
 
         // Format order date
@@ -268,14 +274,20 @@ exports.handler = async (event, context) => {
       // Format product list from order_details
       const productList = Object.values(orderDetails)
         .filter(item => item.quantity > 0)
-        .map(item => `
+        .map(item => {
+          let productName = item.name;
+          if (item.size) {
+            productName += ` (Storlek: ${item.size})`;
+          }
+          return `
           <tr>
-            <td style="padding: 8px; border-bottom: 1px solid #e5e7eb;">${item.name}</td>
+            <td style="padding: 8px; border-bottom: 1px solid #e5e7eb;">${productName}</td>
             <td style="padding: 8px; border-bottom: 1px solid #e5e7eb; text-align: center;">${item.quantity}</td>
             <td style="padding: 8px; border-bottom: 1px solid #e5e7eb; text-align: right;">${item.price} kr</td>
             <td style="padding: 8px; border-bottom: 1px solid #e5e7eb; text-align: right;">${item.subtotal} kr</td>
           </tr>
-        `)
+        `;
+        })
         .join('');
 
       // Format order date
