@@ -134,7 +134,8 @@ class OrderManager {
       { id: 'benesta-svartvinbar', name: 'BENESTA LÄSK - Svartvinbär', price: 29, image: 'assets/images/Produkt-läsk.webp', description: '33 cl ren dryckesglädje i smaken Svartvinbär. Tillverkad med omsorg. Småländsk kvalitet', profit: 8 },
       { id: 'kasteberg-gardskit', name: 'KASTEBERG GÅRDSKIT', price: 189, image: 'assets/images/Produkt-kit.webp', description: 'Två kallpressade rapsoljor på 250 ml i unika smaker: citron och ramslök', profit: 34 },
       { id: 'kasteberg-rapsolja', name: 'KASTEBERG RAPSOLJA', price: 95, image: 'assets/images/Produkt-olja.webp', description: 'Kallpressad rapsolja på 500 ml', profit: 20 },
-      { id: 'annerstad-myskit', name: 'ANNERSTAD MYSKIT', price: 249, image: 'assets/images/myskit.jpeg', description: 'Myskit med lokalproducerda honung och smakrikt te', profit: 35 }
+      { id: 'annerstad-myskit', name: 'ANNERSTAD MYSKIT', price: 249, image: 'assets/images/myskit.jpeg', description: 'Myskit med lokalproducerda honung och smakrikt te', profit: 35 },
+      { id: 'appelmust', name: 'ÄPPELMUST', price: 189, image: 'assets/images/äppelmust.webp', description: '3 liter äppelmust från Urshult', profit: 45 }
     ];
 
     productSelection.innerHTML = products.map(product => `
@@ -246,7 +247,8 @@ class OrderManager {
       { id: 'benesta-svartvinbar', name: 'BENESTA LÄSK - Svartvinbär', price: 29, profit: 8 },
       { id: 'kasteberg-gardskit', name: 'KASTEBERG GÅRDSKIT', price: 189, profit: 34 },
       { id: 'kasteberg-rapsolja', name: 'KASTEBERG RAPSOLJA', price: 95, profit: 20 },
-      { id: 'annerstad-myskit', name: 'ANNERSTAD MYSKIT', price: 249, profit: 35 }
+      { id: 'annerstad-myskit', name: 'ANNERSTAD MYSKIT', price: 249, profit: 35 },
+      { id: 'appelmust', name: 'ÄPPELMUST', price: 189, profit: 45 }
     ];
 
     products.forEach(product => {
