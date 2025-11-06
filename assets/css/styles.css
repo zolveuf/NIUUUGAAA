@@ -952,6 +952,13 @@ body.index-page .products-section {
     width: min(1100px, 95%);
     padding: 0 var(--space-4);
   }
+  .footer-bottom { 
+    margin-top: 2rem;
+    padding-bottom: var(--space-12);
+  }
+  .site-footer {
+    padding-bottom: var(--space-8);
+  }
 }
 
 @media (max-width: 350px) {
@@ -1009,10 +1016,13 @@ body.index-page .products-section {
     box-sizing: border-box;
   }
   .footer-bottom {
-    padding: var(--space-8) 0 var(--space-12) 0;
+    padding: var(--space-8) 0 var(--space-20) 0;
     width: 100%;
     max-width: 100%;
     box-sizing: border-box;
+  }
+  .site-footer {
+    padding-bottom: var(--space-12);
   }
   .footer-bottom small {
     display: block;
