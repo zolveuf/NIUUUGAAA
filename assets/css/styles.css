@@ -864,10 +864,14 @@ body.index-page .products-section {
   border-color: var(--color-border); 
 }
 
+
+
 .btn--ghost:hover { 
   background: var(--color-surface);
   transform: translateX(2px);
+  color: black;
 }
+
 
 .btn--sm { padding: 8px 12px; font-size: var(--text-sm); }
 .btn--lg { padding: 12px 18px; font-size: var(--text-lg); }
