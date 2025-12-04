@@ -680,6 +680,11 @@ async function handleSendAllOrdersToKakservice(data) {
     const fromEmail = process.env.FROM_EMAIL || 'klasskraftuf@gmail.com';
     const adminEmail = process.env.ADMIN_EMAIL || 'klasskraftuf@gmail.com';
     
+    console.log('=== VALIDATING EMAIL CONFIGURATION ===');
+    console.log('SENDGRID_API_KEY from env:', sendGridApiKey ? 'Present' : 'MISSING');
+    console.log('FROM_EMAIL from env:', process.env.FROM_EMAIL || 'NOT SET (using fallback)');
+    console.log('ADMIN_EMAIL from env:', process.env.ADMIN_EMAIL || 'NOT SET (using fallback)');
+    
     if (!sendGridApiKey) {
       console.error('❌ CRITICAL ERROR: SENDGRID_API_KEY is not set in environment variables!');
       return {
@@ -702,6 +707,21 @@ async function handleSendAllOrdersToKakservice(data) {
       };
     }
     
+    // CRITICAL: Validate adminEmail is set correctly
+    if (!adminEmail || !adminEmail.includes('@')) {
+      console.error('❌ CRITICAL ERROR: ADMIN_EMAIL is invalid!');
+      console.error('   ADMIN_EMAIL value:', adminEmail);
+      console.error('   ADMIN_EMAIL from env:', process.env.ADMIN_EMAIL);
+      return {
+        statusCode: 500,
+        body: JSON.stringify({ 
+          error: 'Admin e-postadress är ogiltig. Kontakta support.',
+          details: `ADMIN_EMAIL is invalid: ${adminEmail}`,
+          adminEmailFromEnv: process.env.ADMIN_EMAIL
+        })
+      };
+    }
+    
     console.log('✅ SendGrid configuration validated');
     console.log('   API Key:', sendGridApiKey ? 'Present (' + sendGridApiKey.substring(0, 10) + '...)' : 'MISSING');
     console.log('   API Key length:', sendGridApiKey?.length || 0);
@@ -710,6 +730,7 @@ async function handleSendAllOrdersToKakservice(data) {
     console.log('   ADMIN_EMAIL:', adminEmail);
     console.log('   FROM_EMAIL valid:', fromEmail && fromEmail.includes('@'));
     console.log('   ADMIN_EMAIL valid:', adminEmail && adminEmail.includes('@'));
+    console.log('=====================================');
     
     // Initialize SendGrid
     sgMail.setApiKey(sendGridApiKey);
@@ -870,10 +891,18 @@ Föreningen: ${application.organization}
 Beställningslänk: ${process.env.SITE_URL || 'https://klasskraft.se'}/order.html?code=${account.personal_link_code}
     `.trim();
 
-    // Send email to Kakservice
+    // Send email to KlassKraft UF (admin) - COMPLETE ORDER SUMMARY
+    // IMPORTANT: Use validated adminEmail and fromEmail variables
+    console.log('Preparing admin email object...');
+    console.log('ADMIN_EMAIL from env:', process.env.ADMIN_EMAIL);
+    console.log('adminEmail variable (validated):', adminEmail);
+    console.log('fromEmail variable (validated):', fromEmail);
+    console.log('Will send to:', adminEmail);
+    console.log('Will send from:', fromEmail);
+    
     const msg = {
-      to: process.env.ADMIN_EMAIL || 'klasskraftuf@gmail.com',
-      from: process.env.FROM_EMAIL || 'klasskraftuf@gmail.com',
+      to: adminEmail,  // Use validated variable, not direct env access
+      from: fromEmail,  // Use validated variable, not direct env access
       subject: `${orderCount} beställningar från ${application.organization} - ${totalSum} kr`,
       text: orderSummary,
       html: `
@@ -952,6 +981,15 @@ Beställningslänk: ${process.env.SITE_URL || 'https://klasskraft.se'}/order.htm
       console.log('SendGrid response status:', result[0]?.statusCode);
       console.log('SendGrid response headers:', result[0]?.headers);
       console.log('SendGrid response body:', result[0]?.body);
+      console.log('Email was sent to:', adminEmail);
+      console.log('Email was sent from:', fromEmail);
+      
+      // Double-check the response
+      if (result && result[0] && result[0].statusCode === 202) {
+        console.log('✅ SendGrid accepted the email (202 Accepted)');
+      } else {
+        console.warn('⚠️ Unexpected SendGrid response:', result);
+      }
     } catch (error) {
       adminEmailError = error;
       console.error('❌ CRITICAL ERROR sending email to KlassKraft UF (admin):', error);
