@@ -1337,22 +1337,33 @@ ${process.env.COMPANY_NAME || 'Klass Kraft UF'}
 
     // Final summary - CRITICAL VALIDATION
     console.log('=== EMAIL SENDING SUMMARY ===');
-    console.log(adminEmailSent ? '✅ Admin email (KlassKraft UF): SENT' : '❌ Admin email (KlassKraft UF): FAILED');
+    console.log(adminEmailSent ? '✅ Admin email (KlassKraft UF): ACCEPTED BY SENDGRID' : '❌ Admin email (KlassKraft UF): FAILED');
     console.log(`   To: ${adminEmail}`);
     console.log(`   From: ${fromEmail}`);
     console.log(`   Orders: ${orderCount}, Total: ${totalSum} kr`);
+    if (adminEmailSent) {
+      console.log('   ⚠️ NOTE: Email may be deferred by Gmail due to rate limiting');
+      console.log('   ⚠️ Check SendGrid Activity dashboard for actual delivery status');
+      console.log('   ⚠️ Deferred emails can take up to 24 hours to deliver');
+    }
     if (adminEmailError) {
       console.error('   Error:', adminEmailError.message);
     }
     
-    console.log(orgEmailSent ? '✅ Organization email (seller): SENT' : '❌ Organization email (seller): FAILED');
+    console.log(orgEmailSent ? '✅ Organization email (seller): ACCEPTED BY SENDGRID' : '❌ Organization email (seller): FAILED');
     console.log(`   To: ${application.email}`);
     console.log(`   From: ${fromEmail}`);
     console.log(`   Orders: ${orderCount}, Total: ${totalSum} kr`);
+    if (orgEmailSent) {
+      console.log('   ⚠️ NOTE: Email may be deferred by Gmail due to rate limiting');
+      console.log('   ⚠️ Check SendGrid Activity dashboard for actual delivery status');
+    }
     if (orgEmailError) {
       console.error('   Error:', orgEmailError.message);
     }
     console.log('=============================');
+    console.log('📧 IMPORTANT: If emails are deferred, they will be retried automatically by SendGrid');
+    console.log('📧 Check SendGrid Activity dashboard: https://app.sendgrid.com/activity');
 
     // CRITICAL: Only return success if admin email was sent
     if (!adminEmailSent) {
