@@ -919,6 +919,9 @@ async function handleSendAllOrdersToKakservice(data) {
       allOrderItems += `• Kund: ${order.customer_name}\n`;
       allOrderItems += `• E-post: ${order.customer_email || 'Ej angiven'}\n`;
       allOrderItems += `• Telefon: ${order.customer_phone || 'Ej angiven'}\n`;
+      if (order.seller_name) {
+        allOrderItems += `• Köpt från (säljare): ${order.seller_name}\n`;
+      }
       allOrderItems += `• Datum: ${new Date(order.created_at).toLocaleDateString('sv-SE')} kl ${new Date(order.created_at).toLocaleTimeString('sv-SE')}\n`;
       allOrderItems += `• Produkter:\n${orderItemsText}\n`;
       allOrderItems += `• Summa: ${order.total_amount} kr\n`;
@@ -934,6 +937,7 @@ async function handleSendAllOrdersToKakservice(data) {
           <p><strong>Kund:</strong> ${order.customer_name}</p>
           <p><strong>E-post:</strong> ${order.customer_email || 'Ej angiven'}</p>
           <p><strong>Telefon:</strong> ${order.customer_phone || 'Ej angiven'}</p>
+          ${order.seller_name ? `<p><strong>Köpt från (säljare):</strong> <span style="color: #166534; font-weight: 600;">${order.seller_name}</span></p>` : ''}
           <p><strong>Datum:</strong> ${new Date(order.created_at).toLocaleDateString('sv-SE')} kl ${new Date(order.created_at).toLocaleTimeString('sv-SE')}</p>
           <div style="margin: 15px 0;">
             <strong>Produkter:</strong>
