@@ -704,8 +704,12 @@ async function handleSendAllOrdersToKakservice(data) {
     
     console.log('✅ SendGrid configuration validated');
     console.log('   API Key:', sendGridApiKey ? 'Present (' + sendGridApiKey.substring(0, 10) + '...)' : 'MISSING');
+    console.log('   API Key length:', sendGridApiKey?.length || 0);
+    console.log('   API Key starts with SG?:', sendGridApiKey?.startsWith('SG.') || false);
     console.log('   FROM_EMAIL:', fromEmail);
     console.log('   ADMIN_EMAIL:', adminEmail);
+    console.log('   FROM_EMAIL valid:', fromEmail && fromEmail.includes('@'));
+    console.log('   ADMIN_EMAIL valid:', adminEmail && adminEmail.includes('@'));
     
     // Initialize SendGrid
     sgMail.setApiKey(sendGridApiKey);
@@ -923,17 +927,44 @@ Beställningslänk: ${process.env.SITE_URL || 'https://klasskraft.se'}/order.htm
     let adminEmailError = null;
     
     try {
+      // Validate email addresses before sending
+      if (!adminEmail || !adminEmail.includes('@')) {
+        throw new Error(`Invalid admin email address: ${adminEmail}`);
+      }
+      if (!fromEmail || !fromEmail.includes('@')) {
+        throw new Error(`Invalid from email address: ${fromEmail}`);
+      }
+      
+      console.log('Attempting to send email via SendGrid...');
+      console.log('Email object:', {
+        to: adminEmail,
+        from: fromEmail,
+        subject: msg.subject,
+        hasText: !!msg.text,
+        hasHtml: !!msg.html,
+        textLength: msg.text?.length || 0,
+        htmlLength: msg.html?.length || 0
+      });
+      
       const result = await sgMail.send(msg);
       adminEmailSent = true;
       console.log('✅ Email sent successfully to KlassKraft UF (admin)');
-      console.log('SendGrid response:', result);
+      console.log('SendGrid response status:', result[0]?.statusCode);
+      console.log('SendGrid response headers:', result[0]?.headers);
+      console.log('SendGrid response body:', result[0]?.body);
     } catch (error) {
       adminEmailError = error;
       console.error('❌ CRITICAL ERROR sending email to KlassKraft UF (admin):', error);
+      console.error('Error type:', error.constructor.name);
       console.error('Error message:', error.message);
       console.error('Error code:', error.code);
-      console.error('Error response:', JSON.stringify(error.response?.body, null, 2));
-      console.error('Full error:', JSON.stringify(error, null, 2));
+      console.error('Error stack:', error.stack);
+      
+      if (error.response) {
+        console.error('Error response status:', error.response.statusCode);
+        console.error('Error response body:', JSON.stringify(error.response.body, null, 2));
+        console.error('Error response headers:', JSON.stringify(error.response.headers, null, 2));
+      }
       
       // CRITICAL: Fail the request if admin email fails
       return {
@@ -942,7 +973,10 @@ Beställningslänk: ${process.env.SITE_URL || 'https://klasskraft.se'}/order.htm
           error: 'Kunde inte skicka e-post till KlassKraft UF',
           details: error.message,
           code: error.code,
-          response: error.response?.body
+          response: error.response?.body,
+          sendGridConfigured: !!sendGridApiKey,
+          fromEmail: fromEmail,
+          adminEmail: adminEmail
         })
       };
     }
@@ -1069,17 +1103,41 @@ ${process.env.COMPANY_NAME || 'Klass Kraft UF'}
     let orgEmailError = null;
     
     try {
+      // Validate email address before sending
+      if (!application.email || !application.email.includes('@')) {
+        throw new Error(`Invalid organization email address: ${application.email}`);
+      }
+      
+      console.log('Attempting to send email via SendGrid...');
+      console.log('Email object:', {
+        to: application.email,
+        from: fromEmail,
+        subject: confirmationEmailTemplate.subject,
+        hasText: !!confirmationEmailTemplate.text,
+        hasHtml: !!confirmationEmailTemplate.html,
+        textLength: confirmationEmailTemplate.text?.length || 0,
+        htmlLength: confirmationEmailTemplate.html?.length || 0
+      });
+      
       const result = await sgMail.send(confirmationEmailTemplate);
       orgEmailSent = true;
       console.log('✅ Email sent successfully to organization (seller):', application.email);
-      console.log('SendGrid response:', result);
+      console.log('SendGrid response status:', result[0]?.statusCode);
+      console.log('SendGrid response headers:', result[0]?.headers);
+      console.log('SendGrid response body:', result[0]?.body);
     } catch (error) {
       orgEmailError = error;
       console.error('❌ ERROR sending email to organization (seller):', error);
+      console.error('Error type:', error.constructor.name);
       console.error('Error message:', error.message);
       console.error('Error code:', error.code);
-      console.error('Error response:', JSON.stringify(error.response?.body, null, 2));
-      console.error('Full error:', JSON.stringify(error, null, 2));
+      console.error('Error stack:', error.stack);
+      
+      if (error.response) {
+        console.error('Error response status:', error.response.statusCode);
+        console.error('Error response body:', JSON.stringify(error.response.body, null, 2));
+        console.error('Error response headers:', JSON.stringify(error.response.headers, null, 2));
+      }
       // Log error but don't fail - organization email is important but admin email is critical
       // However, we'll still return success but log the failure clearly
     }
