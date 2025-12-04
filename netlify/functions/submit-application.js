@@ -643,12 +643,16 @@ function getOrderStatusText(status) {
   return statusMap[status] || status;
 }
 
-// Function to handle sending all orders to Kakservice
+// Function to handle sending all orders to KlassKraft UF
+// Sends COMPLETE order summary to:
+// 1. KlassKraft UF (admin) - includes all order details, customer info, products, sizes, totals
+// 2. Organization (seller) - includes all order details, customer info, products, sizes, totals
 async function handleSendAllOrdersToKakservice(data) {
   try {
     const { orders } = data;
     
-    console.log('Sending all orders to Kakservice:', orders.length);
+    console.log('=== SENDING ALL ORDERS TO KLASSKRAFT UF ===');
+    console.log('Number of orders:', orders.length);
 
     if (!orders || orders.length === 0) {
       return {
@@ -671,8 +675,40 @@ async function handleSendAllOrdersToKakservice(data) {
 
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
+    // Validate SendGrid configuration BEFORE attempting to send emails
+    const sendGridApiKey = process.env.SENDGRID_API_KEY;
+    const fromEmail = process.env.FROM_EMAIL || 'klasskraftuf@gmail.com';
+    const adminEmail = process.env.ADMIN_EMAIL || 'klasskraftuf@gmail.com';
+    
+    if (!sendGridApiKey) {
+      console.error('❌ CRITICAL ERROR: SENDGRID_API_KEY is not set in environment variables!');
+      return {
+        statusCode: 500,
+        body: JSON.stringify({ 
+          error: 'E-postkonfiguration saknas. Kontakta support.',
+          details: 'SENDGRID_API_KEY environment variable is missing'
+        })
+      };
+    }
+    
+    if (!fromEmail) {
+      console.error('❌ CRITICAL ERROR: FROM_EMAIL is not set in environment variables!');
+      return {
+        statusCode: 500,
+        body: JSON.stringify({ 
+          error: 'E-postkonfiguration saknas. Kontakta support.',
+          details: 'FROM_EMAIL environment variable is missing'
+        })
+      };
+    }
+    
+    console.log('✅ SendGrid configuration validated');
+    console.log('   API Key:', sendGridApiKey ? 'Present (' + sendGridApiKey.substring(0, 10) + '...)' : 'MISSING');
+    console.log('   FROM_EMAIL:', fromEmail);
+    console.log('   ADMIN_EMAIL:', adminEmail);
+    
     // Initialize SendGrid
-    sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+    sgMail.setApiKey(sendGridApiKey);
 
     // Get account and application info for the first order
     const firstOrder = orders[0];
@@ -875,9 +911,52 @@ Beställningslänk: ${process.env.SITE_URL || 'https://klasskraft.se'}/order.htm
       `
     };
 
-    console.log('Sending bulk email to Kakservice...');
-    await sgMail.send(msg);
-    console.log('Bulk email sent successfully');
+    // Send email to KlassKraft UF (admin) - COMPLETE ORDER SUMMARY
+    console.log('=== SENDING EMAIL TO KLASSKRAFT UF (ADMIN) ===');
+    console.log('Admin email:', adminEmail);
+    console.log('From email:', fromEmail);
+    console.log('Order count:', orderCount);
+    console.log('Total sum:', totalSum);
+    console.log('Subject:', `${orderCount} beställningar från ${application.organization} - ${totalSum} kr`);
+    
+    let adminEmailSent = false;
+    let adminEmailError = null;
+    
+    try {
+      const result = await sgMail.send(msg);
+      adminEmailSent = true;
+      console.log('✅ Email sent successfully to KlassKraft UF (admin)');
+      console.log('SendGrid response:', result);
+    } catch (error) {
+      adminEmailError = error;
+      console.error('❌ CRITICAL ERROR sending email to KlassKraft UF (admin):', error);
+      console.error('Error message:', error.message);
+      console.error('Error code:', error.code);
+      console.error('Error response:', JSON.stringify(error.response?.body, null, 2));
+      console.error('Full error:', JSON.stringify(error, null, 2));
+      
+      // CRITICAL: Fail the request if admin email fails
+      return {
+        statusCode: 500,
+        body: JSON.stringify({ 
+          error: 'Kunde inte skicka e-post till KlassKraft UF',
+          details: error.message,
+          code: error.code,
+          response: error.response?.body
+        })
+      };
+    }
+    
+    if (!adminEmailSent) {
+      console.error('❌ CRITICAL: Admin email was not sent successfully');
+      return {
+        statusCode: 500,
+        body: JSON.stringify({ 
+          error: 'E-post till KlassKraft UF kunde inte skickas',
+          details: 'Email sending failed without throwing an error'
+        })
+      };
+    }
 
     // Schedule account for deletion 7 days from now
     const deletionDate = new Date();
@@ -899,11 +978,48 @@ Beställningslänk: ${process.env.SITE_URL || 'https://klasskraft.se'}/order.htm
       console.log('Account scheduled for deletion on:', deletionDate.toISOString());
     }
 
-    // Send confirmation email to account owner
+    // Send confirmation email to account owner with COMPLETE order summary
+    const confirmationEmailText = `
+Hej ${application.name},
+
+Alla dina beställningar har nu skickats till KlassKraft UF. Tack för din försäljning!
+
+✅ BESTÄLLNINGAR SKICKADE
+• Antal beställningar: ${orderCount}
+• Total summa: ${totalSum} kr
+• Organisation: ${application.organization}
+• Beställningskod: ${account.personal_link_code}
+
+DETALJERADE BESTÄLLNINGAR:
+${allOrderItems}
+
+⏰ VIKTIG INFORMATION
+Ditt konto kommer automatiskt raderas inom 7 dagar.
+Efter att kontot har raderats kan du skapa ett nytt konto med samma e-postadress om du vill starta en ny försäljning.
+
+Vi kommer att kontakta dig när beställningarna är redo att levereras.
+
+Med vänliga hälsningar,
+${process.env.COMPANY_NAME || 'Klass Kraft UF'}
+    `.trim();
+
+    // Validate organization email
+    if (!application.email || !application.email.includes('@')) {
+      console.error('❌ ERROR: Invalid organization email:', application.email);
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ 
+          error: 'Ogiltig e-postadress för organisationen',
+          details: `Email: ${application.email}`
+        })
+      };
+    }
+    
     const confirmationEmailTemplate = {
       to: application.email,
-      from: process.env.FROM_EMAIL,
-      subject: `Beställningar skickade - ${process.env.APP_NAME || 'KlassKraft UF'}`,
+      from: fromEmail,
+      subject: `Beställningar skickade - ${orderCount} beställningar, ${totalSum} kr - ${process.env.APP_NAME || 'KlassKraft UF'}`,
+      text: confirmationEmailText,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
           <h2>Beställningar skickade!</h2>
@@ -940,12 +1056,66 @@ Beställningslänk: ${process.env.SITE_URL || 'https://klasskraft.se'}/order.htm
       `
     };
 
+    // Send email to organization (seller) - COMPLETE ORDER SUMMARY
+    console.log('=== SENDING EMAIL TO ORGANIZATION (SELLER) ===');
+    console.log('Organization email:', application.email);
+    console.log('Organization name:', application.name);
+    console.log('From email:', fromEmail);
+    console.log('Order count:', orderCount);
+    console.log('Total sum:', totalSum);
+    console.log('Subject:', `Beställningar skickade - ${orderCount} beställningar, ${totalSum} kr - ${process.env.APP_NAME || 'KlassKraft UF'}`);
+    
+    let orgEmailSent = false;
+    let orgEmailError = null;
+    
     try {
-      await sgMail.send(confirmationEmailTemplate);
-      console.log('Confirmation email sent to account owner');
-    } catch (emailError) {
-      console.error('Error sending confirmation email to account owner:', emailError);
-      // Don't fail the request if email fails
+      const result = await sgMail.send(confirmationEmailTemplate);
+      orgEmailSent = true;
+      console.log('✅ Email sent successfully to organization (seller):', application.email);
+      console.log('SendGrid response:', result);
+    } catch (error) {
+      orgEmailError = error;
+      console.error('❌ ERROR sending email to organization (seller):', error);
+      console.error('Error message:', error.message);
+      console.error('Error code:', error.code);
+      console.error('Error response:', JSON.stringify(error.response?.body, null, 2));
+      console.error('Full error:', JSON.stringify(error, null, 2));
+      // Log error but don't fail - organization email is important but admin email is critical
+      // However, we'll still return success but log the failure clearly
+    }
+
+    // Final summary - CRITICAL VALIDATION
+    console.log('=== EMAIL SENDING SUMMARY ===');
+    console.log(adminEmailSent ? '✅ Admin email (KlassKraft UF): SENT' : '❌ Admin email (KlassKraft UF): FAILED');
+    console.log(`   To: ${adminEmail}`);
+    console.log(`   From: ${fromEmail}`);
+    console.log(`   Orders: ${orderCount}, Total: ${totalSum} kr`);
+    if (adminEmailError) {
+      console.error('   Error:', adminEmailError.message);
+    }
+    
+    console.log(orgEmailSent ? '✅ Organization email (seller): SENT' : '❌ Organization email (seller): FAILED');
+    console.log(`   To: ${application.email}`);
+    console.log(`   From: ${fromEmail}`);
+    console.log(`   Orders: ${orderCount}, Total: ${totalSum} kr`);
+    if (orgEmailError) {
+      console.error('   Error:', orgEmailError.message);
+    }
+    console.log('=============================');
+
+    // CRITICAL: Only return success if admin email was sent
+    if (!adminEmailSent) {
+      return {
+        statusCode: 500,
+        body: JSON.stringify({ 
+          error: 'E-post till KlassKraft UF kunde inte skickas',
+          details: adminEmailError?.message || 'Unknown error',
+          emailsSent: {
+            admin: false,
+            organization: orgEmailSent
+          }
+        })
+      };
     }
 
     return {
@@ -954,7 +1124,16 @@ Beställningslänk: ${process.env.SITE_URL || 'https://klasskraft.se'}/order.htm
         success: true,
         message: `Alla ${orderCount} beställningar har skickats till KlassKraft UF. Kontot kommer automatiskt raderas inom 7 dagar.`,
         orderCount: orderCount,
-        totalSum: totalSum
+        totalSum: totalSum,
+        emailsSent: {
+          admin: adminEmailSent,
+          organization: orgEmailSent
+        },
+        emailDetails: {
+          adminEmail: adminEmail,
+          organizationEmail: application.email,
+          fromEmail: fromEmail
+        }
       })
     };
 
