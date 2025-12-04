@@ -195,7 +195,24 @@ exports.handler = async (event, context) => {
     console.log('Account created with link code:', linkCode);
 
     // Initialize SendGrid
-    sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+    const sendGridApiKey = process.env.SENDGRID_API_KEY;
+    const fromEmail = process.env.FROM_EMAIL;
+    const adminEmail = process.env.ADMIN_EMAIL;
+    
+    if (!sendGridApiKey) {
+      console.error('❌ SENDGRID_API_KEY is not set');
+      // Don't fail, but log the error
+    } else {
+      sgMail.setApiKey(sendGridApiKey);
+    }
+    
+    if (!fromEmail) {
+      console.warn('⚠️ FROM_EMAIL is not set in environment variables');
+    }
+    
+    if (!adminEmail) {
+      console.warn('⚠️ ADMIN_EMAIL is not set in environment variables');
+    }
 
     // Send confirmation email
     const emailTemplate = {
@@ -314,12 +331,76 @@ exports.handler = async (event, context) => {
       `
     };
 
+    // Send admin notification email with retry logic
+    let adminNotificationSent = false;
+    let adminNotificationError = null;
+    
     try {
-      await sgMail.send(adminEmailTemplate);
-      console.log('Admin notification email sent');
+      // Validate email addresses
+      if (!adminEmail || !adminEmail.includes('@')) {
+        throw new Error(`Invalid admin email address: ${adminEmail}`);
+      }
+      if (!fromEmail || !fromEmail.includes('@')) {
+        throw new Error(`Invalid from email address: ${fromEmail}`);
+      }
+      
+      console.log('Sending admin notification email...');
+      console.log('To:', adminEmail);
+      console.log('From:', fromEmail);
+      
+      // Send with retry logic for rate limiting
+      let result;
+      let retries = 0;
+      const maxRetries = 3;
+      const retryDelay = 2000; // 2 seconds
+      
+      while (retries <= maxRetries) {
+        try {
+          result = await sgMail.send(adminEmailTemplate);
+          
+          // Check if SendGrid accepted the email
+          if (result && result[0] && result[0].statusCode === 202) {
+            adminNotificationSent = true;
+            console.log('✅ Admin notification email sent successfully');
+            console.log('SendGrid response status:', result[0]?.statusCode);
+            break; // Success, exit retry loop
+          } else {
+            throw new Error(`Unexpected SendGrid response: ${JSON.stringify(result)}`);
+          }
+        } catch (sendError) {
+          retries++;
+          
+          // Check if it's a rate limiting error
+          const isRateLimitError = sendError.message?.includes('rate limit') || 
+                                   sendError.message?.includes('429') ||
+                                   sendError.response?.statusCode === 429 ||
+                                   sendError.code === 'EENVELOPE';
+          
+          if (isRateLimitError && retries <= maxRetries) {
+            console.warn(`⚠️ Rate limit detected for admin notification. Retrying in ${retryDelay}ms... (Attempt ${retries}/${maxRetries})`);
+            await new Promise(resolve => setTimeout(resolve, retryDelay * retries)); // Exponential backoff
+            continue; // Retry
+          } else {
+            // Not a rate limit error, or max retries reached
+            throw sendError;
+          }
+        }
+      }
+      
+      if (!adminNotificationSent) {
+        throw new Error('Failed to send admin notification email after retries');
+      }
     } catch (emailError) {
-      console.error('Admin email error:', emailError);
-      // Don't fail the application if email fails
+      adminNotificationError = emailError;
+      console.error('❌ ERROR sending admin notification email:', emailError);
+      console.error('Error message:', emailError.message);
+      console.error('Error code:', emailError.code);
+      if (emailError.response) {
+        console.error('Error response status:', emailError.response.statusCode);
+        console.error('Error response body:', JSON.stringify(emailError.response.body, null, 2));
+      }
+      // Don't fail the application if email fails, but log it clearly
+      console.warn('⚠️ Application will continue, but admin notification email was not sent');
     }
 
     return {
@@ -975,20 +1056,51 @@ Beställningslänk: ${process.env.SITE_URL || 'https://klasskraft.se'}/order.htm
         htmlLength: msg.html?.length || 0
       });
       
-      const result = await sgMail.send(msg);
-      adminEmailSent = true;
-      console.log('✅ Email sent successfully to KlassKraft UF (admin)');
-      console.log('SendGrid response status:', result[0]?.statusCode);
-      console.log('SendGrid response headers:', result[0]?.headers);
-      console.log('SendGrid response body:', result[0]?.body);
-      console.log('Email was sent to:', adminEmail);
-      console.log('Email was sent from:', fromEmail);
+      // Send email with retry logic for rate limiting
+      let result;
+      let retries = 0;
+      const maxRetries = 3;
+      const retryDelay = 2000; // 2 seconds
       
-      // Double-check the response
-      if (result && result[0] && result[0].statusCode === 202) {
-        console.log('✅ SendGrid accepted the email (202 Accepted)');
-      } else {
-        console.warn('⚠️ Unexpected SendGrid response:', result);
+      while (retries <= maxRetries) {
+        try {
+          result = await sgMail.send(msg);
+          
+          // Check if SendGrid accepted the email
+          if (result && result[0] && result[0].statusCode === 202) {
+            adminEmailSent = true;
+            console.log('✅ Email sent successfully to KlassKraft UF (admin)');
+            console.log('SendGrid response status:', result[0]?.statusCode);
+            console.log('SendGrid response headers:', result[0]?.headers);
+            console.log('SendGrid response body:', result[0]?.body);
+            console.log('Email was sent to:', adminEmail);
+            console.log('Email was sent from:', fromEmail);
+            break; // Success, exit retry loop
+          } else {
+            throw new Error(`Unexpected SendGrid response: ${JSON.stringify(result)}`);
+          }
+        } catch (sendError) {
+          retries++;
+          
+          // Check if it's a rate limiting error
+          const isRateLimitError = sendError.message?.includes('rate limit') || 
+                                   sendError.message?.includes('429') ||
+                                   sendError.response?.statusCode === 429 ||
+                                   sendError.code === 'EENVELOPE';
+          
+          if (isRateLimitError && retries <= maxRetries) {
+            console.warn(`⚠️ Rate limit detected. Retrying in ${retryDelay}ms... (Attempt ${retries}/${maxRetries})`);
+            await new Promise(resolve => setTimeout(resolve, retryDelay * retries)); // Exponential backoff
+            continue; // Retry
+          } else {
+            // Not a rate limit error, or max retries reached
+            throw sendError;
+          }
+        }
+      }
+      
+      if (!adminEmailSent) {
+        throw new Error('Failed to send admin email after retries');
       }
     } catch (error) {
       adminEmailError = error;
@@ -1029,6 +1141,11 @@ Beställningslänk: ${process.env.SITE_URL || 'https://klasskraft.se'}/order.htm
         })
       };
     }
+
+    // Add delay between admin email and organization email to avoid rate limiting
+    // Gmail rate limits when multiple emails are sent quickly from the same FROM address
+    console.log('Waiting 2 seconds before sending organization email to avoid Gmail rate limiting...');
+    await new Promise(resolve => setTimeout(resolve, 2000));
 
     // Schedule account for deletion 7 days from now
     const deletionDate = new Date();
@@ -1157,12 +1274,50 @@ ${process.env.COMPANY_NAME || 'Klass Kraft UF'}
         htmlLength: confirmationEmailTemplate.html?.length || 0
       });
       
-      const result = await sgMail.send(confirmationEmailTemplate);
-      orgEmailSent = true;
-      console.log('✅ Email sent successfully to organization (seller):', application.email);
-      console.log('SendGrid response status:', result[0]?.statusCode);
-      console.log('SendGrid response headers:', result[0]?.headers);
-      console.log('SendGrid response body:', result[0]?.body);
+      // Send email with retry logic for rate limiting
+      let result;
+      let retries = 0;
+      const maxRetries = 3;
+      const retryDelay = 2000; // 2 seconds
+      
+      while (retries <= maxRetries) {
+        try {
+          result = await sgMail.send(confirmationEmailTemplate);
+          
+          // Check if SendGrid accepted the email
+          if (result && result[0] && result[0].statusCode === 202) {
+            orgEmailSent = true;
+            console.log('✅ Email sent successfully to organization (seller):', application.email);
+            console.log('SendGrid response status:', result[0]?.statusCode);
+            console.log('SendGrid response headers:', result[0]?.headers);
+            console.log('SendGrid response body:', result[0]?.body);
+            break; // Success, exit retry loop
+          } else {
+            throw new Error(`Unexpected SendGrid response: ${JSON.stringify(result)}`);
+          }
+        } catch (sendError) {
+          retries++;
+          
+          // Check if it's a rate limiting error
+          const isRateLimitError = sendError.message?.includes('rate limit') || 
+                                   sendError.message?.includes('429') ||
+                                   sendError.response?.statusCode === 429 ||
+                                   sendError.code === 'EENVELOPE';
+          
+          if (isRateLimitError && retries <= maxRetries) {
+            console.warn(`⚠️ Rate limit detected for organization email. Retrying in ${retryDelay}ms... (Attempt ${retries}/${maxRetries})`);
+            await new Promise(resolve => setTimeout(resolve, retryDelay * retries)); // Exponential backoff
+            continue; // Retry
+          } else {
+            // Not a rate limit error, or max retries reached
+            throw sendError;
+          }
+        }
+      }
+      
+      if (!orgEmailSent) {
+        console.warn('⚠️ Failed to send organization email after retries, but continuing...');
+      }
     } catch (error) {
       orgEmailError = error;
       console.error('❌ ERROR sending email to organization (seller):', error);
