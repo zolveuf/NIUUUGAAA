@@ -1,6 +1,6 @@
 // Netlify Function for sending password reset emails
 const { createClient } = require('@supabase/supabase-js');
-const sgMail = require('@sendgrid/mail');
+const { Resend } = require('resend');
 
 exports.handler = async (event, context) => {
   // Only allow POST requests
@@ -12,6 +12,15 @@ exports.handler = async (event, context) => {
   }
 
   try {
+    const resendApiKey = process.env.RESEND_API_KEY;
+    if (!resendApiKey) {
+      return {
+        statusCode: 500,
+        body: JSON.stringify({ error: 'E-postkonfiguration saknas. Kontakta support.' })
+      };
+    }
+    const resend = new Resend(resendApiKey);
+
     // Parse request body
     const data = JSON.parse(event.body);
     const { email, redirectTo } = data;
@@ -70,9 +79,6 @@ exports.handler = async (event, context) => {
       };
     }
 
-    // Initialize SendGrid
-    sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-
     // Create reset link
     const resetLink = resetData.properties.action_link;
 
@@ -129,7 +135,10 @@ exports.handler = async (event, context) => {
     };
 
     // Send email
-    await sgMail.send(msg);
+    const { error: resendError } = await resend.emails.send(msg);
+    if (resendError) {
+      throw new Error(resendError.message || 'Failed to send password reset email');
+    }
 
     console.log('Password reset email sent to:', email);
 

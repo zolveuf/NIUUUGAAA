@@ -7,7 +7,6 @@ const path = require('path');
 // Environment variables from Netlify
 const SUPABASE_URL = process.env.SUPABASE_URL || 'YOUR_SUPABASE_URL_HERE';
 const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY || 'YOUR_SUPABASE_ANON_KEY_HERE';
-const SENDGRID_API_KEY = process.env.SENDGRID_API_KEY || 'YOUR_SENDGRID_API_KEY_HERE';
 const FROM_EMAIL = process.env.FROM_EMAIL || 'klasskraftuf@gmail.com';
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'klasskraftuf@gmail.com';
 const APP_NAME = process.env.APP_NAME || 'KlassKraft UF';
@@ -25,7 +24,6 @@ filesToProcess.forEach(fileName => {
     // Replace placeholder values with actual environment variables
     content = content.replace(/YOUR_SUPABASE_URL_HERE/g, SUPABASE_URL);
     content = content.replace(/YOUR_SUPABASE_ANON_KEY_HERE/g, SUPABASE_ANON_KEY);
-    content = content.replace(/YOUR_SENDGRID_API_KEY_HERE/g, SENDGRID_API_KEY);
     content = content.replace(/noreply@yourdomain\.com/g, FROM_EMAIL);
     content = content.replace(/admin@yourdomain\.com/g, ADMIN_EMAIL);
     content = content.replace(/APP_NAME: 'Kakservice'/g, `APP_NAME: '${APP_NAME}'`);

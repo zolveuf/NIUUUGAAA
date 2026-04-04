@@ -1,12 +1,12 @@
 # KlassKraft UF Website
 
-En responsiv, mobilanpassad webbplats för KlassKraft UF med Supabase och SendGrid-integration.
+En responsiv, mobilanpassad webbplats för KlassKraft UF med Supabase och Resend-integration.
 
 ## 🚀 Funktioner
 
 - **Responsiv design** - Fungerar på alla enheter
 - **Modern UI** - Apple-inspirerad design med smooth animationer
-- **Formulärhantering** - Supabase för databas, SendGrid för e-post
+- **Formulärhantering** - Supabase för databas, Resend för e-post
 - **Mobilanpassad navigation** - Hamburger-meny med fullskärms-panel
 - **Universal CSS** - Konsekvent styling med CSS-variabler
 
@@ -51,8 +51,8 @@ const CONFIG = {
   SUPABASE_ANON_KEY: 'your-supabase-anon-key',
   SUPABASE_SERVICE_ROLE_KEY: 'your-service-role-key', // Only for backend!
   
-  // SendGrid Configuration
-  SENDGRID_API_KEY: 'your-sendgrid-api-key',
+  // Resend Configuration
+  RESEND_API_KEY: 'your-resend-api-key',
   FROM_EMAIL: 'klasskraftuf@gmail.com',
   ADMIN_EMAIL: 'klasskraftuf@gmail.com',
   
@@ -68,9 +68,9 @@ const CONFIG = {
 2. Kör SQL-koden från `supabase-schema.sql` i SQL Editor
 3. Kopiera URL och anon key till `config.js`
 
-### 5. Sätt upp SendGrid
+### 5. Sätt upp Resend
 
-1. Skapa konto på [sendgrid.com](https://sendgrid.com)
+1. Skapa konto på [resend.com](https://resend.com)
 2. Skapa en API-nyckel
 3. Verifiera din sender e-postadress
 4. Lägg till API-nyckeln i `config.js`
@@ -82,7 +82,7 @@ const CONFIG = {
 1. **Pusha till GitHub**
 ```bash
 git add .
-git commit -m "Add Supabase and SendGrid integration"
+git commit -m "Add Supabase and Resend integration"
 git push origin main
 ```
 
@@ -135,7 +135,7 @@ vercel
 ```bash
 vercel env add SUPABASE_URL
 vercel env add SUPABASE_ANON_KEY
-vercel env add SENDGRID_API_KEY
+vercel env add RESEND_API_KEY
 vercel env add FROM_EMAIL
 vercel env add ADMIN_EMAIL
 ```

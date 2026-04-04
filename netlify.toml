@@ -16,7 +16,7 @@
 # Environment variables that should be set in Netlify UI:
 # SUPABASE_URL
 # SUPABASE_ANON_KEY
-# SENDGRID_API_KEY
+# RESEND_API_KEY
 # FROM_EMAIL
 # ADMIN_EMAIL
 # APP_NAME

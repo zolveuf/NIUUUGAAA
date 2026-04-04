@@ -118,7 +118,7 @@
     yearEl.textContent = String(new Date().getFullYear());
   }
 
-  // Form handling with Supabase and SendGrid integration
+  // Form handling with Supabase and Resend integration
   const contactForm = document.getElementById('contact-form');
   if (contactForm) {
     contactForm.addEventListener('submit', async function(e) {

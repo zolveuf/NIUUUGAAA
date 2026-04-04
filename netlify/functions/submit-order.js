@@ -1,6 +1,6 @@
 // Simple Netlify Function for order submissions
 const { createClient } = require('@supabase/supabase-js');
-const sgMail = require('@sendgrid/mail');
+const { Resend } = require('resend');
 
 exports.handler = async (event, context) => {
   console.log('Order function called');
@@ -15,6 +15,16 @@ exports.handler = async (event, context) => {
 
   try {
     console.log('Parsing request body...');
+    const resendApiKey = process.env.RESEND_API_KEY;
+    const fromEmail = process.env.FROM_EMAIL || 'klasskraftuf@gmail.com';
+    if (!resendApiKey) {
+      return {
+        statusCode: 500,
+        body: JSON.stringify({ error: 'E-postkonfiguration saknas. Kontakta support.' })
+      };
+    }
+    const resend = new Resend(resendApiKey);
+
     const data = JSON.parse(event.body);
     console.log('Data received:', data);
 
@@ -167,9 +177,6 @@ exports.handler = async (event, context) => {
     // Send confirmation email to customer if email is provided
     if (customerEmail && customerEmail.trim() !== '') {
       try {
-        // Initialize SendGrid
-        sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-
         // Format product list from order_details
         const productList = Object.values(orderDetails)
           .filter(item => item.quantity > 0)
@@ -214,7 +221,7 @@ exports.handler = async (event, context) => {
         // Create email template
         const emailTemplate = {
           to: customerEmail,
-          from: process.env.FROM_EMAIL,
+          from: fromEmail,
           subject: `Bekräftelse av din beställning - Order ${order.id.substring(0, 8).toUpperCase()}`,
           html: `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
@@ -300,7 +307,10 @@ exports.handler = async (event, context) => {
           `
         };
 
-        await sgMail.send(emailTemplate);
+        const { error: customerEmailError } = await resend.emails.send(emailTemplate);
+        if (customerEmailError) {
+          throw new Error(customerEmailError.message || 'Failed to send customer order confirmation');
+        }
         console.log('Order confirmation email sent to:', customerEmail);
       } catch (emailError) {
         console.error('Email error:', emailError);
@@ -313,8 +323,6 @@ exports.handler = async (event, context) => {
 
     // Send notification email to contact person
     try {
-      sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-
       // Format product list from order_details
       const productList = Object.values(orderDetails)
         .filter(item => item.quantity > 0)
@@ -358,7 +366,7 @@ exports.handler = async (event, context) => {
 
       const contactEmailTemplate = {
         to: applicationData.email,
-        from: process.env.FROM_EMAIL || 'klasskraftuf@gmail.com',
+        from: fromEmail,
         subject: `Ny beställning mottagen - ${applicationData.organization}`,
         html: `
           <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
@@ -436,7 +444,10 @@ exports.handler = async (event, context) => {
         `
       };
 
-      await sgMail.send(contactEmailTemplate);
+      const { error: contactPersonEmailError } = await resend.emails.send(contactEmailTemplate);
+      if (contactPersonEmailError) {
+        throw new Error(contactPersonEmailError.message || 'Failed to send contact person notification');
+      }
       console.log('Order notification email sent to contact person:', applicationData.email);
     } catch (contactEmailError) {
       console.error('Contact email error:', contactEmailError);

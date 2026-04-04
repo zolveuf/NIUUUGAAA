@@ -7,8 +7,8 @@ const CONFIG = {
   SUPABASE_URL: 'YOUR_SUPABASE_URL_HERE',
   SUPABASE_ANON_KEY: 'YOUR_SUPABASE_ANON_KEY_HERE',
   
-  // SendGrid Configuration
-  SENDGRID_API_KEY: 'YOUR_SENDGRID_API_KEY_HERE',
+  // Email Configuration (used by backend functions)
+  RESEND_API_KEY: 'YOUR_RESEND_API_KEY_HERE',
   FROM_EMAIL: 'klasskraftuf@gmail.com', // Your verified sender email
   ADMIN_EMAIL: 'klasskraftuf@gmail.com', // Where to send notifications
   

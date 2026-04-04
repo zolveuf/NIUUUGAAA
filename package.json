@@ -1,7 +1,7 @@
 {
   "name": "klasskraft-uf-website",
   "version": "1.0.0",
-  "description": "Responsive KlassKraft UF website with Supabase and SendGrid integration",
+  "description": "Responsive KlassKraft UF website with Supabase and Resend integration",
   "main": "index.html",
   "scripts": {
     "dev": "netlify dev",
@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.38.0",
-    "@sendgrid/mail": "^8.1.0"
+    "resend": "^4.7.0"
   },
   "devDependencies": {
     "netlify-cli": "^17.0.0"
@@ -21,7 +21,7 @@
     "responsive",
     "website",
     "supabase",
-    "sendgrid",
+    "resend",
     "netlify"
   ],
   "author": "Martin Pranjic",

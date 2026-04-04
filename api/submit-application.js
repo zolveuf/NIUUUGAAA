@@ -2,15 +2,15 @@
 // This should be deployed as a serverless function (Vercel, Netlify Functions, etc.)
 
 import { createClient } from '@supabase/supabase-js';
-import sgMail from '@sendgrid/mail';
+import { Resend } from 'resend';
 
 // Initialize Supabase client
 const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_ANON_KEY;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
-// Initialize SendGrid
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+// Initialize Resend
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export default async function handler(req, res) {
   // Only allow POST requests
@@ -144,9 +144,17 @@ export default async function handler(req, res) {
 
     // Send emails
     try {
-      await sgMail.send([userEmailTemplate, adminEmailTemplate]);
+      const [userEmailResult, adminEmailResult] = await Promise.all([
+        resend.emails.send(userEmailTemplate),
+        resend.emails.send(adminEmailTemplate)
+      ]);
+
+      if (userEmailResult.error || adminEmailResult.error) {
+        const emailErrorMessage = userEmailResult.error?.message || adminEmailResult.error?.message || 'Unknown resend error';
+        throw new Error(emailErrorMessage);
+      }
     } catch (emailError) {
-      console.error('SendGrid fel:', emailError);
+      console.error('E-postfel:', emailError);
       // Don't fail the request if email fails
     }
 
