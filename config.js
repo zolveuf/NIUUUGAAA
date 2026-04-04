@@ -8,7 +8,11 @@ const CONFIG = {
   SUPABASE_ANON_KEY: 'YOUR_SUPABASE_ANON_KEY_HERE',
   
   // Email Configuration (used by backend functions)
-  RESEND_API_KEY: 'YOUR_RESEND_API_KEY_HERE',
+  SMTP_HOST: 'smtp.strato.com',
+  SMTP_PORT: '465',
+  SMTP_SECURE: 'true',
+  SMTP_USER: 'YOUR_SMTP_USER_HERE',
+  SMTP_PASS: 'YOUR_SMTP_PASS_HERE',
   FROM_EMAIL: 'klasskraftuf@gmail.com', // Your verified sender email
   ADMIN_EMAIL: 'klasskraftuf@gmail.com', // Where to send notifications
   

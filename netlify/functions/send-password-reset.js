@@ -1,6 +1,6 @@
 // Netlify Function for sending password reset emails
 const { createClient } = require('@supabase/supabase-js');
-const { Resend } = require('resend');
+const nodemailer = require('nodemailer');
 
 exports.handler = async (event, context) => {
   // Only allow POST requests
@@ -12,14 +12,26 @@ exports.handler = async (event, context) => {
   }
 
   try {
-    const resendApiKey = process.env.RESEND_API_KEY;
-    if (!resendApiKey) {
+    const smtpUser = process.env.SMTP_USER;
+    const smtpPass = process.env.SMTP_PASS;
+    if (!smtpUser || !smtpPass) {
       return {
         statusCode: 500,
         body: JSON.stringify({ error: 'E-postkonfiguration saknas. Kontakta support.' })
       };
     }
-    const resend = new Resend(resendApiKey);
+    const smtpHost = process.env.SMTP_HOST || 'smtp.strato.com';
+    const smtpPort = Number(process.env.SMTP_PORT || 465);
+    const smtpSecure = process.env.SMTP_SECURE ? process.env.SMTP_SECURE === 'true' : smtpPort === 465;
+    const transporter = nodemailer.createTransport({
+      host: smtpHost,
+      port: smtpPort,
+      secure: smtpSecure,
+      auth: {
+        user: smtpUser,
+        pass: smtpPass
+      }
+    });
 
     // Parse request body
     const data = JSON.parse(event.body);
@@ -135,10 +147,7 @@ exports.handler = async (event, context) => {
     };
 
     // Send email
-    const { error: resendError } = await resend.emails.send(msg);
-    if (resendError) {
-      throw new Error(resendError.message || 'Failed to send password reset email');
-    }
+    await transporter.sendMail(msg);
 
     console.log('Password reset email sent to:', email);
 

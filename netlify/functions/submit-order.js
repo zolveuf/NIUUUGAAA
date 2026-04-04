@@ -1,6 +1,6 @@
 // Simple Netlify Function for order submissions
 const { createClient } = require('@supabase/supabase-js');
-const { Resend } = require('resend');
+const nodemailer = require('nodemailer');
 
 exports.handler = async (event, context) => {
   console.log('Order function called');
@@ -15,15 +15,27 @@ exports.handler = async (event, context) => {
 
   try {
     console.log('Parsing request body...');
-    const resendApiKey = process.env.RESEND_API_KEY;
+    const smtpUser = process.env.SMTP_USER;
+    const smtpPass = process.env.SMTP_PASS;
     const fromEmail = process.env.FROM_EMAIL || 'klasskraftuf@gmail.com';
-    if (!resendApiKey) {
+    if (!smtpUser || !smtpPass) {
       return {
         statusCode: 500,
         body: JSON.stringify({ error: 'E-postkonfiguration saknas. Kontakta support.' })
       };
     }
-    const resend = new Resend(resendApiKey);
+    const smtpHost = process.env.SMTP_HOST || 'smtp.strato.com';
+    const smtpPort = Number(process.env.SMTP_PORT || 465);
+    const smtpSecure = process.env.SMTP_SECURE ? process.env.SMTP_SECURE === 'true' : smtpPort === 465;
+    const transporter = nodemailer.createTransport({
+      host: smtpHost,
+      port: smtpPort,
+      secure: smtpSecure,
+      auth: {
+        user: smtpUser,
+        pass: smtpPass
+      }
+    });
 
     const data = JSON.parse(event.body);
     console.log('Data received:', data);
@@ -307,10 +319,7 @@ exports.handler = async (event, context) => {
           `
         };
 
-        const { error: customerEmailError } = await resend.emails.send(emailTemplate);
-        if (customerEmailError) {
-          throw new Error(customerEmailError.message || 'Failed to send customer order confirmation');
-        }
+        await transporter.sendMail(emailTemplate);
         console.log('Order confirmation email sent to:', customerEmail);
       } catch (emailError) {
         console.error('Email error:', emailError);
@@ -444,10 +453,7 @@ exports.handler = async (event, context) => {
         `
       };
 
-      const { error: contactPersonEmailError } = await resend.emails.send(contactEmailTemplate);
-      if (contactPersonEmailError) {
-        throw new Error(contactPersonEmailError.message || 'Failed to send contact person notification');
-      }
+      await transporter.sendMail(contactEmailTemplate);
       console.log('Order notification email sent to contact person:', applicationData.email);
     } catch (contactEmailError) {
       console.error('Contact email error:', contactEmailError);

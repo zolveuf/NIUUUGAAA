@@ -2,15 +2,34 @@
 // This should be deployed as a serverless function (Vercel, Netlify Functions, etc.)
 
 import { createClient } from '@supabase/supabase-js';
-import { Resend } from 'resend';
+import nodemailer from 'nodemailer';
 
 // Initialize Supabase client
 const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_ANON_KEY;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
-// Initialize Resend
-const resend = new Resend(process.env.RESEND_API_KEY);
+function createTransporter() {
+  const smtpUser = process.env.SMTP_USER;
+  const smtpPass = process.env.SMTP_PASS;
+  const smtpHost = process.env.SMTP_HOST || 'smtp.strato.com';
+  const smtpPort = Number(process.env.SMTP_PORT || 465);
+  const smtpSecure = process.env.SMTP_SECURE ? process.env.SMTP_SECURE === 'true' : smtpPort === 465;
+
+  if (!smtpUser || !smtpPass) {
+    throw new Error('SMTP_USER or SMTP_PASS saknas');
+  }
+
+  return nodemailer.createTransport({
+    host: smtpHost,
+    port: smtpPort,
+    secure: smtpSecure,
+    auth: {
+      user: smtpUser,
+      pass: smtpPass
+    }
+  });
+}
 
 export default async function handler(req, res) {
   // Only allow POST requests
@@ -144,15 +163,11 @@ export default async function handler(req, res) {
 
     // Send emails
     try {
-      const [userEmailResult, adminEmailResult] = await Promise.all([
-        resend.emails.send(userEmailTemplate),
-        resend.emails.send(adminEmailTemplate)
+      const transporter = createTransporter();
+      await Promise.all([
+        transporter.sendMail(userEmailTemplate),
+        transporter.sendMail(adminEmailTemplate)
       ]);
-
-      if (userEmailResult.error || adminEmailResult.error) {
-        const emailErrorMessage = userEmailResult.error?.message || adminEmailResult.error?.message || 'Unknown resend error';
-        throw new Error(emailErrorMessage);
-      }
     } catch (emailError) {
       console.error('E-postfel:', emailError);
       // Don't fail the request if email fails

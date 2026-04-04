@@ -1,12 +1,12 @@
 # KlassKraft UF Website
 
-En responsiv, mobilanpassad webbplats för KlassKraft UF med Supabase och Resend-integration.
+En responsiv, mobilanpassad webbplats för KlassKraft UF med Supabase och SMTP-integration.
 
 ## 🚀 Funktioner
 
 - **Responsiv design** - Fungerar på alla enheter
 - **Modern UI** - Apple-inspirerad design med smooth animationer
-- **Formulärhantering** - Supabase för databas, Resend för e-post
+- **Formulärhantering** - Supabase för databas, SMTP för e-post
 - **Mobilanpassad navigation** - Hamburger-meny med fullskärms-panel
 - **Universal CSS** - Konsekvent styling med CSS-variabler
 
@@ -51,8 +51,12 @@ const CONFIG = {
   SUPABASE_ANON_KEY: 'your-supabase-anon-key',
   SUPABASE_SERVICE_ROLE_KEY: 'your-service-role-key', // Only for backend!
   
-  // Resend Configuration
-  RESEND_API_KEY: 'your-resend-api-key',
+  // SMTP Configuration
+  SMTP_HOST: 'smtp.strato.com',
+  SMTP_PORT: '465',
+  SMTP_SECURE: 'true',
+  SMTP_USER: 'your-email@klasskraft.se',
+  SMTP_PASS: 'your-mailbox-password',
   FROM_EMAIL: 'klasskraftuf@gmail.com',
   ADMIN_EMAIL: 'klasskraftuf@gmail.com',
   
@@ -68,12 +72,12 @@ const CONFIG = {
 2. Kör SQL-koden från `supabase-schema.sql` i SQL Editor
 3. Kopiera URL och anon key till `config.js`
 
-### 5. Sätt upp Resend
+### 5. Sätt upp SMTP (STRATO)
 
-1. Skapa konto på [resend.com](https://resend.com)
-2. Skapa en API-nyckel
-3. Verifiera din sender e-postadress
-4. Lägg till API-nyckeln i `config.js`
+1. Skapa/aktivera en mailbox i STRATO
+2. Använd SMTP-server `smtp.strato.com` (port 465 eller 587)
+3. Ange full e-postadress som SMTP-användare
+4. Lägg till SMTP-värden i `config.js` eller miljövariabler
 
 ## 🚀 Deployment
 
@@ -82,7 +86,7 @@ const CONFIG = {
 1. **Pusha till GitHub**
 ```bash
 git add .
-git commit -m "Add Supabase and Resend integration"
+git commit -m "Add Supabase and SMTP integration"
 git push origin main
 ```
 
@@ -135,7 +139,11 @@ vercel
 ```bash
 vercel env add SUPABASE_URL
 vercel env add SUPABASE_ANON_KEY
-vercel env add RESEND_API_KEY
+vercel env add SMTP_HOST
+vercel env add SMTP_PORT
+vercel env add SMTP_SECURE
+vercel env add SMTP_USER
+vercel env add SMTP_PASS
 vercel env add FROM_EMAIL
 vercel env add ADMIN_EMAIL
 ```

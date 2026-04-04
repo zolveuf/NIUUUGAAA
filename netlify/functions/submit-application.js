@@ -1,6 +1,6 @@
 // Netlify Function for handling form submissions
 const { createClient } = require('@supabase/supabase-js');
-const { Resend } = require('resend');
+const nodemailer = require('nodemailer');
 
 // Function to generate unique link codes
 function generateLinkCode() {
@@ -12,26 +12,30 @@ function generateLinkCode() {
   return result;
 }
 
-function getResendClient() {
-  const resendApiKey = process.env.RESEND_API_KEY;
-  if (!resendApiKey) {
-    throw new Error('RESEND_API_KEY is not set');
+function getSmtpTransporter() {
+  const smtpUser = process.env.SMTP_USER;
+  const smtpPass = process.env.SMTP_PASS;
+  const smtpHost = process.env.SMTP_HOST || 'smtp.strato.com';
+  const smtpPort = Number(process.env.SMTP_PORT || 465);
+  const smtpSecure = process.env.SMTP_SECURE ? process.env.SMTP_SECURE === 'true' : smtpPort === 465;
+
+  if (!smtpUser || !smtpPass) {
+    throw new Error('SMTP_USER or SMTP_PASS is not set');
   }
-  return new Resend(resendApiKey);
+
+  return nodemailer.createTransport({
+    host: smtpHost,
+    port: smtpPort,
+    secure: smtpSecure,
+    auth: {
+      user: smtpUser,
+      pass: smtpPass
+    }
+  });
 }
 
-async function sendEmailOrThrow(resend, message) {
-  const { data, error } = await resend.emails.send(message);
-  if (error) {
-    const resendError = new Error(error.message || 'Failed to send email');
-    resendError.code = error.name || error.code || 'RESEND_ERROR';
-    resendError.response = {
-      statusCode: error.statusCode,
-      body: error
-    };
-    throw resendError;
-  }
-  return data;
+async function sendEmailOrThrow(transporter, message) {
+  return transporter.sendMail(message);
 }
 
 exports.handler = async (event, context) => {
@@ -216,16 +220,17 @@ exports.handler = async (event, context) => {
 
     console.log('Account created with link code:', linkCode);
 
-    // Initialize Resend
-    const resendApiKey = process.env.RESEND_API_KEY;
+    // Initialize SMTP
+    const smtpUser = process.env.SMTP_USER;
+    const smtpPass = process.env.SMTP_PASS;
     const fromEmail = process.env.FROM_EMAIL;
     const adminEmail = process.env.ADMIN_EMAIL;
     
-    if (!resendApiKey) {
-      console.error('❌ RESEND_API_KEY is not set');
+    if (!smtpUser || !smtpPass) {
+      console.error('❌ SMTP_USER or SMTP_PASS is not set');
       // Don't fail, but log the error
     }
-    const resend = resendApiKey ? new Resend(resendApiKey) : null;
+    const transporter = smtpUser && smtpPass ? getSmtpTransporter() : null;
     
     if (!fromEmail) {
       console.warn('⚠️ FROM_EMAIL is not set in environment variables');
@@ -281,10 +286,10 @@ exports.handler = async (event, context) => {
     };
 
     try {
-      if (!resend) {
-        throw new Error('RESEND_API_KEY is not set');
+      if (!transporter) {
+        throw new Error('SMTP_USER or SMTP_PASS is not set');
       }
-      await sendEmailOrThrow(resend, emailTemplate);
+      await sendEmailOrThrow(transporter, emailTemplate);
       console.log('Confirmation email sent');
     } catch (emailError) {
       console.error('Email error:', emailError);
@@ -380,10 +385,10 @@ exports.handler = async (event, context) => {
       
       while (retries <= maxRetries) {
         try {
-          result = await sendEmailOrThrow(resend, adminEmailTemplate);
+          result = await sendEmailOrThrow(transporter, adminEmailTemplate);
           adminNotificationSent = true;
           console.log('✅ Admin notification email sent successfully');
-          console.log('Resend response id:', result?.id);
+          console.log('SMTP message id:', result?.messageId);
           break; // Success, exit retry loop
         } catch (sendError) {
           retries++;
@@ -462,7 +467,7 @@ async function handleSendOrderToKakservice(data) {
 
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    const resend = getResendClient();
+    const transporter = getSmtpTransporter();
 
     console.log('Fetching order details for:', orderId);
 
@@ -680,7 +685,7 @@ Beställningslänk: ${process.env.SITE_URL || 'https://klasskraft.se'}/order.htm
     };
 
     console.log('Sending email to Kakservice...');
-    await sendEmailOrThrow(resend, msg);
+    await sendEmailOrThrow(transporter, msg);
     console.log('Email sent successfully');
 
     // Schedule account for deletion 7 days from now
@@ -774,23 +779,29 @@ async function handleSendAllOrdersToKakservice(data) {
 
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    // Validate Resend configuration BEFORE attempting to send emails
-    const resendApiKey = process.env.RESEND_API_KEY;
+    // Validate SMTP configuration BEFORE attempting to send emails
+    const smtpUser = process.env.SMTP_USER;
+    const smtpPass = process.env.SMTP_PASS;
+    const smtpHost = process.env.SMTP_HOST || 'smtp.strato.com';
+    const smtpPort = Number(process.env.SMTP_PORT || 465);
     const fromEmail = process.env.FROM_EMAIL || 'klasskraftuf@gmail.com';
     const adminEmail = process.env.ADMIN_EMAIL || 'klasskraftuf@gmail.com';
     
     console.log('=== VALIDATING EMAIL CONFIGURATION ===');
-    console.log('RESEND_API_KEY from env:', resendApiKey ? 'Present' : 'MISSING');
+    console.log('SMTP_USER from env:', smtpUser ? 'Present' : 'MISSING');
+    console.log('SMTP_PASS from env:', smtpPass ? 'Present' : 'MISSING');
+    console.log('SMTP_HOST from env:', smtpHost);
+    console.log('SMTP_PORT from env:', smtpPort);
     console.log('FROM_EMAIL from env:', process.env.FROM_EMAIL || 'NOT SET (using fallback)');
     console.log('ADMIN_EMAIL from env:', process.env.ADMIN_EMAIL || 'NOT SET (using fallback)');
     
-    if (!resendApiKey) {
-      console.error('❌ CRITICAL ERROR: RESEND_API_KEY is not set in environment variables!');
+    if (!smtpUser || !smtpPass) {
+      console.error('❌ CRITICAL ERROR: SMTP_USER or SMTP_PASS is not set in environment variables!');
       return {
         statusCode: 500,
         body: JSON.stringify({ 
           error: 'E-postkonfiguration saknas. Kontakta support.',
-          details: 'RESEND_API_KEY environment variable is missing'
+          details: 'SMTP_USER or SMTP_PASS environment variable is missing'
         })
       };
     }
@@ -821,16 +832,16 @@ async function handleSendAllOrdersToKakservice(data) {
       };
     }
     
-    console.log('✅ Resend configuration validated');
-    console.log('   API Key:', resendApiKey ? 'Present (' + resendApiKey.substring(0, 10) + '...)' : 'MISSING');
-    console.log('   API Key length:', resendApiKey?.length || 0);
+    console.log('✅ SMTP configuration validated');
+    console.log('   SMTP host:', smtpHost);
+    console.log('   SMTP port:', smtpPort);
     console.log('   FROM_EMAIL:', fromEmail);
     console.log('   ADMIN_EMAIL:', adminEmail);
     console.log('   FROM_EMAIL valid:', fromEmail && fromEmail.includes('@'));
     console.log('   ADMIN_EMAIL valid:', adminEmail && adminEmail.includes('@'));
     console.log('=====================================');
     
-    const resend = new Resend(resendApiKey);
+    const transporter = getSmtpTransporter();
 
     // Get account and application info for the first order
     const firstOrder = orders[0];
@@ -1065,7 +1076,7 @@ Beställningslänk: ${process.env.SITE_URL || 'https://klasskraft.se'}/order.htm
         throw new Error(`Invalid from email address: ${fromEmail}`);
       }
       
-      console.log('Attempting to send email via Resend...');
+      console.log('Attempting to send email via SMTP...');
       console.log('Email object:', {
         to: adminEmail,
         from: fromEmail,
@@ -1084,10 +1095,10 @@ Beställningslänk: ${process.env.SITE_URL || 'https://klasskraft.se'}/order.htm
       
       while (retries <= maxRetries) {
         try {
-          result = await sendEmailOrThrow(resend, msg);
+          result = await sendEmailOrThrow(transporter, msg);
           adminEmailSent = true;
           console.log('✅ Email sent successfully to KlassKraft UF (admin)');
-          console.log('Resend response id:', result?.id);
+          console.log('SMTP message id:', result?.messageId);
           console.log('Email was sent to:', adminEmail);
           console.log('Email was sent from:', fromEmail);
           break; // Success, exit retry loop
@@ -1137,7 +1148,7 @@ Beställningslänk: ${process.env.SITE_URL || 'https://klasskraft.se'}/order.htm
           details: error.message,
           code: error.code,
           response: error.response?.body,
-          resendConfigured: !!resendApiKey,
+          smtpConfigured: !!(smtpUser && smtpPass),
           fromEmail: fromEmail,
           adminEmail: adminEmail
         })
@@ -1276,7 +1287,7 @@ ${process.env.COMPANY_NAME || 'Klass Kraft UF'}
         throw new Error(`Invalid organization email address: ${application.email}`);
       }
       
-      console.log('Attempting to send email via Resend...');
+      console.log('Attempting to send email via SMTP...');
       console.log('Email object:', {
         to: application.email,
         from: fromEmail,
@@ -1295,10 +1306,10 @@ ${process.env.COMPANY_NAME || 'Klass Kraft UF'}
       
       while (retries <= maxRetries) {
         try {
-          result = await sendEmailOrThrow(resend, confirmationEmailTemplate);
+          result = await sendEmailOrThrow(transporter, confirmationEmailTemplate);
           orgEmailSent = true;
           console.log('✅ Email sent successfully to organization (seller):', application.email);
-          console.log('Resend response id:', result?.id);
+          console.log('SMTP message id:', result?.messageId);
           break; // Success, exit retry loop
         } catch (sendError) {
           retries++;
@@ -1343,33 +1354,33 @@ ${process.env.COMPANY_NAME || 'Klass Kraft UF'}
 
     // Final summary - CRITICAL VALIDATION
     console.log('=== EMAIL SENDING SUMMARY ===');
-    console.log(adminEmailSent ? '✅ Admin email (KlassKraft UF): ACCEPTED BY RESEND' : '❌ Admin email (KlassKraft UF): FAILED');
+    console.log(adminEmailSent ? '✅ Admin email (KlassKraft UF): SENT VIA SMTP' : '❌ Admin email (KlassKraft UF): FAILED');
     console.log(`   To: ${adminEmail}`);
     console.log(`   From: ${fromEmail}`);
     console.log(`   Orders: ${orderCount}, Total: ${totalSum} kr`);
     if (adminEmailSent) {
       console.log('   ⚠️ NOTE: Email may be deferred by Gmail due to rate limiting');
-      console.log('   ⚠️ Check Resend dashboard for actual delivery status');
+      console.log('   ⚠️ Check mailbox/spam folder for actual delivery status');
       console.log('   ⚠️ Deferred emails can take up to 24 hours to deliver');
     }
     if (adminEmailError) {
       console.error('   Error:', adminEmailError.message);
     }
     
-    console.log(orgEmailSent ? '✅ Organization email (seller): ACCEPTED BY RESEND' : '❌ Organization email (seller): FAILED');
+    console.log(orgEmailSent ? '✅ Organization email (seller): SENT VIA SMTP' : '❌ Organization email (seller): FAILED');
     console.log(`   To: ${application.email}`);
     console.log(`   From: ${fromEmail}`);
     console.log(`   Orders: ${orderCount}, Total: ${totalSum} kr`);
     if (orgEmailSent) {
       console.log('   ⚠️ NOTE: Email may be deferred by Gmail due to rate limiting');
-      console.log('   ⚠️ Check Resend dashboard for actual delivery status');
+      console.log('   ⚠️ Check mailbox/spam folder for actual delivery status');
     }
     if (orgEmailError) {
       console.error('   Error:', orgEmailError.message);
     }
     console.log('=============================');
     console.log('📧 IMPORTANT: If emails are deferred, they will be retried automatically by provider');
-    console.log('📧 Check Resend dashboard for delivery status');
+    console.log('📧 Check SMTP provider logs and recipient inbox for delivery status');
 
     // CRITICAL: Only return success if admin email was sent
     if (!adminEmailSent) {
